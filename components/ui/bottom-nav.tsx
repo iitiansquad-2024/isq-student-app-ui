@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo } from "react"
 import { motion } from "framer-motion"
 import { Play, BarChart2, BookOpen, User } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { usePathname, useRouter } from "next/navigation"
 
 const items = [
   { key: "practice", label: "Practice", Icon: Play },
@@ -13,7 +14,16 @@ const items = [
 ]
 
 export function BottomNav({ className }: { className?: string }) {
-  const [active, setActive] = useState<string>("practice")
+  const pathname = usePathname() || "/"
+  const router = useRouter()
+
+  const active = useMemo(() => {
+    if (pathname.startsWith("/analytics")) return "analytics"
+    if (pathname.startsWith("/revision")) return "revision"
+    if (pathname.startsWith("/profile")) return "profile"
+    // default to practice for root or /practice
+    return "practice"
+  }, [pathname])
 
   return (
     <nav
@@ -30,14 +40,14 @@ export function BottomNav({ className }: { className?: string }) {
           return (
             <button
               key={it.key}
-              onClick={() => setActive(it.key)}
+              onClick={() => router.push(`/${it.key}`)}
               className="relative z-10 flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-md px-3 py-2 text-xs font-medium text-muted-foreground disabled:opacity-60"
               aria-current={activeItem ? "page" : undefined}
             >
               {activeItem ? (
                 <motion.span
                   layoutId="nav-indicator"
-                  className="absolute inset-0 m-1 rounded-lg bg-primary/10"
+                  className="absolute inset-0 m-1 rounded-lg bg-primary/20"
                   transition={{ type: "spring", stiffness: 500, damping: 30 }}
                 />
               ) : null}
