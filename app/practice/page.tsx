@@ -82,7 +82,7 @@ export default function PracticePage() {
           <p className="mt-1 text-sm text-muted-foreground">Pick a filter or search to find questions</p>
         </div>
 
-        <Streak goal={7} size={48} currentDays={2} />
+        <Streak goal={7} size={48} currentDays={5} />
       </header>
 
       {/* 1. Preset filters (multi-select, expandable) */}
@@ -111,7 +111,7 @@ export default function PracticePage() {
                     setFiltersOrder((arr) => [f, ...arr.filter((x) => x !== f)])
                     setSelectedFilters((s) => [f, ...s])
                   }}
-                  className={`focus:ring-2 focus:ring-secondary flex cursor-pointer items-center gap-2 rounded-full px-3 py-1 text-sm font-medium transition ${
+                  className={`focus:ring-2 focus:ring-primary-dark flex cursor-pointer items-center gap-2 rounded-full px-3 py-1 text-sm font-medium transition ${
                     selected ? "bg-primary text-primary-foreground" : "bg-transparent text-muted-foreground"
                   }`}
                 >

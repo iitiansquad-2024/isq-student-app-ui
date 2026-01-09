@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { motion } from "framer-motion"
 
 type StreakProps = {
@@ -23,6 +23,8 @@ function formatDateLocal(iso?: string) {
 export default function Streak({ goal = 30, size = 56, variant = "circle", currentDays = 1 }: StreakProps) {
   const [days, setDays] = useState<number>(currentDays)
   const [firstIso, setFirstIso] = useState<string | null>(null)
+  const itemRef = useRef<HTMLDivElement | null>(null)
+  const [itemHeight, setItemHeight] = useState<number>(0)
 
   useEffect(() => {
     try {
@@ -45,6 +47,29 @@ export default function Streak({ goal = 30, size = 56, variant = "circle", curre
       setDays(1)
     }
   }, [])
+
+  // measure the height of a single number row so we can translate the scroller precisely
+  useEffect(() => {
+    const el = itemRef.current
+    if (!el) return
+
+    const setH = () => setItemHeight(el.getBoundingClientRect().height)
+    setH()
+
+    // keep measurement updated if font size or layout changes
+    let ro: ResizeObserver | null = null
+    if (typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(() => setH())
+      ro.observe(el)
+    } else {
+      window.addEventListener("resize", setH)
+    }
+
+    return () => {
+      if (ro) ro.disconnect()
+      else window.removeEventListener("resize", setH)
+    }
+  }, [itemRef.current])
 
   const pct = Math.min(1, days / (goal || 1))
 
@@ -146,7 +171,25 @@ export default function Streak({ goal = 30, size = 56, variant = "circle", curre
       </div>
 
       <div className="flex flex-col items-start leading-tight">
-        <div className="text-sm font-semibold">{days}d</div>
+        {/* animated vertical number scroller */}
+        <div className="text-sm font-semibold overflow-hidden" style={{ height: itemHeight || 16 }} aria-hidden>
+          <motion.div
+            initial={{ y: 0 }}
+            animate={{ y: itemHeight ? -Math.max(0, days - 1) * itemHeight : 0 }}
+            transition={{ type: "spring", stiffness: 140, damping: 20 }}
+          >
+            {Array.from({ length: Math.max(1, days) }).map((_, i) => (
+              <div
+                key={i}
+                ref={i === 0 ? itemRef : undefined}
+                className="leading-tight"
+                style={{ display: "block" }}
+              >
+                {i + 1}d
+              </div>
+            ))}
+          </motion.div>
+        </div>
         <div className="text-xs text-muted-foreground">current streak</div>
       </div>
     </div>
