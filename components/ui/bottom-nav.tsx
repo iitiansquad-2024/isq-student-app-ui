@@ -25,6 +25,21 @@ export function BottomNav({ className }: { className?: string }) {
     return "practice"
   }, [pathname])
 
+  const container = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.08,
+        delayChildren: 0.06,
+      },
+    },
+  }
+
+  const item = {
+    hidden: { y: 18, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 400, damping: 28 } },
+  }
+
   return (
     <nav
       aria-label="Bottom navigation"
@@ -33,14 +48,20 @@ export function BottomNav({ className }: { className?: string }) {
         className
       )}
     >
-      <div className="mx-auto flex max-w-3xl items-center justify-between gap-1 px-3 py-2">
+      <motion.div
+        className="mx-auto flex max-w-3xl items-center justify-between gap-1 px-3 py-2"
+        variants={container}
+        initial="hidden"
+        animate="visible"
+      >
         {items.map((it) => {
           const activeItem = active === it.key
           const Icon = it.Icon
           return (
-            <button
+            <motion.button
               key={it.key}
               onClick={() => router.push(`/${it.key}`)}
+              variants={item}
               className="relative z-10 flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-md px-3 py-2 text-xs font-medium text-muted-foreground disabled:opacity-60"
               aria-current={activeItem ? "page" : undefined}
             >
@@ -58,10 +79,10 @@ export function BottomNav({ className }: { className?: string }) {
                   {it.label}
                 </span>
               </div>
-            </button>
+            </motion.button>
           )
         })}
-      </div>
+      </motion.div>
     </nav>
   )
 }
