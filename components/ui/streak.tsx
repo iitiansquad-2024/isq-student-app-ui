@@ -90,7 +90,7 @@ export default function Streak({ goal = 30, size = 56, variant = "circle", curre
             <motion.circle
               r={radius}
               fill="none"
-              stroke="var(--secondary)"
+              stroke="var(--primary)"
               strokeWidth="6"
               strokeLinecap="round"
               strokeDasharray={`${circumference}`}
@@ -120,7 +120,7 @@ export default function Streak({ goal = 30, size = 56, variant = "circle", curre
                 className="block"
               >
                 <path
-                  fill="var(--primary)"
+                  fill="var(--primary-dark)"
                   d="M12 2c-1.1 0-2 .9-2 2v1H8c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h1v5c0 1.1.9 2 2 2s2-.9 2-2v-5h1c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2V4c0-1.1-.9-2-2-2z"
                 />
               </motion.svg>
@@ -136,7 +136,7 @@ export default function Streak({ goal = 30, size = 56, variant = "circle", curre
                 className="block"
               >
                 <path
-                  fill="var(--primary)"
+                  fill="var(--primary-dark)"
                   d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"
                 />
               </motion.svg>
