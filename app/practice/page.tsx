@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Search, Sliders } from "lucide-react"
+import { Search, Sliders, X } from "lucide-react"
 
 type Question = {
   id: string
@@ -20,48 +20,139 @@ const SAMPLE_QUESTIONS: Question[] = [
 ]
 
 export default function PracticePage() {
-  const [activeTab, setActiveTab] = useState<string>("All")
+  // Preset filters (exclude 'All' which behaves as no filter)
+  const initialFilters = ["Easy", "Medium", "Hard", "MCQ"]
+
+  const [filtersOrder, setFiltersOrder] = useState<string[]>(initialFilters)
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([])
+  const [prevPositions, setPrevPositions] = useState<Record<string, number | null>>({})
+  const [expandedFilters, setExpandedFilters] = useState(false)
   const [query, setQuery] = useState("")
   const [showFilters, setShowFilters] = useState(false)
 
-  const tabs = ["All", "Easy", "Medium", "Hard", "MCQ"]
+  const visibleCount = 3
+
+  const matchesFilter = (qItem: Question, f: string) => {
+    if (f === "MCQ") return qItem.tags.includes("mcq")
+    if (["Easy", "Medium", "Hard"].includes(f)) return qItem.difficulty === f
+    return qItem.tags.includes(f.toLowerCase())
+  }
 
   const filtered = useMemo(() => {
     let list = SAMPLE_QUESTIONS
-    if (activeTab !== "All") {
-      if (activeTab === "MCQ") {
-        list = list.filter((q) => q.tags.includes("mcq"))
-      } else {
-        list = list.filter((q) => q.difficulty === activeTab)
-      }
+
+    if (selectedFilters.length > 0) {
+      list = list.filter((q) => {
+        return selectedFilters.some((f) => {
+          if (f === "MCQ") return q.tags.includes("mcq")
+          if (["Easy", "Medium", "Hard"].includes(f)) return q.difficulty === f
+          return q.tags.includes(f.toLowerCase())
+        })
+      })
     }
+
     if (query.trim()) {
       const q = query.toLowerCase()
       list = list.filter((it) => it.title.toLowerCase().includes(q) || it.tags.join(" ").includes(q))
     }
+
     return list
-  }, [activeTab, query])
+  }, [selectedFilters, query])
+
+  // counts for each preset filter considering current query
+  const filterCounts = useMemo(() => {
+    const counts: Record<string, number> = {}
+    const q = query.trim().toLowerCase()
+    for (const f of filtersOrder) {
+      counts[f] = SAMPLE_QUESTIONS.filter((item) => {
+        if (!matchesFilter(item, f)) return false
+        if (!q) return true
+        return item.title.toLowerCase().includes(q) || item.tags.join(" ").includes(q)
+      }).length
+    }
+    return counts
+  }, [filtersOrder, query])
 
   return (
-    <section className="py-4">
+    <section className="py-8">
       <header className="mb-4">
         <h1 className="text-2xl font-semibold">Practice</h1>
         <p className="mt-1 text-sm text-muted-foreground">Pick a filter or search to find questions</p>
       </header>
 
-      {/* 1. Preset filters (tabs) */}
-      <div className="mb-4 flex gap-2 overflow-x-auto">
-        {tabs.map((t) => (
-          <button
-            key={t}
-            onClick={() => setActiveTab(t)}
-            className={`rounded-full px-3 py-1 text-sm font-medium transition ${
-              activeTab === t ? "bg-primary text-primary-foreground" : "bg-background/50 text-muted-foreground"
-            }`}
-          >
-            {t}
-          </button>
-        ))}
+      {/* 1. Preset filters (multi-select, expandable) */}
+      <div className="mb-4 rounded-xl bg-stone-50">
+        <div className="flex items-center gap-2 overflow-x-auto py-2 px-0.5 flex-wrap">
+          {(expandedFilters ? filtersOrder : filtersOrder.slice(0, visibleCount)).map((f) => {
+            const selected = selectedFilters.includes(f)
+            return (
+              <div key={f} className="relative">
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault()
+                      if (selected) return
+                      setPrevPositions((p) => ({ ...p, [f]: filtersOrder.indexOf(f) }))
+                      setFiltersOrder((arr) => [f, ...arr.filter((x) => x !== f)])
+                      setSelectedFilters((s) => [f, ...s])
+                    }
+                  }}
+                  onClick={() => {
+                    if (selected) return
+                    // select and move to front, store previous position
+                    setPrevPositions((p) => ({ ...p, [f]: filtersOrder.indexOf(f) }))
+                    setFiltersOrder((arr) => [f, ...arr.filter((x) => x !== f)])
+                    setSelectedFilters((s) => [f, ...s])
+                  }}
+                  className={`focus:ring-2 focus:ring-secondary flex cursor-pointer items-center gap-2 rounded-full px-3 py-1 text-sm font-medium transition ${
+                    selected ? "bg-primary text-primary-foreground" : "bg-transparent text-muted-foreground"
+                  }`}
+                >
+                  <span>
+                    {f} <span className="ml-1 text-xs text-muted-foreground">({filterCounts[f] ?? 0})</span>
+                  </span>
+                  {selected ? (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        // remove and restore previous position
+                        const prev = prevPositions[f]
+                        setFiltersOrder((arr) => {
+                          const without = arr.filter((x) => x !== f)
+                          const insertAt = prev != null ? Math.min(Math.max(prev, 0), without.length) : without.length
+                          const res = [...without]
+                          res.splice(insertAt, 0, f)
+                          return res
+                        })
+                        setPrevPositions((p) => {
+                          const copy = { ...p }
+                          delete copy[f]
+                          return copy
+                        })
+                        setSelectedFilters((s) => s.filter((x) => x !== f))
+                      }}
+                      aria-label={`Remove ${f}`}
+                      className="ml-1 inline-flex items-center justify-center rounded-full p-0.5 text-muted-foreground cursor-pointer hover:bg-black/5"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  ) : null}
+                </div>
+              </div>
+            )
+          })}
+
+          {filtersOrder.length > visibleCount ? (
+            <button
+              className="ml-2 rounded-full px-3 py-1 text-sm text-muted-foreground cursor-pointer hover:bg-background/50 underline"
+              onClick={() => setExpandedFilters((s) => !s)}
+            >
+              {expandedFilters ? "Show less" : "Show all"}
+            </button>
+          ) : null}
+        </div>
       </div>
 
       {/* 2. Search and filter row */}
