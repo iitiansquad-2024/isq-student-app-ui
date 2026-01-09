@@ -27,7 +27,7 @@ export function Sidebar({ open, onOpenChange }: { open: boolean; onOpenChange: (
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
             <div className="flex items-center justify-between border-b border-border p-4">
-              <div className="text-lg font-semibold">iitian</div>
+              <div className="text-lg font-semibold">IITian Squad</div>
               <button aria-label="Close" onClick={() => onOpenChange(false)} className="-mr-2 rounded-md p-2">
                 <X className="h-5 w-5" />
               </button>
