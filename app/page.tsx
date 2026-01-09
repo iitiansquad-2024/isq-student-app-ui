@@ -1,11 +1,18 @@
+"use client"
+
 import Image from "next/image"
+import { useState } from "react"
 import TopNav from "@/components/ui/top-nav"
 import BottomNav from "@/components/ui/bottom-nav"
+import Sidebar from "@/components/ui/sidebar"
 
 export default function Home() {
+  const [menuOpen, setMenuOpen] = useState(false)
+
   return (
     <div className="min-h-screen bg-background font-sans text-foreground dark:bg-black">
-      <TopNav showSecondRow={true} />
+      <TopNav showSecondRow={true} open={menuOpen} onOpenChange={setMenuOpen} />
+      <Sidebar open={menuOpen} onOpenChange={setMenuOpen} />
 
       <main className="mx-auto max-w-3xl px-4 pt-24 pb-28">
         <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
