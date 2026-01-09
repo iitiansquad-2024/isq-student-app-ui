@@ -4,6 +4,7 @@ import { useMemo, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search, Sliders, X } from "lucide-react"
+import Streak from "@/components/ui/streak"
 
 type Question = {
   id: string
@@ -75,9 +76,13 @@ export default function PracticePage() {
 
   return (
     <section className="py-8">
-      <header className="mb-4">
-        <h1 className="text-2xl font-semibold">Practice</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Pick a filter or search to find questions</p>
+      <header className="mb-4 flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold">Practice</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Pick a filter or search to find questions</p>
+        </div>
+
+        <Streak goal={30} size={48} />
       </header>
 
       {/* 1. Preset filters (multi-select, expandable) */}
