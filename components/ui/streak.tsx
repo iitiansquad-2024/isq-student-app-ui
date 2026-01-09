@@ -6,6 +6,7 @@ import { motion } from "framer-motion"
 type StreakProps = {
   goal?: number
   size?: number
+  currentDays?: number
   variant?: "circle" | "bar"
 }
 
@@ -19,8 +20,8 @@ function formatDateLocal(iso?: string) {
   }
 }
 
-export default function Streak({ goal = 30, size = 56, variant = "circle" }: StreakProps) {
-  const [days, setDays] = useState<number>(0)
+export default function Streak({ goal = 30, size = 56, variant = "circle", currentDays = 1 }: StreakProps) {
+  const [days, setDays] = useState<number>(currentDays)
   const [firstIso, setFirstIso] = useState<string | null>(null)
 
   useEffect(() => {
@@ -32,14 +33,13 @@ export default function Streak({ goal = 30, size = 56, variant = "circle" }: Str
         const iso = today.toISOString()
         localStorage.setItem(key, iso)
         setFirstIso(iso)
-        setDays(1)
       } else {
         setFirstIso(stored)
         const first = new Date(stored)
         const utcToday = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())
         const utcFirst = Date.UTC(first.getFullYear(), first.getMonth(), first.getDate())
         const diffDays = Math.floor((utcToday - utcFirst) / (24 * 60 * 60 * 1000)) + 1
-        setDays(diffDays > 0 ? diffDays : 1)
+        // setDays(diffDays > 0 ? diffDays : 1)
       }
     } catch (e) {
       setDays(1)
@@ -77,24 +77,73 @@ export default function Streak({ goal = 30, size = 56, variant = "circle" }: Str
   const circumference = 2 * Math.PI * radius
   const dash = circumference * pct
 
+  // battery sizing relative to the overall circle size
+  const batteryWidth = Math.max(12, Math.round(size * 0.36))
+  const batteryHeight = Math.max(8, Math.round(size * 0.22))
+
   return (
     <div className="flex items-center gap-3" title={title} aria-label={`Streak ${Math.round(pct * 100)}%`}>
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="block">
-        <g transform={`translate(${size / 2},${size / 2})`}>
-          <circle r={radius} fill="none" stroke="var(--color-stone-100)" strokeWidth="6" opacity="1" />
-          <motion.circle
-            r={radius}
-            fill="none"
-            stroke="var(--secondary)"
-            strokeWidth="6"
-            strokeLinecap="round"
-            strokeDasharray={`${circumference}`}
-            initial={{ strokeDashoffset: circumference }}
-            animate={{ strokeDashoffset: circumference - dash }}
-            transition={{ type: "spring", stiffness: 120, damping: 20 }}
-          />
-        </g>
-      </svg>
+      <div style={{ width: size, height: size }} className="relative">
+        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="block">
+          <g transform={`translate(${size / 2},${size / 2})`}>
+            <circle r={radius} fill="none" stroke="var(--color-stone-100)" strokeWidth="6" opacity="1" />
+            <motion.circle
+              r={radius}
+              fill="none"
+              stroke="var(--secondary)"
+              strokeWidth="6"
+              strokeLinecap="round"
+              strokeDasharray={`${circumference}`}
+              initial={{ strokeDashoffset: circumference }}
+              animate={{ strokeDashoffset: circumference - dash }}
+              transition={{ type: "spring", stiffness: 120, damping: 20 }}
+            />
+          </g>
+        </svg>
+
+        {/* centered icon overlay: thunderbolt while progressing, trophy when goal reached */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div
+            className="relative flex items-center justify-center"
+            style={{ width: batteryWidth, height: batteryHeight }}
+            aria-hidden
+          >
+            {pct >= 1 ? (
+              <motion.svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width={Math.round(batteryHeight * 1.2)}
+                height={Math.round(batteryHeight * 1.2)}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: [1.06, 1], opacity: 1 }}
+                transition={{ type: "spring", stiffness: 220, damping: 16 }}
+                className="block"
+              >
+                <path
+                  fill="var(--primary)"
+                  d="M12 2c-1.1 0-2 .9-2 2v1H8c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h1v5c0 1.1.9 2 2 2s2-.9 2-2v-5h1c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2V4c0-1.1-.9-2-2-2z"
+                />
+              </motion.svg>
+            ) : (
+              <motion.svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width={Math.round(batteryHeight * 1.2)}
+                height={Math.round(batteryHeight * 1.2)}
+                initial={{ y: 0, scale: 0.95, opacity: 0.9 }}
+                animate={{ y: [0, -4, 0], scale: [0.98, 1.02, 1], opacity: 1 }}
+                transition={{ repeat: Infinity, repeatDelay: 1.6, duration: 1.2, ease: "easeInOut" }}
+                className="block"
+              >
+                <path
+                  fill="var(--primary)"
+                  d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"
+                />
+              </motion.svg>
+            )}
+          </div>
+        </div>
+      </div>
 
       <div className="flex flex-col items-start leading-tight">
         <div className="text-sm font-semibold">{days}d</div>
