@@ -34,16 +34,16 @@ export function Sidebar({ open, onOpenChange }: { open: boolean; onOpenChange: (
             </div>
 
             <nav className="flex h-full flex-col gap-2 p-4">
-              <a className="block rounded-md px-3 py-2" href="#">
+              <a className="block rounded-md px-3 py-2 text-primary hover:bg-primary/10" href="#">
                 Practice
               </a>
-              <a className="block rounded-md px-3 py-2" href="#">
+              <a className="block rounded-md px-3 py-2 hover:bg-primary/10" href="#">
                 Analytics
               </a>
-              <a className="block rounded-md px-3 py-2" href="#">
+              <a className="block rounded-md px-3 py-2 hover:bg-primary/10" href="#">
                 Revision
               </a>
-              <a className="block rounded-md px-3 py-2" href="#">
+              <a className="block rounded-md px-3 py-2 hover:bg-primary/10" href="#">
                 Profile
               </a>
             </nav>

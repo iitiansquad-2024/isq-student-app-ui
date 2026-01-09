@@ -12,8 +12,8 @@ type TopNavProps = {
 
 export function TopNav({ showSecondRow = false, open, onOpenChange }: TopNavProps) {
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
-      <div className="flex w-full items-center justify-between gap-4 bg-background/80 px-4 py-3 backdrop-blur-sm ring-0">
+    <header className="fixed inset-x-0 top-0 z-50 bg-primary">
+      <div className="flex w-full items-center justify-between gap-4  px-4 py-3 backdrop-blur-sm ring-0">
         <div className="flex items-center gap-3">
           <div className="rounded-md px-2 py-1 text-lg font-semibold">iitian</div>
         </div>
@@ -22,9 +22,9 @@ export function TopNav({ showSecondRow = false, open, onOpenChange }: TopNavProp
           <button
             aria-label={open ? "Close menu" : "Open menu"}
             onClick={() => onOpenChange(!open)}
-            className="rounded-md p-2"
+            className="rounded-md p-2 text-black"
           >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            { <Menu className="h-5 w-5" />}
           </button>
         </div>
       </div>

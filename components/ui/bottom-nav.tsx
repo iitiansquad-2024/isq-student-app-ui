@@ -43,8 +43,8 @@ export function BottomNav({ className }: { className?: string }) {
               ) : null}
 
               <div className="relative z-20 flex flex-col items-center justify-center gap-1">
-                <Icon className={cn("h-5 w-5", activeItem ? "text-primary" : "text-muted-foreground")} />
-                <span className={cn("text-[10px]", activeItem ? "text-primary" : "text-muted-foreground")}>
+                <Icon className={cn("h-5 w-5", activeItem ? "text-primary-dark" : "text-muted-foreground")} />
+                <span className={cn("text-[10px]", activeItem ? "text-primary-dark" : "text-muted-foreground")}>
                   {it.label}
                 </span>
               </div>

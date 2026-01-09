@@ -11,7 +11,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background font-sans text-foreground dark:bg-black">
-      <TopNav showSecondRow={true} open={menuOpen} onOpenChange={setMenuOpen} />
+      <TopNav showSecondRow={false} open={menuOpen} onOpenChange={setMenuOpen} />
       <Sidebar open={menuOpen} onOpenChange={setMenuOpen} />
 
       <main className="mx-auto max-w-3xl px-4 pt-24 pb-28">
