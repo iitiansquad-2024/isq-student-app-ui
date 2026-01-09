@@ -19,11 +19,11 @@ export function BottomNav({ className }: { className?: string }) {
     <nav
       aria-label="Bottom navigation"
       className={cn(
-        "fixed bottom-4 left-4 right-4 z-40 mx-auto w-auto max-w-3xl rounded-2xl bg-background/80 px-3 py-2 shadow-lg backdrop-blur-sm ring-1 ring-border/60 sm:hidden",
+        "fixed bottom-0 left-0 right-0 z-40 w-full bg-background/95 border-t border-border/60 sm:hidden",
         className
       )}
     >
-      <div className="relative flex items-center justify-between gap-1">
+      <div className="mx-auto flex max-w-3xl items-center justify-between gap-1 px-3 py-2">
         {items.map((it) => {
           const activeItem = active === it.key
           const Icon = it.Icon
@@ -31,7 +31,7 @@ export function BottomNav({ className }: { className?: string }) {
             <button
               key={it.key}
               onClick={() => setActive(it.key)}
-              className="relative z-10 flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-muted-foreground disabled:opacity-60"
+              className="relative z-10 flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-md px-3 py-2 text-xs font-medium text-muted-foreground disabled:opacity-60"
               aria-current={activeItem ? "page" : undefined}
             >
               {activeItem ? (
