@@ -3,6 +3,7 @@
 import { useMemo } from "react"
 import Streak from "@/components/ui/streak"
 import YearCalendar from "@/components/ui/analytics/YearCalendar"
+import StreakSquad from "./StreakSquad"
 
 type Props = {
   current?: number
@@ -50,8 +51,8 @@ export default function StreakAnalytics({ current = 5, goal = 30, year, visits }
   }, [visits, current])
 
   return (
-    <div className="rounded-lg border bg-card p-4">
-      <div className="mb-2 flex items-center justify-between">
+    <div className="rounded-lg border bg-card p-4 gap-6 flex flex-col">
+      <div className="flex items-center justify-between">
         <h3 className="text-sm font-medium">Streak</h3>
         <div className="text-xs text-muted-foreground">Goal {goal}d</div>
       </div>
@@ -66,10 +67,13 @@ export default function StreakAnalytics({ current = 5, goal = 30, year, visits }
       </div>
 
       {/* Year-wise month grids (wrapped) */}
-      <div className="mt-4">
-        <div className="text-xs text-muted-foreground mb-2">Visit history — {displayYear}</div>
+      <div>
+        <div className="text-xs text-muted-foreground mb-3">Visit history — {displayYear}</div>
         <YearCalendar year={displayYear} visitsSet={visitsSet} cellClass="h-2 w-2 rounded-[3px]" monthWidthClass="w-19" />
       </div>
+          <div className="mt-4">
+            <StreakSquad />
+          </div>
     </div>
   )
 }
