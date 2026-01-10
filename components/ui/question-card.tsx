@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Bookmark, Clock } from "lucide-react";
+import { ArrowRight, Bookmark, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import Checkbox from "@/components/ui/checkbox";
 
@@ -41,7 +41,7 @@ export default function QuestionCard({
   return (
     <article className="rounded-md border border-border p-4">
       {/* Row 1: checkbox, heading, actions (wrap on overflow) */}
-      <div className="flex items-center justify-between gap-3 flex-wrap">
+      <div className="flex items-center justify-between gap-3 ">
         <div className="flex items-center gap-3 min-w-0">
           <Checkbox
             checked={selected}
@@ -53,7 +53,7 @@ export default function QuestionCard({
           <h3 className="text-base font-medium truncate">{question.title}</h3>
         </div>
 
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex items-center gap-2">
           <button
             aria-pressed={bookmarked}
             onClick={() => onToggleBookmark(question.id)}
@@ -73,8 +73,6 @@ export default function QuestionCard({
             <Clock className="h-4 w-4" />
           </button>
 
-          <Button variant="ghost">Preview</Button>
-          <Button>Start</Button>
         </div>
       </div>
 

@@ -223,6 +223,10 @@ export default function PracticePage() {
                 onToggleSelect={toggleSelect}
                 onToggleBookmark={toggleBookmark}
                 onTogglePrev={togglePrev}
+                onStart={(id: string) => {
+                  // Placeholder start handler — replace with navigation or open modal
+                  console.log("Start question:", id)
+                }}
               />
             )
           })
