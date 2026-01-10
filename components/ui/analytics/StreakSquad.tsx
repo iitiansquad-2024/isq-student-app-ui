@@ -64,7 +64,7 @@ export default function StreakSquad({ members }: { members?: Member[] }) {
                 <div className="flex items-center justify-between">
                   <p className="truncate font-medium text-sm leading-tight">{m.name}</p>
                 </div>
-                <div className="mt-1 flex items-center justify-between">
+                <div className="flex items-center justify-between">
                   <div className="text-xs text-muted-foreground">Member since 2 months</div>
 
                   <div className="flex items-center gap-2">
