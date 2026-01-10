@@ -125,3 +125,27 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+@keyframes shimmer {
+  0% { left: -120%; }
+  100% { left: 120%; }
+}
+
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: skewX(-20deg);
+  filter: blur(6px);
+  animation: shimmer 1.6s linear infinite;
+  pointer-events: none;
+}

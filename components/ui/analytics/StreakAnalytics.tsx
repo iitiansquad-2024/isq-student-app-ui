@@ -71,7 +71,6 @@ export default function StreakAnalytics({
         </div>
       </div>
 
-      {/* Year-wise month grids (wrapped) */}
       <div>
         <div className="text-xs text-muted-foreground mb-3">
           Visit history — {displayYear}
