@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search, Sliders, X } from "lucide-react"
 import Streak from "@/components/ui/streak"
+import QuestionCard from "@/components/ui/question-card"
 
 type Question = {
   id: string
@@ -59,6 +60,23 @@ export default function PracticePage() {
 
     return list
   }, [selectedFilters, query])
+
+  // selection, bookmark and previous-attempt UI state per question
+  const [selectedIds, setSelectedIds] = useState<Record<string, boolean>>({})
+  const [bookmarked, setBookmarked] = useState<Record<string, boolean>>({})
+  const [prevOpen, setPrevOpen] = useState<Record<string, boolean>>({})
+
+  function toggleSelect(id: string) {
+    setSelectedIds((s) => ({ ...s, [id]: !s[id] }))
+  }
+
+  function toggleBookmark(id: string) {
+    setBookmarked((s) => ({ ...s, [id]: !s[id] }))
+  }
+
+  function togglePrev(id: string) {
+    setPrevOpen((s) => ({ ...s, [id]: !s[id] }))
+  }
 
   // counts for each preset filter considering current query
   const filterCounts = useMemo(() => {
@@ -185,26 +203,29 @@ export default function PracticePage() {
         {filtered.length === 0 ? (
           <div className="rounded-md border border-border p-4 text-muted-foreground">No questions match your search.</div>
         ) : (
-          filtered.map((q) => (
-            <article key={q.id} className="flex items-start justify-between gap-4 rounded-md border border-border p-4">
-              <div>
-                <h3 className="text-base font-medium">{q.title}</h3>
-                <div className="mt-1 flex gap-2 text-xs text-muted-foreground">
-                  <span className="rounded-md bg-muted/10 px-2 py-0.5">{q.difficulty}</span>
-                  {q.tags.map((t) => (
-                    <span key={t} className="rounded-md bg-muted/10 px-2 py-0.5">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
+          filtered.map((q) => {
+            const attempts = q.id === "q1" ? 12 : q.id === "q2" ? 34 : q.id === "q3" ? 7 : 3
+            const accuracy = q.id === "q1" ? 0.82 : q.id === "q2" ? 0.63 : q.id === "q3" ? 0.49 : 0.92
+            const year = q.id === "q1" ? 2024 : q.id === "q2" ? 2025 : q.id === "q3" ? 2023 : 2026
+            const selected = !!selectedIds[q.id]
+            const isBookmarked = !!bookmarked[q.id]
 
-              <div className="flex items-center gap-2">
-                <Button variant="ghost">Preview</Button>
-                <Button>Start</Button>
-              </div>
-            </article>
-          ))
+            return (
+              <QuestionCard
+                key={q.id}
+                question={q}
+                attempts={attempts}
+                accuracy={accuracy}
+                year={year}
+                selected={selected}
+                bookmarked={isBookmarked}
+                prevOpen={!!prevOpen[q.id]}
+                onToggleSelect={toggleSelect}
+                onToggleBookmark={toggleBookmark}
+                onTogglePrev={togglePrev}
+              />
+            )
+          })
         )}
       </div>
     </section>
