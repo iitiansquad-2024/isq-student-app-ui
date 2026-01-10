@@ -2,6 +2,7 @@
 
 import { useMemo } from "react"
 import Streak from "@/components/ui/streak"
+import YearCalendar from "@/components/ui/analytics/YearCalendar"
 
 type Props = {
   current?: number
@@ -64,47 +65,10 @@ export default function StreakAnalytics({ current = 5, goal = 30, year, visits }
         </div>
       </div>
 
-      {/* Year-wise month grids */}
+      {/* Year-wise month grids (wrapped) */}
       <div className="mt-4">
         <div className="text-xs text-muted-foreground mb-2">Visit history — {displayYear}</div>
-        <div className="-mx-1 flex gap-3 overflow-x-auto py-1">
-          {Array.from({ length: 12 }).map((_, m) => {
-            const dim = daysInMonth(displayYear, m)
-            const firstWeekday = new Date(displayYear, m, 1).getDay() // 0..6 (Sun..Sat)
-            const totalCells = firstWeekday + dim
-
-            return (
-              <div key={m} className="mx-1 w-28 flex-shrink-0">
-                <div className="mb-1 text-center text-[12px] font-medium">{MONTHS[m]}</div>
-
-                <div
-                  className="grid grid-cols-7 gap-1"
-                  aria-label={`Month ${MONTHS[m]} ${displayYear}`}
-                >
-                  {Array.from({ length: totalCells }).map((__, idx) => {
-                    const day = idx - firstWeekday + 1
-                    if (day < 1) {
-                      return <div key={idx} className="h-3 w-3 rounded-sm bg-transparent" />
-                    }
-
-                    const dt = new Date(displayYear, m, day).toDateString()
-                    const visited = visitsSet.has(dt)
-
-                    return (
-                      <div
-                        key={idx}
-                        className={`h-3 w-3 rounded-sm ${visited ? "bg-emerald-500" : "bg-border"}`}
-                        title={`${MONTHS[m]} ${day}, ${displayYear} — ${visited ? "visited" : "no visit"}`}
-                        role="img"
-                        aria-label={`${visited ? "visited" : "not visited"}`} 
-                      />
-                    )
-                  })}
-                </div>
-              </div>
-            )
-          })}
-        </div>
+        <YearCalendar year={displayYear} visitsSet={visitsSet} cellClass="h-2 w-2 rounded-[3px]" monthWidthClass="w-19" />
       </div>
     </div>
   )
