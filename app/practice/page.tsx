@@ -16,7 +16,7 @@ type Question = {
 
 const SAMPLE_QUESTIONS: Question[] = [
   { id: "q1", title: "Find the derivative of x^2", difficulty: "Easy", tags: ["calculus"] },
-  { id: "q2", title: "Solve integrals with substitution", difficulty: "Medium", tags: ["calculus", "integration"] },
+  { id: "q2", title: "A convoy moving south at the speed of 60 km/h collides with a missile moving north-west at 80 km/h. Calculate the time of collision.", difficulty: "Medium", tags: ["calculus", "integration"] },
   { id: "q3", title: "Prove Fermat's little theorem", difficulty: "Hard", tags: ["number-theory"] },
   { id: "q4", title: "Multiple choice: identify the verb", difficulty: "Easy", tags: ["grammar", "mcq"] },
 ]
@@ -220,6 +220,16 @@ export default function PracticePage() {
                 selected={selected}
                 bookmarked={isBookmarked}
                 prevOpen={!!prevOpen[q.id]}
+                // mock previous attempt data for now
+                prevAttempt={
+                  q.id === "q1"
+                    ? { success: true, time: Date.now() - 1000 * 60 * 60 * 24, accuracy }
+                    : q.id === "q2"
+                    ? { success: false, time: Date.now() - 1000 * 60 * 60 * 24 * 3, accuracy }
+                    : q.id === "q3"
+                    ? { success: false, time: Date.now() - 1000 * 60 * 60 * 24 * 7, accuracy }
+                    : undefined
+                }
                 onToggleSelect={toggleSelect}
                 onToggleBookmark={toggleBookmark}
                 onTogglePrev={togglePrev}
