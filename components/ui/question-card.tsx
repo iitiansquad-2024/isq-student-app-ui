@@ -81,7 +81,7 @@ export default function QuestionCard({
 
       {/* Row 2: data badges (wrap) */}
       <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-        <Badge>{question.difficulty}</Badge>
+        <Badge  className="font-semibold bg-ui-yellow text-white">{question.difficulty}</Badge>
         {question.tags.map((t) => (
           <Badge key={t}>{t}</Badge>
         ))}
@@ -120,7 +120,7 @@ export default function QuestionCard({
           })()}
         </div>
 
-        <Badge variant="primary-dark" className="font-semibold">{year}</Badge>
+        <Badge className="underline">{year}</Badge>
       </div>
 
       {prevOpen ? (
