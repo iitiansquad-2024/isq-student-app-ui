@@ -1,6 +1,7 @@
 import StreakAnalytics from "@/components/ui/analytics/StreakAnalytics"
 import CoverageAnalytics from "@/components/ui/analytics/CoverageAnalytics"
 import RevisionDebtAnalytics from "@/components/ui/analytics/RevisionDebtAnalytics"
+import StreakSquad from "@/components/ui/analytics/StreakSquad"
 
 export default function AnalyticsPage() {
   return (
@@ -10,6 +11,7 @@ export default function AnalyticsPage() {
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <StreakAnalytics current={6} goal={30} />
+        <StreakSquad />
         <CoverageAnalytics percent={72} />
         <RevisionDebtAnalytics overdue={12} />
       </div>
