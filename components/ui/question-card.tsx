@@ -3,6 +3,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Bookmark, Clock } from "lucide-react";
+import Badge from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import Checkbox from "@/components/ui/checkbox";
 
@@ -39,14 +40,16 @@ export default function QuestionCard({
   onTogglePrev,
 }: Props) {
   return (
-    <article className="rounded-md border border-border p-4">
+    <article className="rounded-md border border-border p-4" onClick={() => {
+        // onTogglePrev(question.id);
+    }}>
       {/* Row 1: checkbox, heading, actions (wrap on overflow) */}
       <div className="flex items-center justify-between gap-3 ">
         <div className="flex items-center gap-3 min-w-0">
           <Checkbox
             checked={selected}
             onChange={() => onToggleSelect(question.id)}
-            className="mt-1"
+            className="shrink-0"
             aria-label={`Select ${question.title}`}
           />
 
@@ -78,12 +81,12 @@ export default function QuestionCard({
 
       {/* Row 2: data badges (wrap) */}
       <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-        <span className="rounded-md bg-muted/10 px-2 py-0.5">{question.difficulty}</span>
+        <Badge>{question.difficulty}</Badge>
         {question.tags.map((t) => (
-          <span key={t} className="rounded-md bg-muted/10 px-2 py-0.5">{t}</span>
+          <Badge key={t}>{t}</Badge>
         ))}
 
-        <span className="rounded-md bg-muted/10 px-2 py-0.5">Attempts: {attempts}</span>
+        <Badge>Attempts: {attempts}</Badge>
 
         {/* small circular accuracy */}
         <div className="inline-flex items-center gap-1">
@@ -117,7 +120,7 @@ export default function QuestionCard({
           })()}
         </div>
 
-        <span className="rounded-md bg-muted/10 px-2 py-0.5">{year}</span>
+        <Badge variant="primary-dark" className="font-semibold">{year}</Badge>
       </div>
 
       {prevOpen ? (
