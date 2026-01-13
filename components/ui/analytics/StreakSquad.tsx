@@ -53,7 +53,7 @@ export default function StreakSquad({ members, mode = "tabs", viewAllHref, title
   const activeTab = mode && mode !== "tabs" ? mode : tab;
 
   return (
-    <div className="rounded-lg border bg-card p-4 flex flex-col gap-6">
+    <div className="rounded-lg border bg-card p-4 flex flex-col gap-3">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-sm font-medium">{title ?? "Streak Squad"}</h3>
@@ -67,7 +67,7 @@ export default function StreakSquad({ members, mode = "tabs", viewAllHref, title
         </div>
       </div>
 
-      <div className="mt-2">
+      <div>
         {mode === "tabs" && (
           <div className="flex items-center gap-2">
             <button

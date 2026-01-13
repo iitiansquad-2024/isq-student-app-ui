@@ -36,7 +36,7 @@ export function TopNav({
   return (
     <header className="fixed inset-x-0 top-0 z-50 bg-white">
       <div className="flex w-full items-center justify-between gap-4  px-4 py-2 backdrop-blur-sm ring-0 border-b border-b-stone-200">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <Menu className="h-5 w-5" />
           <img src="/isq-logo-white.svg" alt="Logo" className="w-32 h-auto" />
         </div>
@@ -53,6 +53,7 @@ export function TopNav({
               variant="destructive"
             />
           </Button>
+          <Avatar src={""} name={"Guest"} size={36} />
           {/* <Avatar className="h-8 w-8">
             <AvatarFallback className="bg-brand text-gray-900">
               {getInitials("Guest")}
