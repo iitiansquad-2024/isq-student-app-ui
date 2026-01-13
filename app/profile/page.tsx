@@ -57,7 +57,7 @@ function ProfileCard({ viewed }: { viewed?: any }) {
 
   return (
     <div>
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Avatar src={profile.avatarUrl ?? null} name={profile.name} size={80} />
           <div>
@@ -86,7 +86,7 @@ function ProfileCard({ viewed }: { viewed?: any }) {
             />
           ) : (
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
-              <div className="rounded-md border border-border bg-muted/40 p-3 flex items-center gap-2">
+              <div className="rounded-md border border-border  p-3 flex items-center gap-2">
                 <div className="rounded-md bg-primary/10 text-primary p-2">
                   <Target className="h-4 w-4" />
                 </div>
@@ -95,7 +95,7 @@ function ProfileCard({ viewed }: { viewed?: any }) {
                   <p className="text-sm font-semibold leading-tight">{profile.preferredExam}</p>
                 </div>
               </div>
-              <div className="rounded-md border border-border bg-muted/40 p-3 flex items-center gap-2">
+              <div className="rounded-md border border-border  p-3 flex items-center gap-2">
                 <div className="rounded-md bg-emerald-100 text-emerald-700 p-2">
                   <BarChart3 className="h-4 w-4" />
                 </div>
@@ -104,7 +104,7 @@ function ProfileCard({ viewed }: { viewed?: any }) {
                   <p className="text-sm font-semibold leading-tight">{profile.totalQuestions}</p>
                 </div>
               </div>
-              <div className="rounded-md border border-border bg-muted/40 p-3 flex items-center gap-2">
+              <div className="rounded-md border border-border p-3 flex items-center gap-2">
                 <div className="rounded-md bg-indigo-100 text-indigo-700 p-2">
                   <Award className="h-4 w-4" />
                 </div>
@@ -113,7 +113,7 @@ function ProfileCard({ viewed }: { viewed?: any }) {
                   <p className="text-sm font-semibold leading-tight">{profile.xp}</p>
                 </div>
               </div>
-              <div className="rounded-md border border-border bg-muted/40 p-3 flex items-center gap-2">
+              <div className="rounded-md border border-border  p-3 flex items-center gap-2">
                 <div className="rounded-md bg-amber-100 text-amber-700 p-2">
                   <Medal className="h-4 w-4" />
                 </div>
