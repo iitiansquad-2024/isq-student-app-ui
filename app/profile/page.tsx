@@ -76,7 +76,7 @@ function ProfileCard({ viewed }: { viewed?: any }) {
   }
 
   return (
-    <div>
+    <div className="rounded-md border border-border bg-background p-3 sm:p-4">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Avatar
@@ -257,9 +257,8 @@ export default function ProfilePage() {
       </header>
 
       {/* Identity / viewed member */}
-      <div className="rounded-md border border-border bg-background p-3 sm:p-4">
+
         <ProfileCard viewed={viewed} />
-      </div>
 
       {/* Heatmap for viewed user */}
       {viewed && (
