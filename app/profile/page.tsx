@@ -48,58 +48,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* ROW 2 — Primary Control Row (Quota) */}
-      <div className="rounded-xl border border-border bg-muted/5 p-3 sm:p-4">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="w-full sm:w-1/3">
-            <div className="text-xs sm:text-sm font-medium">Daily quota</div>
-            <div className="text-[11px] sm:text-xs text-muted-foreground">{state.used}/{state.limit} used</div>
-          </div>
-
-          <div className="w-full sm:w-1/3 flex justify-center">
-            <Quota limit={20} />
-          </div>
-
-          <div className="w-full sm:w-1/3 flex justify-end items-center gap-2">
-            <div className="text-xs sm:text-sm text-muted-foreground">Remaining: {remaining}</div>
-          </div>
-        </div>
-      </div>
-
-      {/* ROW 3 — Snapshot Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-        <div className="rounded-md border p-2">Usage today<div className="text-xl sm:text-2xl font-semibold">{state.used}</div></div>
-        <div className="rounded-md border p-2">Accuracy<div className="text-xl sm:text-2xl font-semibold">92%</div></div>
-        <div className="rounded-md border p-2">Streak<div className="text-xl sm:text-2xl font-semibold">5d</div></div>
-      </div>
-
-      {/* ROW 4 — Configuration Blocks */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        <details className="rounded-md border p-2">
-          <summary className="cursor-pointer font-medium text-sm">Learning preferences</summary>
-          <div className="mt-2 text-xs text-muted-foreground">Adjust how you receive content and difficulty ramps.</div>
-        </details>
-        <details className="rounded-md border p-2">
-          <summary className="cursor-pointer font-medium text-sm">Subject focus</summary>
-          <div className="mt-2 text-xs text-muted-foreground">Choose subjects to prioritize in your practice.</div>
-        </details>
-      </div>
-
-      {/* ROW 5 — Activity & History */}
-      <details className="rounded-md border p-2">
-        <summary className="cursor-pointer font-medium text-sm">Recent activity</summary>
-        <div className="mt-2 text-xs text-muted-foreground">No recent activity to show.</div>
-      </details>
-
-      {/* ROW 6 — System & Account Actions */}
-      <div className="rounded-md border p-2">
-        <div className="mb-2 font-medium text-sm">Account actions</div>
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-          <button className="rounded-md border px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm">Export data</button>
-          <button className="rounded-md border px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm">Clear progress</button>
-          <button className="rounded-md border px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm text-destructive">Delete account</button>
-        </div>
-      </div>
+      
     </section>
   )
 }

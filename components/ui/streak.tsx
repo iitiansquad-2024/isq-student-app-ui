@@ -182,19 +182,30 @@ export default function Streak({
             aria-hidden
           >
             {centralIcon ? (
-              <motion.div
-                initial={{ y: 0, scale: 0.95, opacity: 0.9 }}
-                animate={{ y: [0, -4, 0], scale: [0.98, 1.02, 1], opacity: 1 }}
-                transition={{
-                  repeat: Infinity,
-                  repeatDelay: 1.6,
-                  duration: 1.2,
-                  ease: "easeInOut",
-                }}
-                className="block"
-              >
-                <div>{centralIcon}</div>
-              </motion.div>
+              pct >= 1 ? (
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: [1.06, 1], opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 220, damping: 16 }}
+                  className="block"
+                >
+                  <div>{centralIcon}</div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  initial={{ y: 0, scale: 0.95, opacity: 0.9 }}
+                  animate={{ y: [0, -4, 0], scale: [0.98, 1.02, 1], opacity: 1 }}
+                  transition={{
+                    repeat: Infinity,
+                    repeatDelay: 1.6,
+                    duration: 1.2,
+                    ease: "easeInOut",
+                  }}
+                  className="block"
+                >
+                  <div>{centralIcon}</div>
+                </motion.div>
+              )
             ) : pct >= 1 ? (
               <motion.svg
                 xmlns="http://www.w3.org/2000/svg"
