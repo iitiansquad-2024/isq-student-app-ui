@@ -12,13 +12,14 @@ type Question = {
   title: string
   difficulty: "Easy" | "Medium" | "Hard"
   tags: string[]
+  paper: string
 }
 
 const SAMPLE_QUESTIONS: Question[] = [
-  { id: "q1", title: "Find the derivative of x^2", difficulty: "Easy", tags: ["calculus"] },
-  { id: "q2", title: "A convoy moving south at the speed of 60 km/h collides with a missile moving north-west at 80 km/h. Calculate the time of collision.", difficulty: "Medium", tags: ["calculus", "integration"] },
-  { id: "q3", title: "Prove Fermat's little theorem", difficulty: "Hard", tags: ["number-theory"] },
-  { id: "q4", title: "Multiple choice: identify the verb", difficulty: "Easy", tags: ["grammar", "mcq"] },
+  { id: "q1", title: "Find the derivative of x^2", difficulty: "Easy", tags: ["calculus"], paper: "JEE Main 2024" },
+  { id: "q2", title: "A convoy moving south at the speed of 60 km/h collides with a missile moving north-west at 80 km/h. Calculate the time of collision.", difficulty: "Medium", tags: ["calculus", "integration"], paper: "JEE Advanced 2023" },
+  { id: "q3", title: "Prove Fermat's little theorem", difficulty: "Hard", tags: ["number-theory"], paper: "JEE Advanced 2023" },
+  { id: "q4", title: "Multiple choice: identify the verb", difficulty: "Easy", tags: ["grammar", "mcq"], paper: "BITSAT 2024" },
 ]
 
 export default function PracticePage() {
@@ -222,7 +223,6 @@ export default function PracticePage() {
                 selected={selected}
                 bookmarked={isBookmarked}
                 prevOpen={!!prevOpen[q.id]}
-                // mock previous attempt data for now
                 prevAttempt={
                   q.id === "q1"
                     ? { success: true, time: Date.now() - 1000 * 60 * 60 * 24, accuracy }
@@ -235,10 +235,6 @@ export default function PracticePage() {
                 onToggleSelect={toggleSelect}
                 onToggleBookmark={toggleBookmark}
                 onTogglePrev={togglePrev}
-                onStart={(id: string) => {
-                  // Placeholder start handler — replace with navigation or open modal
-                  console.log("Start question:", id)
-                }}
               />
             )
           })

@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
-import Avatar from "@/components/ui/avatar";
+import React, { useState } from "react";
 import Link from "next/link";
+import Avatar from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 // import { format } from "date-fns"
 import { cn } from "@/lib/utils";
@@ -19,7 +19,7 @@ type Member = {
   xp?: number
 };
 
-export default function StreakSquad({ members }: { members?: Member[] }) {
+export default function StreakSquad({ members, mode = "tabs", viewAllHref, title, }: { members?: Member[]; mode?: "tabs" | "stream" | "leaderboard"; viewAllHref?: string; title?: string; }) {
   const sample: Member[] = [
     {
       id: "1",
@@ -48,58 +48,101 @@ export default function StreakSquad({ members }: { members?: Member[] }) {
   ];
 
   const list = members && members.length > 0 ? members : sample;
+  const [tab, setTab] = useState<"stream" | "leaderboard">("stream");
+  const sorted = [...list].sort((a, b) => (b.xp ?? 0) - (a.xp ?? 0));
+  const activeTab = mode && mode !== "tabs" ? mode : tab;
 
   return (
     <div className="rounded-lg border bg-card p-4 flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-medium">Streak Squad</h3>
+          <h3 className="text-sm font-medium">{title ?? "Streak Squad"}</h3>
           <div className="text-xs font-medium text-muted-foreground">Streak Level 1 ( 7 days )</div>
         </div>
 
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" className="text-xs " asChild>
-            <Link href="/squad" className="text-sm">View all</Link>
+            <Link href={viewAllHref ?? "/squad"} className="text-sm">View all</Link>
           </Button>
         </div>
       </div>
 
-      <div className="flex flex-col gap-3">
-        {list.map((m) => {
-          const goal = m.goal ?? 30;
-          const pct = Math.min(100, Math.round((m.streakDays / goal) * 100));
+      <div className="mt-2">
+        {mode === "tabs" && (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setTab("stream")}
+              className={"px-2 py-1 rounded-md text-sm " + (tab === "stream" ? "bg-primary text-white" : "text-muted-foreground")}
+            >
+              Stream
+            </button>
+            <button
+              onClick={() => setTab("leaderboard")}
+              className={"px-2 py-1 rounded-md text-sm " + (tab === "leaderboard" ? "bg-primary text-white" : "text-muted-foreground")}
+            >
+              Leaderboard
+            </button>
+          </div>
+        )}
 
-          return (
-            <div key={m.id} className="flex items-center gap-3">
-              <Avatar src={m.avatarUrl ?? null} name={m.name} size={36} />
+        <div className="mt-3 flex flex-col gap-3">
+          {activeTab === "stream" ? (
+            list.map((m) => {
+              const goal = m.goal ?? 30;
+              const pct = Math.min(100, Math.round((m.streakDays / goal) * 100));
 
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <p className="truncate font-medium text-sm leading-tight">
-                    {m.name}
-                  </p>
+              return (
+                <div key={m.id} className="flex items-center gap-3">
+                  <Avatar src={m.avatarUrl ?? null} name={m.name} size={36} />
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <p className="truncate font-medium text-sm leading-tight">{m.name}</p>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="text-xs text-muted-foreground">Member since 2 months</div>
+
+                      <div className="flex items-center gap-4">
+                        <div className="w-16">
+                          <Progress value={pct} className="rounded-full h-2" />
+                        </div>
+                        <div className="text-xs text-muted-foreground w-10">{pct}%</div>
+
+                        <div className="text-sm font-semibold flex items-center gap-2">
+                          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs">XP</span>
+                          {(m as any).xp ?? 0}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="text-xs text-muted-foreground">
-                    Member since 2 months
+              );
+            })
+          ) : (
+            sorted.slice(0, 5).map((m, idx) => (
+              <div key={m.id} className="flex items-center justify-between">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="text-sm font-medium w-6">#{idx + 1}</div>
+                  <Avatar src={m.avatarUrl ?? null} name={m.name} size={36} />
+                  <div className="min-w-0">
+                    <div className="truncate font-medium">{m.name}</div>
+                    <div className="text-xs text-muted-foreground">Max streak {m.streakDays}d</div>
                   </div>
+                </div>
 
-                  <div className="flex items-center gap-4">
-                    <div className="w-16">
-                      <Progress value={pct} className="rounded-full h-2" />
-                    </div>
-                    <div className="text-xs text-muted-foreground w-10">{pct}%</div>
-
-                    <div className="text-sm font-semibold flex items-center gap-2">
-                      <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs">XP</span>
-                      {(m as any).xp ?? 0}
-                    </div>
+                <div className="flex items-center gap-4">
+                  <div className="text-sm font-semibold flex items-center gap-2">
+                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs">XP</span>
+                    {(m as any).xp ?? 0}
                   </div>
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link href={`/profile?member=${m.id}`}>View</Link>
+                  </Button>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            ))
+          )}
+        </div>
       </div>
     </div>
   );

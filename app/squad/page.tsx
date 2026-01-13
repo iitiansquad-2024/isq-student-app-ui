@@ -1,11 +1,14 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import Link from "next/link";
 import Avatar from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import PageHeader from "@/components/ui/page-header";
 import { Progress } from "@/components/ui/progress"
+import sampleMembers from "@/lib/members";
 
 type Member = {
   id: string;
@@ -17,62 +20,7 @@ type Member = {
   xp: number; // coins
 };
 
-const sampleMembers: Member[] = [
-  {
-    id: "1",
-    name: "Aisha Khan",
-    joined: "2024-06-12",
-    streakDays: 14,
-    goal: 30,
-    xp: 200,
-    avatarUrl: null,
-  },
-  {
-    id: "2",
-    name: "Ravi Patel",
-    joined: "2025-01-03",
-    streakDays: 9,
-    goal: 30,
-    xp: 200,
-    avatarUrl: null,
-  },
-  {
-    id: "3",
-    name: "Maya Rao",
-    joined: "2023-11-20",
-    streakDays: 21,
-    goal: 30,
-    xp: 200,
-    avatarUrl: null,
-  },
-  {
-    id: "4",
-    name: "Arjun Mehta",
-    joined: "2024-02-01",
-    streakDays: 3,
-    goal: 30,
-    xp: 200,
-    avatarUrl: null,
-  },
-  {
-    id: "5",
-    name: "Neha Singh",
-    joined: "2024-09-10",
-    streakDays: 27,
-    goal: 30,
-    xp: 200,
-    avatarUrl: null,
-  },
-  {
-    id: "6",
-    name: "Ishan Verma",
-    joined: "2023-05-05",
-    streakDays: 18,
-    goal: 30,
-    xp: 200,
-    avatarUrl: null,
-  },
-];
+// moved sample data to lib/members
 
 function ProgressRing({ pct }: { pct: number }) {
   const size = 36;
@@ -109,15 +57,37 @@ function ProgressRing({ pct }: { pct: number }) {
   );
 }
 
+const ITEMS_PER_PAGE = 10;
+
 export default function SquadPage() {
   const members = sampleMembers;
 
-  const sortedByXp = [...members].sort((a, b) => b.xp - a.xp);
+  // keep member id '6' only in the squad stream; exclude from leaderboard
+  const squadMembers = members; // All members for squad streak
+  const sortedByXp = [...members].filter((m) => m.id !== "6").sort((a, b) => b.xp - a.xp);
+  const search = useSearchParams();
+  const initialTab = (search?.get("tab") === "leaderboard") ? "leaderboard" : "stream";
+  const [tab, setTab] = useState<"stream" | "leaderboard">(initialTab as "stream" | "leaderboard");
+  const [streamPage, setStreamPage] = useState(1);
+  const [leaderboardPage, setLeaderboardPage] = useState(1);
+
+  const streamTotalPages = Math.ceil(squadMembers.length / ITEMS_PER_PAGE);
+  const leaderboardTotalPages = Math.ceil(sortedByXp.length / ITEMS_PER_PAGE);
+
+  const paginatedSquadMembers = squadMembers.slice(
+    (streamPage - 1) * ITEMS_PER_PAGE,
+    streamPage * ITEMS_PER_PAGE
+  );
+
+  const paginatedLeaderboard = sortedByXp.slice(
+    (leaderboardPage - 1) * ITEMS_PER_PAGE,
+    leaderboardPage * ITEMS_PER_PAGE
+  );
 
   return (
     <section className="py-8 flex flex-col gap-6">
       <PageHeader
-        title="Streak Squad"
+        title="Leaderboard"
         subtitle={<p>Manage your squad and view global leaderboard</p>}
         actions={
           <div>
@@ -127,95 +97,123 @@ export default function SquadPage() {
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Squad list */}
-        <div className="lg:col-span-2 space-y-4">
-          <div className="rounded-lg border bg-card p-4">
-            <h2 className="text-sm font-medium">Members ({members.length})</h2>
-
-            <div className="mt-4 divide-y">
-              {members.map((m) => {
-                const goal = m.goal ?? 30;
-                const pct = Math.min(
-                  100,
-                  Math.round((m.streakDays / goal) * 100)
-                );
-
-                return (
-                  <div
-                    key={m.id}
-                    className="flex items-center justify-between py-3"
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <Avatar
-                        src={m.avatarUrl ?? null}
-                        name={m.name}
-                        size={36}
-                      />
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2">
-                            <p className="truncate text-sm font-medium">{m.name}</p>
-                          </div>
-                          <div className="text-xs text-muted-foreground">Member since 2 months</div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-4">
-                        <div className="w-16">
-                          <Progress value={pct} className="rounded-full h-2" />
-                        </div>
-                        <div className="text-xs text-muted-foreground w-10">{pct}%</div>
-
-                        <div className="text-sm font-semibold flex items-center gap-2">
-                          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs">XP</span>
-                          {m.xp}
-                        </div>
-                      </div>
-
-                    
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Global leaderboard under squad list */}
+        {/* Tabs: Stream and Leaderboard in one card */}
+        <div className="lg:col-span-2">
           <div className="rounded-lg border bg-card p-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-medium">Global Leaderboard</h3>
-              <div className="text-xs text-muted-foreground">Ranked by XP</div>
+              <div className="flex items-center gap-4">
+                <h2 className="text-sm font-medium">
+                  {tab === "stream" ? `Squad Streak (${squadMembers.length})` : `Global Leaderboard (${sortedByXp.length})`}
+                </h2>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setTab("stream")}
+                    className={"px-3 py-1 rounded-md text-sm " + (tab === "stream" ? "bg-primary text-white" : "text-muted-foreground")}
+                  >
+                    Stream
+                  </button>
+                  <button
+                    onClick={() => setTab("leaderboard")}
+                    className={"px-3 py-1 rounded-md text-sm " + (tab === "leaderboard" ? "bg-primary text-white" : "text-muted-foreground")}
+                  >
+                    Global Leaderboard
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <ol className="mt-4 space-y-3">
-              {sortedByXp.map((m, idx) => (
-                <li key={m.id} className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="text-sm font-medium w-6">#{idx + 1}</div>
-                    <Avatar src={m.avatarUrl ?? null} name={m.name} size={36} />
-                    <div className="min-w-0">
-                      <div className="truncate font-medium">{m.name}</div>
-                      <div className="text-xs text-muted-foreground">
-                        Streak {m.streakDays}d •{" "}
-                        {Math.min(
-                          100,
-                          Math.round((m.streakDays / (m.goal ?? 30)) * 100)
-                        )}
-                        %
-                      </div>
-                    </div>
-                  </div>
+            <div className="mt-4">
+              {tab === "stream" ? (
+                <div className="space-y-3">
+                  {paginatedSquadMembers.map((m) => {
+                    const goal = m.goal ?? 30;
+                    const pct = Math.min(100, Math.round((m.streakDays / goal) * 100));
 
-                  <div className="flex items-center gap-4">
-                    <div className="text-sm font-semibold flex items-center gap-2">
-                      <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs">XP</span>
-                      {m.xp}
-                    </div>
-                    <Button variant="ghost" size="sm">
-                      View
-                    </Button>
-                  </div>
-                </li>
-              ))}
-            </ol>
+                    return (
+                      <div key={m.id} className="flex items-center justify-between py-3 gap-4">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <Avatar src={m.avatarUrl ?? null} name={m.name} size={40} />
+                          <div className="min-w-0">
+                            <div className="font-medium truncate">{m.name}</div>
+                            <div className="text-xs text-muted-foreground">Member since 2 months</div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-6">
+                          <div className="flex items-center gap-2">
+                            <div className="w-16">
+                              <Progress value={pct} className="rounded-full h-2" />
+                            </div>
+                            <div className="text-sm">{pct}%</div>
+                          </div>
+
+                          <div className="text-sm font-semibold flex items-center gap-2">
+                            <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs">XP</span>
+                            {m.xp}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {paginatedLeaderboard.map((m, idx) => {
+                    const globalRank = (leaderboardPage - 1) * ITEMS_PER_PAGE + idx + 1;
+                    return (
+                      <div key={m.id} className="flex items-center justify-between py-3 gap-4">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="text-sm font-medium w-6">#{globalRank}</div>
+                          <Avatar src={m.avatarUrl ?? null} name={m.name} size={40} />
+                          <div className="min-w-0">
+                            <div className="font-medium truncate">{m.name}</div>
+                            <div className="text-xs text-muted-foreground">Streak {m.streakDays}d • {Math.min(100, Math.round((m.streakDays / (m.goal ?? 30)) * 100))}%</div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-6">
+                          <div className="text-sm font-semibold flex items-center gap-2">
+                            <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs">XP</span>
+                            {m.xp}
+                          </div>
+                          <Button variant="ghost" size="sm" asChild>
+                            <Link href={`/profile?member=${m.id}`}>View</Link>
+                          </Button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Pagination Controls */}
+            <div className="mt-4 flex items-center justify-between border-t pt-4">
+              <div className="text-sm text-muted-foreground">
+                {tab === "stream" 
+                  ? `Page ${streamPage} of ${streamTotalPages}`
+                  : `Page ${leaderboardPage} of ${leaderboardTotalPages}`
+                }
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => tab === "stream" ? setStreamPage(p => Math.max(1, p - 1)) : setLeaderboardPage(p => Math.max(1, p - 1))}
+                  disabled={tab === "stream" ? streamPage === 1 : leaderboardPage === 1}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => tab === "stream" ? setStreamPage(p => Math.min(streamTotalPages, p + 1)) : setLeaderboardPage(p => Math.min(leaderboardTotalPages, p + 1))}
+                  disabled={tab === "stream" ? streamPage === streamTotalPages : leaderboardPage === leaderboardTotalPages}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -224,9 +222,17 @@ export default function SquadPage() {
           <div className="rounded-lg border bg-card p-4">
             <h4 className="text-sm font-medium">Your squad XP</h4>
             <p className="mt-2 text-sm text-muted-foreground">Total XP across squad</p>
-            <div className="mt-4 flex items-center justify-between">
-              <div className="text-lg font-semibold">200 XP</div>
-              <Button size="sm">Distribute rewards</Button>
+            <div className="mt-4">
+              {/* compute total XP and top member */}
+              <div className="text-sm text-muted-foreground">Total squad XP</div>
+              <div className="mt-2 text-lg font-semibold">
+                {members.reduce((s, m) => s + (m.xp || 0), 0)} XP
+              </div>
+              {sortedByXp.length > 0 && (
+                <div className="mt-3 text-sm text-muted-foreground">
+                  Top: #{1} {sortedByXp[0].name} — <span className="font-semibold">{sortedByXp[0].xp} XP</span>
+                </div>
+              )}
             </div>
           </div>
 

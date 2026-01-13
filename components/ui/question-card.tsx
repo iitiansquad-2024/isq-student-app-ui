@@ -11,6 +11,7 @@ type Question = {
   title: string;
   difficulty: "Easy" | "Medium" | "Hard";
   tags: string[];
+  paper?: string;
 };
 
 type Props = {
@@ -54,11 +55,16 @@ export default function QuestionCard({
       {/* Row 1: checkbox, heading, actions (wrap on overflow) */}
       <div className="flex items-center justify-between gap-3 w-full">
         <div className="flex flex-col gap-3 min-w-0 w-full">
-          <div className="flex gap-3 justify-between">
-            <div className="flex gap-3">
+          <div className="flex gap-2 justify-between flex-wrap">
+            <div className="flex gap-2 flex-wrap">
               <Badge variant="outline" className="w-fit">
-                PHY101
+                {question.id}
               </Badge>
+              {question.paper && (
+                <Badge variant="outline" className="w-fit">
+                  {question.paper}
+                </Badge>
+              )}
               <Badge variant="outline">{question.difficulty}</Badge>
             </div>
 
