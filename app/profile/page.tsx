@@ -92,99 +92,73 @@ function ProfileCard({ viewed }: { viewed?: any }) {
             </div>
           </div>
         </div>
-
-        {!viewed && (
-          <div className="flex items-center gap-2">
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => setEditing(!editing)}
-            >
-              <Edit className="h-4 w-4" />
-            </Button>
-          </div>
-        )}
       </div>
 
       <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="sm:col-span-2">
-          {editing ? (
-            <EditProfileDialog
-              profile={{
-                name: profile.name,
-                email: profile.email,
-                preferredExam: profile.preferredExam,
-              }}
-              onSave={handleSave}
-              onCancel={() => setEditing(false)}
-            />
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.4,
-                ease: "easeOut",
-                staggerChildren: 0.05,
-              }}
-              className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3"
-            >
-              {[
-                {
-                  label: "Preferred Exam",
-                  value: profile.preferredExam,
-                  icon: Target,
-                  iconClass: "bg-primary/10 text-primary",
-                },
-                {
-                  label: "Questions",
-                  value: profile.totalQuestions,
-                  icon: BarChart3,
-                  iconClass: "bg-emerald-100 text-emerald-700",
-                },
-                {
-                  label: "XP",
-                  value: profile.xp,
-                  icon: Award,
-                  iconClass: "bg-indigo-100 text-indigo-700",
-                },
-                {
-                  label: "Rank",
-                  value: rank,
-                  icon: Medal,
-                  iconClass: "bg-amber-100 text-amber-700",
-                },
-              ].map((card, idx) => (
-                <motion.div
-                  key={card.label}
-                  variants={{
-                    initial: { opacity: 0, y: 8 },
-                    animate: { opacity: 1, y: 0 },
-                  }}
-                  initial="initial"
-                  animate="animate"
-                  transition={{
-                    delay: 0.05 * idx,
-                    duration: 0.3,
-                    ease: "easeOut",
-                  }}
-                  className="rounded-md border-border bg-stone-50/90 p-3 flex items-center gap-2"
-                >
-                  <div className={cn("rounded-md p-2", card.iconClass)}>
-                    <card.icon className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">
-                      {card.label}
-                    </p>
-                    <p className="text-sm font-semibold leading-tight">
-                      {card.value}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          )}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.4,
+              ease: "easeOut",
+              staggerChildren: 0.05,
+            }}
+            className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3"
+          >
+            {[
+              {
+                label: "Preferred Exam",
+                value: profile.preferredExam,
+                icon: Target,
+                iconClass: "bg-primary/10 text-primary",
+              },
+              {
+                label: "Questions",
+                value: profile.totalQuestions,
+                icon: BarChart3,
+                iconClass: "bg-emerald-100 text-emerald-700",
+              },
+              {
+                label: "XP",
+                value: profile.xp,
+                icon: Award,
+                iconClass: "bg-indigo-100 text-indigo-700",
+              },
+              {
+                label: "Rank",
+                value: rank,
+                icon: Medal,
+                iconClass: "bg-amber-100 text-amber-700",
+              },
+            ].map((card, idx) => (
+              <motion.div
+                key={card.label}
+                variants={{
+                  initial: { opacity: 0, y: 8 },
+                  animate: { opacity: 1, y: 0 },
+                }}
+                initial="initial"
+                animate="animate"
+                transition={{
+                  delay: 0.05 * idx,
+                  duration: 0.3,
+                  ease: "easeOut",
+                }}
+                className="rounded-md border-border bg-stone-50/90 p-3 flex items-center gap-2"
+              >
+                <div className={cn("rounded-md p-2", card.iconClass)}>
+                  <card.icon className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">{card.label}</p>
+                  <p className="text-sm font-semibold leading-tight">
+                    {card.value}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </div>
     </div>
@@ -255,6 +229,13 @@ export default function ProfilePage() {
           }
           actions={
             <div className="flex items-center gap-1 ml-2">
+              {!viewed && (
+                <div className="flex items-center gap-2">
+                  <Button size="sm" variant="ghost" onClick={() => {}}>
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
               {!viewed && (
                 <>
                   <Button size="sm" variant="ghost" aria-label="Settings">
