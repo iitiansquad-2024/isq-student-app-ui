@@ -2,8 +2,9 @@
 import Quota from "@/components/ui/quota"
 import { useQuota } from "@/components/ui/quota"
 import Avatar from "@/components/ui/avatar"
+import Streak from "@/components/ui/streak"
 import { Button } from "@/components/ui/button"
-import { LogOut, Edit, Settings } from "lucide-react"
+import { LogOut, Edit, Settings, Pencil } from "lucide-react"
 
 export default function ProfilePage() {
   const { state, remaining } = useQuota(20)
@@ -41,9 +42,8 @@ export default function ProfilePage() {
             <div className="text-xs text-muted-foreground">anita.verma@example.com</div>
             <div className="mt-1 text-xs text-muted-foreground">Class of 2026 • Roll #2345</div>
           </div>
-          <div className="hidden sm:flex sm:flex-col sm:items-end">
-            <div className="text-xs text-muted-foreground">Overall progress</div>
-            <div className="text-sm font-semibold">72%</div>
+          <div>
+            <Streak goal={7} size={48} currentDays={5} variant="circle" showText={true} meterDescription="practice meter" meterUnit=" Qn" centralIcon={<Pencil className="h-3 w-3 text-primary-dark" />} />
           </div>
         </div>
       </div>

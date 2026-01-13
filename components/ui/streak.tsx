@@ -9,8 +9,10 @@ type StreakProps = {
   currentDays?: number;
   showText?: boolean;
   variant?: "circle" | "bar";
+  meterUnit?: string;
   centralIcon?: React.ReactNode;
   text?: React.ReactNode;
+  meterDescription?: string;
 };
 
 function formatDateLocal(iso?: string) {
@@ -31,6 +33,8 @@ export default function Streak({
   showText = true,
   centralIcon,
   text,
+  meterUnit = "d",
+  meterDescription = "current streak",
 }: StreakProps) {
   const [days, setDays] = useState<number>(currentDays);
   const [firstIso, setFirstIso] = useState<string | null>(null);
@@ -107,7 +111,10 @@ export default function Streak({
       >
         <div className="flex flex-col">
           <div className="mb-1 flex items-baseline gap-2">
-            <div className="text-sm font-semibold">{days}d</div>
+            <div className="text-sm font-semibold">
+              {days}
+              {meterUnit}
+            </div>
             <div className="text-xs text-muted-foreground">streak</div>
           </div>
           <div className="h-2 w-40 overflow-hidden rounded-full bg-border">
@@ -175,8 +182,18 @@ export default function Streak({
             aria-hidden
           >
             {centralIcon ? (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="block">
-                {centralIcon}
+              <motion.div
+                initial={{ y: 0, scale: 0.95, opacity: 0.9 }}
+                animate={{ y: [0, -4, 0], scale: [0.98, 1.02, 1], opacity: 1 }}
+                transition={{
+                  repeat: Infinity,
+                  repeatDelay: 1.6,
+                  duration: 1.2,
+                  ease: "easeInOut",
+                }}
+                className="block"
+              >
+                <div>{centralIcon}</div>
               </motion.div>
             ) : pct >= 1 ? (
               <motion.svg
@@ -246,12 +263,15 @@ export default function Streak({
                   className="leading-tight"
                   style={{ display: "block" }}
                 >
-                  {i + 1}d
+                  {i + 1}
+                  {meterUnit}
                 </div>
               ))}
             </motion.div>
           </div>
-          <div className="text-xs text-muted-foreground">current streak</div>
+          <div className="text-xs text-muted-foreground">
+            {meterDescription}
+          </div>
         </div>
       ) : null}
     </div>
