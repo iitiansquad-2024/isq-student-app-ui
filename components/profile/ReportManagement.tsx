@@ -1,7 +1,7 @@
 "use client"
 
 import { Flag, Calendar, AlertCircle, CheckCircle, Clock } from "lucide-react"
-import Badge from "@/components/ui/badge"
+import {Badge} from "@/components/ui/badge"
 
 type Report = {
   id: string

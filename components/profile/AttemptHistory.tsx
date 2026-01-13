@@ -1,7 +1,7 @@
 "use client"
 
 import { Clock, CheckCircle, XCircle, Calendar } from "lucide-react"
-import Badge from "@/components/ui/badge"
+import {Badge} from "@/components/ui/badge"
 
 type AttemptHistoryItem = {
   id: string

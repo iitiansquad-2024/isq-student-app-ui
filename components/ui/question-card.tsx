@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Bookmark, Check, X, Clock } from "lucide-react";
-import Badge from "@/components/ui/badge";
+import {Badge} from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import Checkbox from "@/components/ui/checkbox";
 

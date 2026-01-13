@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import Badge from "@/components/ui/badge"
+import {Badge} from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 
 type CoverageData = {

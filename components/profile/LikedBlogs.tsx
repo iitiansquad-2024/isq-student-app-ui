@@ -1,7 +1,7 @@
 "use client"
 
 import { Heart, Calendar, User } from "lucide-react"
-import Badge from "@/components/ui/badge"
+import {Badge} from "@/components/ui/badge"
 
 type Blog = {
   id: string
