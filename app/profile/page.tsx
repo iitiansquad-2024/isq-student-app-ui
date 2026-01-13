@@ -62,7 +62,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      <div className="btn-shimmer">
+      <div className="">
         <StreakSquad />
       </div>
     </section>

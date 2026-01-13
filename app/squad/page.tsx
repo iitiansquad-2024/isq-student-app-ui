@@ -5,6 +5,7 @@ import Avatar from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import PageHeader from "@/components/ui/page-header";
+import { Progress } from "@/components/ui/progress"
 
 type Member = {
   id: string;
@@ -23,7 +24,7 @@ const sampleMembers: Member[] = [
     joined: "2024-06-12",
     streakDays: 14,
     goal: 30,
-    xp: 420,
+    xp: 200,
     avatarUrl: null,
   },
   {
@@ -32,7 +33,7 @@ const sampleMembers: Member[] = [
     joined: "2025-01-03",
     streakDays: 9,
     goal: 30,
-    xp: 310,
+    xp: 200,
     avatarUrl: null,
   },
   {
@@ -41,7 +42,7 @@ const sampleMembers: Member[] = [
     joined: "2023-11-20",
     streakDays: 21,
     goal: 30,
-    xp: 680,
+    xp: 200,
     avatarUrl: null,
   },
   {
@@ -50,7 +51,7 @@ const sampleMembers: Member[] = [
     joined: "2024-02-01",
     streakDays: 3,
     goal: 30,
-    xp: 120,
+    xp: 200,
     avatarUrl: null,
   },
   {
@@ -59,7 +60,7 @@ const sampleMembers: Member[] = [
     joined: "2024-09-10",
     streakDays: 27,
     goal: 30,
-    xp: 980,
+    xp: 200,
     avatarUrl: null,
   },
   {
@@ -68,7 +69,7 @@ const sampleMembers: Member[] = [
     joined: "2023-05-05",
     streakDays: 18,
     goal: 30,
-    xp: 560,
+    xp: 200,
     avatarUrl: null,
   },
 ];
@@ -116,7 +117,7 @@ export default function SquadPage() {
   return (
     <section className="py-8 flex flex-col gap-6">
       <PageHeader
-        title="Squad"
+        title="Streak Squad"
         subtitle={<p>Manage your squad and view global leaderboard</p>}
         actions={
           <div>
@@ -150,29 +151,27 @@ export default function SquadPage() {
                         name={m.name}
                         size={36}
                       />
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                          <p className="truncate text-sm font-medium">{m.name}</p>
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          Streak: {m.streakDays} days
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="truncate text-sm font-medium">{m.name}</p>
+                          </div>
+                          <div className="text-xs text-muted-foreground">Member since 2 months</div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="flex items-center gap-4">
-                      <div className="flex flex-col items-end">
+                      <div className="flex items-center gap-4">
+                        <div className="w-16">
+                          <Progress value={pct} className="rounded-full h-2" />
+                        </div>
+                        <div className="text-xs text-muted-foreground w-10">{pct}%</div>
+
                         <div className="text-sm font-semibold flex items-center gap-2">
-                          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-yellow-100 text-yellow-700 text-xs">
-                            🪙
-                          </span>
+                          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs">XP</span>
                           {m.xp}
                         </div>
-                        <div className="text-xs text-muted-foreground">
-                          coins
-                        </div>
                       </div>
-                    </div>
+
+                    
                   </div>
                 );
               })}
@@ -183,9 +182,7 @@ export default function SquadPage() {
           <div className="rounded-lg border bg-card p-4">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-medium">Global Leaderboard</h3>
-              <div className="text-xs text-muted-foreground">
-                Ranked by coins
-              </div>
+              <div className="text-xs text-muted-foreground">Ranked by XP</div>
             </div>
 
             <ol className="mt-4 space-y-3">
@@ -209,9 +206,7 @@ export default function SquadPage() {
 
                   <div className="flex items-center gap-4">
                     <div className="text-sm font-semibold flex items-center gap-2">
-                      <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-yellow-100 text-yellow-700 text-xs">
-                        🪙
-                      </span>
+                      <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs">XP</span>
                       {m.xp}
                     </div>
                     <Button variant="ghost" size="sm">
@@ -227,24 +222,17 @@ export default function SquadPage() {
         {/* Right column: summary / quick actions */}
         <aside className="space-y-4">
           <div className="rounded-lg border bg-card p-4">
-            <h4 className="text-sm font-medium">Your squad coins</h4>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Total coins across squad
-            </p>
+            <h4 className="text-sm font-medium">Your squad XP</h4>
+            <p className="mt-2 text-sm text-muted-foreground">Total XP across squad</p>
             <div className="mt-4 flex items-center justify-between">
-              <div className="text-2xl font-extrabold">
-                🪙 {members.reduce((s, m) => s + m.xp, 0)}
-              </div>
+              <div className="text-lg font-semibold">200 XP</div>
               <Button size="sm">Distribute rewards</Button>
             </div>
           </div>
 
           <div className="rounded-lg border bg-card p-4">
-            <h4 className="text-sm font-medium">How coins work</h4>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Earn coins by completing daily practice and streak milestones.
-              Coins are used for leaderboard ranking and rewards.
-            </p>
+            <h4 className="text-sm font-medium">How XP works</h4>
+            <p className="mt-2 text-sm text-muted-foreground">Earn XP by completing daily practice and streak milestones. XP is used for leaderboard ranking and rewards.</p>
           </div>
         </aside>
       </div>

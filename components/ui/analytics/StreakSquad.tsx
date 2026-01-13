@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 // import { format } from "date-fns"
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { Progress } from "@/components/ui/progress";
 
 type Member = {
   id: string;
@@ -15,6 +16,7 @@ type Member = {
   streakDays: number;
   goal?: number;
   avatarUrl?: string | null;
+  xp?: number
 };
 
 export default function StreakSquad({ members }: { members?: Member[] }) {
@@ -25,6 +27,7 @@ export default function StreakSquad({ members }: { members?: Member[] }) {
       joined: "2024-06-12",
       streakDays: 14,
       goal: 30,
+        xp: 200,
     },
     {
       id: "2",
@@ -32,6 +35,7 @@ export default function StreakSquad({ members }: { members?: Member[] }) {
       joined: "2025-01-03",
       streakDays: 9,
       goal: 30,
+        xp: 200,
     },
     {
       id: "3",
@@ -39,6 +43,7 @@ export default function StreakSquad({ members }: { members?: Member[] }) {
       joined: "2023-11-20",
       streakDays: 21,
       goal: 30,
+        xp: 200,
     },
   ];
 
@@ -53,8 +58,8 @@ export default function StreakSquad({ members }: { members?: Member[] }) {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/squad">View all</Link>
+          <Button variant="ghost" size="sm" className="text-xs " asChild>
+            <Link href="/squad" className="text-sm">View all</Link>
           </Button>
         </div>
       </div>
@@ -79,57 +84,16 @@ export default function StreakSquad({ members }: { members?: Member[] }) {
                     Member since 2 months
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    {(() => {
-                      const size = 28;
-                      const radius = (size - 6) / 2;
-                      const circumference = 2 * Math.PI * radius;
-                      const dash = (circumference * pct) / 100;
+                  <div className="flex items-center gap-4">
+                    <div className="w-16">
+                      <Progress value={pct} className="rounded-full h-2" />
+                    </div>
+                    <div className="text-xs text-muted-foreground w-10">{pct}%</div>
 
-                      return (
-                        <div className="inline-flex items-center gap-2">
-                          <svg
-                            width={size}
-                            height={size}
-                            viewBox={`0 0 ${size} ${size}`}
-                            className="block"
-                          >
-                            <g transform={`translate(${size / 2},${size / 2})`}>
-                              <circle
-                                r={radius}
-                                fill="none"
-                                stroke="var(--border)"
-                                strokeWidth="3"
-                                opacity="0.18"
-                              />
-                              <motion.circle
-                                r={radius}
-                                fill="none"
-                                stroke="var(--color-emerald-500)"
-                                strokeWidth="3"
-                                strokeLinecap="round"
-                                strokeDasharray={`${circumference}`}
-                                initial={{ strokeDashoffset: circumference }}
-                                animate={{
-                                  strokeDashoffset: circumference - dash,
-                                }}
-                                transition={{
-                                  type: "spring",
-                                  stiffness: 120,
-                                  damping: 20,
-                                }}
-                              />
-                            </g>
-                          </svg>
-                          <div>
-                            <div className="text-xs text-muted-foreground">
-                              {pct}%
-                            </div>
-                            <p className="text-xs text-muted-foreground">completion</p>
-                          </div>
-                        </div>
-                      );
-                    })()}
+                    <div className="text-sm font-semibold flex items-center gap-2">
+                      <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs">XP</span>
+                      {(m as any).xp ?? 0}
+                    </div>
                   </div>
                 </div>
               </div>
