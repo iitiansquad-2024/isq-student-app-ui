@@ -57,15 +57,15 @@ export default function QuestionCard({
         <div className="flex flex-col gap-3 min-w-0 w-full">
           <div className="flex gap-2 justify-between flex-wrap">
             <div className="flex gap-2 flex-wrap">
-              <Badge variant="outline" className="w-fit">
+              <Badge variant="questionBadge" className="w-fit">
                 {question.id}
               </Badge>
               {question.paper && (
-                <Badge variant="outline" className="w-fit">
+                <Badge variant="questionBadge" className="w-fit">
                   {question.paper}
                 </Badge>
               )}
-              <Badge variant="outline">{question.difficulty}</Badge>
+              <Badge variant="questionBadge">{question.difficulty}</Badge>
             </div>
 
             <div className="flex items-center gap-2">
@@ -119,15 +119,15 @@ export default function QuestionCard({
       {/* Row 2: data badges (wrap) */}
       <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
         {question.tags.map((t) => (
-          <Badge key={t}>{t}</Badge>
+          <Badge variant="questionBadge" key={t}>{t}</Badge>
         ))}
 
-        <Badge>Attempts: {attempts}</Badge>
+        <Badge variant="questionBadge">Attempts: {attempts}</Badge>
 
         {/* small circular accuracy */}
-        <Badge>Avg. Accuracy: {Math.round(accuracy * 100)}%</Badge>
+        <Badge variant="questionBadge">Avg. Accuracy: {Math.round(accuracy * 100)}%</Badge>
 
-        <Badge className="">{year}</Badge>
+        <Badge variant="questionBadge">{year}</Badge>
       </div>
 
       {prevOpen ? (
