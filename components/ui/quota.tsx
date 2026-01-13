@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -105,11 +105,41 @@ export function useQuota(defaultLimit = 20) {
 
 export default function Quota({ limit = 20 }: { limit?: number }) {
   const { state, remaining, consume, reset, setLimit } = useQuota(limit)
-
   const pct = Math.round((state.used / Math.max(1, state.limit)) * 100)
 
+  const [showOptions, setShowOptions] = useState(false)
+  const [msg, setMsg] = useState<string | null>(null)
+  const panelRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    function onDoc(e: MouseEvent) {
+      if (!panelRef.current) return
+      if (e.target instanceof Node && !panelRef.current.contains(e.target)) {
+        setShowOptions(false)
+      }
+    }
+    document.addEventListener("mousedown", onDoc)
+    return () => document.removeEventListener("mousedown", onDoc)
+  }, [])
+
+  function handleResetToday() {
+    // charge flow simulated — reset for today for 9 rupees
+    reset()
+    setMsg("Quota reset for today (₹9)")
+    setShowOptions(false)
+    window.setTimeout(() => setMsg(null), 3000)
+  }
+
+  function handleBuyMonth() {
+    // simulate granting a month premium — increase limit substantially
+    setLimit(state.limit + 1000)
+    setMsg("Purchased 1-month premium (₹49)")
+    setShowOptions(false)
+    window.setTimeout(() => setMsg(null), 3000)
+  }
+
   return (
-    <div className="flex items-center gap-3">
+    <div className="relative flex items-center gap-3">
       <div className="flex flex-col items-end">
         <div className="text-sm font-medium">Daily quota</div>
         <div className="text-xs text-muted-foreground">{state.used}/{state.limit} used</div>
@@ -123,12 +153,28 @@ export default function Quota({ limit = 20 }: { limit?: number }) {
       </div>
 
       <div className="flex items-center gap-2">
-        <Button size="sm" variant="ghost" onClick={() => consume(1)} disabled={remaining <= 0}>
-          Use
-        </Button>
-        <Button size="sm" variant="outline" onClick={reset}>
+        <Button size="sm" variant="outline" onClick={() => setShowOptions((s) => !s)}>
           Reset
         </Button>
+
+        {showOptions ? (
+          <div ref={panelRef} className="absolute right-0 top-full z-50 mt-2 w-56 rounded-md border bg-background p-3 shadow-lg">
+            <div className="mb-2 text-sm font-medium">Reset options</div>
+            <div className="flex flex-col gap-2">
+              <Button size="sm" variant="default" onClick={handleResetToday}>
+                Reset for today — ₹9
+              </Button>
+              <Button size="sm" variant="secondary" onClick={handleBuyMonth}>
+                Buy 1-month premium — ₹49
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => setShowOptions(false)}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        ) : null}
+
+        {msg ? <div className="ml-2 text-xs text-muted-foreground">{msg}</div> : null}
       </div>
     </div>
   )
