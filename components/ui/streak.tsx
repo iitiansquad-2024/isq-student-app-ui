@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 
 type StreakProps = {
@@ -9,6 +9,8 @@ type StreakProps = {
   currentDays?: number;
   showText?: boolean;
   variant?: "circle" | "bar";
+  centralIcon?: React.ReactNode;
+  text?: React.ReactNode;
 };
 
 function formatDateLocal(iso?: string) {
@@ -27,6 +29,8 @@ export default function Streak({
   variant = "circle",
   currentDays = 1,
   showText = true,
+  centralIcon,
+  text,
 }: StreakProps) {
   const [days, setDays] = useState<number>(currentDays);
   const [firstIso, setFirstIso] = useState<string | null>(null);
@@ -170,7 +174,11 @@ export default function Streak({
             style={{ width: batteryWidth, height: batteryHeight }}
             aria-hidden
           >
-            {pct >= 1 ? (
+            {centralIcon ? (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="block">
+                {centralIcon}
+              </motion.div>
+            ) : pct >= 1 ? (
               <motion.svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -212,7 +220,11 @@ export default function Streak({
         </div>
       </div>
 
-      {showText && (
+      {text ? (
+        <div className="flex flex-col items-start leading-tight">
+          <div className="text-sm font-semibold">{text}</div>
+        </div>
+      ) : showText ? (
         <div className="flex flex-col items-start leading-tight">
           {/* animated vertical number scroller */}
           <div
@@ -241,7 +253,7 @@ export default function Streak({
           </div>
           <div className="text-xs text-muted-foreground">current streak</div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
