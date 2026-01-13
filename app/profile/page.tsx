@@ -6,6 +6,7 @@ import Streak from "@/components/ui/streak";
 import { Button } from "@/components/ui/button";
 import { LogOut, Edit, Settings, Pencil } from "lucide-react";
 import StreakSquad from "@/components/ui/analytics/StreakSquad";
+import PageHeader from "@/components/ui/page-header";
 
 export default function ProfilePage() {
   const { state, remaining } = useQuota(20);
@@ -13,27 +14,24 @@ export default function ProfilePage() {
   return (
     <section className="py-8 flex flex-col gap-4">
       {/* ROW 1 — Identity & Status */}
-      <header className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">Profile</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Manage all your account here!
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1 ml-2">
-            <Button size="sm" variant="ghost" aria-label="Edit profile">
-              <Edit className="h-4 w-4" />
-            </Button>
-            <Button size="sm" variant="ghost" aria-label="Settings">
-              <Settings className="h-4 w-4" />
-            </Button>
-            <Button size="sm" variant="ghost" aria-label="Logout">
-              <LogOut className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
+      <header>
+        <PageHeader
+          title="Profile"
+          subtitle="Manage all your account here!"
+          actions={
+            <div className="flex items-center gap-1 ml-2">
+              <Button size="sm" variant="ghost" aria-label="Edit profile">
+                <Edit className="h-4 w-4" />
+              </Button>
+              <Button size="sm" variant="ghost" aria-label="Settings">
+                <Settings className="h-4 w-4" />
+              </Button>
+              <Button size="sm" variant="ghost" aria-label="Logout">
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
+          }
+        />
       </header>
 
       {/* ROW 1.5 — Student details card (no elevation) */}
