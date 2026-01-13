@@ -15,14 +15,14 @@ export function CollapsibleCard({ title, defaultExpanded = true, children, class
   const [open, setOpen] = useState(defaultExpanded)
 
   return (
-    <div className={cn("rounded-lg border border-border bg-background", className)}>
+    <div className={cn("rounded-lg border border-border bg-background overflow-hidden", className)}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between px-3 py-2 sm:px-4 sm:py-3 text-left"
+        className={`w-full flex items-center justify-between px-3 py-2 sm:px-4 sm:py-3 text-left bg-stone-100/40 ${open ? "bg-stone-100/40 mb-2" : "bg-stone-100/20"}`}
         aria-expanded={open}
       >
-        <span className="text-sm font-medium text-foreground">{title}</span>
+        {<span className="text-sm font-medium text-foreground">{open ? "" : title}</span>}
         <ChevronDown
           className={cn("h-4 w-4 text-muted-foreground transition-transform", open ? "rotate-180" : "rotate-0")}
         />

@@ -24,6 +24,7 @@ import LikedBlogs from "@/components/profile/LikedBlogs";
 import AttemptHistory from "@/components/profile/AttemptHistory";
 import ReportManagement from "@/components/profile/ReportManagement";
 import HeatmapCalendar from "@/components/analytics/HeatmapCalendar";
+import { CollapsibleCard } from "@/components/ui/collapsible-card";
 import { useSearchParams } from "next/navigation";
 import sampleMembers from "@/lib/members";
 import Link from "next/link";
@@ -76,7 +77,7 @@ function ProfileCard({ viewed }: { viewed?: any }) {
   }
 
   return (
-    <div className="rounded-md border border-border bg-background p-3 sm:p-4">
+    <CollapsibleCard title="Profile Summary" defaultExpanded className="border-border bg-background">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Avatar
@@ -161,7 +162,7 @@ function ProfileCard({ viewed }: { viewed?: any }) {
           </motion.div>
         </div>
       </div>
-    </div>
+    </CollapsibleCard>
   );
 }
 
