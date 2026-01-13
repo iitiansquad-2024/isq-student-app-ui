@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import Avatar from "@/components/ui/avatar"
+import Avatar from "@/components/ui/avatar";
 // import { format } from "date-fns"
-import { cn } from "@/lib/utils"
-import { motion } from "framer-motion"
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 type Member = {
   id: string;
@@ -43,11 +43,11 @@ export default function StreakSquad({ members }: { members?: Member[] }) {
   const list = members && members.length > 0 ? members : sample;
 
   return (
-    <div className="rounded-lg border bg-card p-4 flex flex-col">
-      <div className="mb-6 flex items-center justify-between">
+    <div className="rounded-lg border bg-card p-4 flex flex-col gap-6">
+      <div className="flex items-center justify-between">
         <h3 className="text-sm font-medium">Streak Squad</h3>
-        <div className="text-xs text-muted-foreground">
-          Challenge participants
+        <div className="text-xs font-medium text-muted-foreground">
+          Streak Level 1 ( 7 days )
         </div>
       </div>
 
@@ -62,23 +62,38 @@ export default function StreakSquad({ members }: { members?: Member[] }) {
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
-                  <p className="truncate font-medium text-sm leading-tight">{m.name}</p>
+                  <p className="truncate font-medium text-sm leading-tight">
+                    {m.name}
+                  </p>
                 </div>
                 <div className="flex items-center justify-between">
-                  <div className="text-xs text-muted-foreground">Member since 2 months</div>
+                  <div className="text-xs text-muted-foreground">
+                    Member since 2 months
+                  </div>
 
                   <div className="flex items-center gap-2">
                     {(() => {
-                      const size = 28
-                      const radius = (size - 6) / 2
-                      const circumference = 2 * Math.PI * radius
-                      const dash = (circumference * pct) / 100
+                      const size = 28;
+                      const radius = (size - 6) / 2;
+                      const circumference = 2 * Math.PI * radius;
+                      const dash = (circumference * pct) / 100;
 
                       return (
                         <div className="inline-flex items-center gap-2">
-                          <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="block">
+                          <svg
+                            width={size}
+                            height={size}
+                            viewBox={`0 0 ${size} ${size}`}
+                            className="block"
+                          >
                             <g transform={`translate(${size / 2},${size / 2})`}>
-                              <circle r={radius} fill="none" stroke="var(--border)" strokeWidth="3" opacity="0.18" />
+                              <circle
+                                r={radius}
+                                fill="none"
+                                stroke="var(--border)"
+                                strokeWidth="3"
+                                opacity="0.18"
+                              />
                               <motion.circle
                                 r={radius}
                                 fill="none"
@@ -87,14 +102,25 @@ export default function StreakSquad({ members }: { members?: Member[] }) {
                                 strokeLinecap="round"
                                 strokeDasharray={`${circumference}`}
                                 initial={{ strokeDashoffset: circumference }}
-                                animate={{ strokeDashoffset: circumference - dash }}
-                                transition={{ type: "spring", stiffness: 120, damping: 20 }}
+                                animate={{
+                                  strokeDashoffset: circumference - dash,
+                                }}
+                                transition={{
+                                  type: "spring",
+                                  stiffness: 120,
+                                  damping: 20,
+                                }}
                               />
                             </g>
                           </svg>
-                          <div className="text-xs text-muted-foreground">{pct}%</div>
+                          <div>
+                            <div className="text-xs text-muted-foreground">
+                              {pct}%
+                            </div>
+                            <p className="text-xs text-muted-foreground">completion</p>
+                          </div>
                         </div>
-                      )
+                      );
                     })()}
                   </div>
                 </div>

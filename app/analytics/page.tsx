@@ -13,9 +13,7 @@ export default function AnalyticsPage() {
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <StreakAnalytics current={6} goal={30} />
-        <div className="btn-shimmer">
-          <StreakSquad />
-        </div>
+
         <CoverageAnalytics percent={72} />
         <RevisionDebtAnalytics overdue={12} />
       </div>

@@ -1,13 +1,14 @@
-"use client"
-import Quota from "@/components/ui/quota"
-import { useQuota } from "@/components/ui/quota"
-import Avatar from "@/components/ui/avatar"
-import Streak from "@/components/ui/streak"
-import { Button } from "@/components/ui/button"
-import { LogOut, Edit, Settings, Pencil } from "lucide-react"
+"use client";
+import Quota from "@/components/ui/quota";
+import { useQuota } from "@/components/ui/quota";
+import Avatar from "@/components/ui/avatar";
+import Streak from "@/components/ui/streak";
+import { Button } from "@/components/ui/button";
+import { LogOut, Edit, Settings, Pencil } from "lucide-react";
+import StreakSquad from "@/components/ui/analytics/StreakSquad";
 
 export default function ProfilePage() {
-  const { state, remaining } = useQuota(20)
+  const { state, remaining } = useQuota(20);
 
   return (
     <section className="py-8 flex flex-col gap-4">
@@ -15,7 +16,9 @@ export default function ProfilePage() {
       <header className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Profile</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Manage all your account here!</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Manage all your account here!
+          </p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -39,16 +42,31 @@ export default function ProfilePage() {
           <Avatar name="Anita Verma" size={56} />
           <div className="flex-1">
             <div className="text-sm font-medium">Anita Verma</div>
-            <div className="text-xs text-muted-foreground">anita.verma@example.com</div>
-            <div className="mt-1 text-xs text-muted-foreground">Class of 2026 • Roll #2345</div>
+            <div className="text-xs text-muted-foreground">
+              anita.verma@example.com
+            </div>
+            <div className="mt-1 text-xs text-muted-foreground">
+              Class of 2026 • Roll #2345
+            </div>
           </div>
           <div>
-            <Streak goal={7} size={48} currentDays={5} variant="circle" showText={true} meterDescription="practice meter" meterUnit=" Qn" centralIcon={<Pencil className="h-3 w-3 text-primary-dark" />} />
+            <Streak
+              goal={7}
+              size={48}
+              currentDays={5}
+              variant="circle"
+              showText={true}
+              meterDescription="practice meter"
+              meterUnit=" Qn"
+              centralIcon={<Pencil className="h-3 w-3 text-primary-dark" />}
+            />
           </div>
         </div>
       </div>
 
-      
+      <div className="btn-shimmer">
+        <StreakSquad />
+      </div>
     </section>
-  )
+  );
 }
