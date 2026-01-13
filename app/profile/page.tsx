@@ -3,7 +3,7 @@ import { useQuota } from "@/components/ui/quota";
 import Avatar from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { LogOut, Edit, Settings, Bookmark, Heart, Clock, Flag } from "lucide-react";
+import { LogOut, Edit, Settings, Bookmark, Heart, Clock, Flag, Award, Target, BarChart3, Medal } from "lucide-react";
 import StreakSquad from "@/components/ui/analytics/StreakSquad";
 import PageHeader from "@/components/ui/page-header";
 import EditProfileDialog from "@/components/profile/EditProfileDialog";
@@ -85,11 +85,43 @@ function ProfileCard({ viewed }: { viewed?: any }) {
               onCancel={() => setEditing(false)}
             />
           ) : (
-            <div className="space-y-2">
-              <div className="text-sm">Preferred exam: <span className="font-medium">{profile.preferredExam}</span></div>
-              <div className="text-sm">Total questions attempted: <span className="font-medium">{profile.totalQuestions}</span></div>
-              <div className="text-sm">XP: <span className="font-medium">{profile.xp}</span></div>
-              <div className="text-sm">Rank: <span className="font-medium">{rank}</span></div>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
+              <div className="rounded-md border border-border bg-muted/40 p-3 flex items-center gap-2">
+                <div className="rounded-md bg-primary/10 text-primary p-2">
+                  <Target className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Preferred Exam</p>
+                  <p className="text-sm font-semibold leading-tight">{profile.preferredExam}</p>
+                </div>
+              </div>
+              <div className="rounded-md border border-border bg-muted/40 p-3 flex items-center gap-2">
+                <div className="rounded-md bg-emerald-100 text-emerald-700 p-2">
+                  <BarChart3 className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Questions</p>
+                  <p className="text-sm font-semibold leading-tight">{profile.totalQuestions}</p>
+                </div>
+              </div>
+              <div className="rounded-md border border-border bg-muted/40 p-3 flex items-center gap-2">
+                <div className="rounded-md bg-indigo-100 text-indigo-700 p-2">
+                  <Award className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">XP</p>
+                  <p className="text-sm font-semibold leading-tight">{profile.xp}</p>
+                </div>
+              </div>
+              <div className="rounded-md border border-border bg-muted/40 p-3 flex items-center gap-2">
+                <div className="rounded-md bg-amber-100 text-amber-700 p-2">
+                  <Medal className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Rank</p>
+                  <p className="text-sm font-semibold leading-tight">{rank}</p>
+                </div>
+              </div>
             </div>
           )}
         </div>
