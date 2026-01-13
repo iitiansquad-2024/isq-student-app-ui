@@ -2,6 +2,8 @@
 
 import React from "react";
 import Avatar from "@/components/ui/avatar";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 // import { format } from "date-fns"
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -45,9 +47,15 @@ export default function StreakSquad({ members }: { members?: Member[] }) {
   return (
     <div className="rounded-lg border bg-card p-4 flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium">Streak Squad</h3>
-        <div className="text-xs font-medium text-muted-foreground">
-          Streak Level 1 ( 7 days )
+        <div>
+          <h3 className="text-sm font-medium">Streak Squad</h3>
+          <div className="text-xs font-medium text-muted-foreground">Streak Level 1 ( 7 days )</div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="/squad">View all</Link>
+          </Button>
         </div>
       </div>
 
