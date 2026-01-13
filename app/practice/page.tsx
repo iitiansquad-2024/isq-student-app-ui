@@ -100,7 +100,9 @@ export default function PracticePage() {
           <p className="mt-1 text-sm text-muted-foreground">Pick a filter or search to find questions</p>
         </div>
 
-        <Streak goal={7} size={48} currentDays={5} />
+        <div className="flex items-center gap-4">
+          <Streak goal={7} size={48} currentDays={5} />
+        </div>
       </header>
 
       {/* 1. Preset filters (multi-select, expandable) */}
