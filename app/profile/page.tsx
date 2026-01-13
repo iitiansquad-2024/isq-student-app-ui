@@ -15,6 +15,7 @@ import {
   Target,
   BarChart3,
   Medal,
+  ChevronDown,
 } from "lucide-react";
 import StreakSquad from "@/components/ui/analytics/StreakSquad";
 import PageHeader from "@/components/ui/page-header";
@@ -77,7 +78,11 @@ function ProfileCard({ viewed }: { viewed?: any }) {
   }
 
   return (
-    <CollapsibleCard title="Profile Summary" defaultExpanded className="border-border bg-background">
+    <CollapsibleCard
+      title="Details"
+      defaultExpanded
+      className="border-border bg-background"
+    >
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Avatar
@@ -259,7 +264,7 @@ export default function ProfilePage() {
 
       {/* Identity / viewed member */}
 
-        <ProfileCard viewed={viewed} />
+      <ProfileCard viewed={viewed} />
 
       {/* Heatmap for viewed user */}
       {viewed && (
@@ -301,22 +306,46 @@ export default function ProfilePage() {
 
       {/* Squad sections - only show for own profile */}
       {!viewed && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div>
-            <StreakSquad
-              mode="stream"
-              title="Streak Squad"
-              viewAllHref="/squad?tab=stream"
-            />
-          </div>
-          <div>
-            <StreakSquad
-              mode="leaderboard"
-              title="Global Leaderboard"
-              viewAllHref="/squad?tab=leaderboard"
-            />
-          </div>
-        </div>
+        <>
+          <CollapsibleCard
+            title={<h3 className="text-sm font-medium">Streak Squad</h3>}
+            chevronElement={(open) => (
+              <div className="flex gap-3 items-center">
+                <p className="text-xs font-medium text-muted-foreground">
+                  <span className="underline">Level 1</span> (7 days)
+                </p>
+                <ChevronDown
+                  className={cn(
+                    "h-4 w-4 text-muted-foreground transition-transform",
+                    open ? "rotate-180" : "rotate-0"
+                  )}
+                />
+              </div>
+            )}
+          >
+            <div>
+              <StreakSquad
+                mode="stream"
+                title="Streak Squad"
+                viewAllHref="/squad?tab=stream"
+              />
+            </div>
+          </CollapsibleCard>
+
+          <CollapsibleCard
+            title={
+              <h3 className="text-sm font-medium">IITian Squad Leaderboard</h3>
+            }
+          >
+            <div>
+              <StreakSquad
+                mode="leaderboard"
+                title="Global Leaderboard"
+                viewAllHref="/squad?tab=leaderboard"
+              />
+            </div>
+          </CollapsibleCard>
+        </>
       )}
 
       {/* Tabs Section - Only show for own profile - Below squad sections for mobile view */}
@@ -329,28 +358,28 @@ export default function ProfilePage() {
                 className="flex items-center gap-1 whitespace-nowrap"
               >
                 <Bookmark className="h-4 w-4" />
-                <span className="hidden sm:inline ml-1">Bookmarks</span>
+                <span className="sm:inline ml-1">Bookmarks</span>
               </TabsTrigger>
               <TabsTrigger
                 value="liked"
                 className="flex items-center gap-1 whitespace-nowrap"
               >
                 <Heart className="h-4 w-4" />
-                <span className="hidden sm:inline ml-1">Liked Blogs</span>
+                <span className="sm:inline ml-1">Liked Blogs</span>
               </TabsTrigger>
               <TabsTrigger
                 value="history"
                 className="flex items-center gap-1 whitespace-nowrap"
               >
                 <Clock className="h-4 w-4" />
-                <span className="hidden sm:inline ml-1">History</span>
+                <span className="sm:inline ml-1">History</span>
               </TabsTrigger>
               <TabsTrigger
                 value="reports"
                 className="flex items-center gap-1 whitespace-nowrap"
               >
                 <Flag className="h-4 w-4" />
-                <span className="hidden sm:inline ml-1">Reports</span>
+                <span className="sm:inline ml-1">Reports</span>
               </TabsTrigger>
             </TabsList>
 

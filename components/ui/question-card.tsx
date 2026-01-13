@@ -1,10 +1,11 @@
 "use client";
 
 import React from "react";
-import { Bookmark, Check, X, Clock } from "lucide-react";
-import {Badge} from "@/components/ui/badge";
+import { Bookmark, Check, X, Clock, CheckCircle, XCircle, BookmarkPlus } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import Checkbox from "@/components/ui/checkbox";
+import { Button } from "./button";
 
 type Question = {
   id: string;
@@ -30,6 +31,19 @@ type Props = {
   onToggleSelect: (id: string) => void;
   onToggleBookmark: (id: string) => void;
   onTogglePrev: (id: string) => void;
+};
+
+const getDifficultyColor = (difficulty: string) => {
+  switch (difficulty) {
+    case "Easy":
+      return "bg-green-100 text-green-800";
+    case "Medium":
+      return "bg-yellow-100 text-yellow-800";
+    case "Hard":
+      return "bg-red-100 text-red-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
 };
 
 export default function QuestionCard({
@@ -65,22 +79,27 @@ export default function QuestionCard({
                   {question.paper}
                 </Badge>
               )}
-              <Badge variant="questionBadge">{question.difficulty}</Badge>
+              <Badge
+                variant="questionBadge"
+                className={`${getDifficultyColor(question.difficulty)}`}
+              >
+                {question.difficulty}
+              </Badge>
             </div>
 
             <div className="flex items-center gap-2">
-              <button
-                aria-pressed={bookmarked}
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => onToggleBookmark(question.id)}
-                className={`rounded-md p-1 ${
-                  bookmarked
-                    ? "bg-primary/10 text-primary-dark"
-                    : "text-muted-foreground"
-                }`}
-                title={bookmarked ? "Bookmarked" : "Bookmark"}
+                className="h-7 w-7 p-0"
               >
-                <Bookmark className="h-4 w-4" />
-              </button>
+                {bookmarked ? (
+                  <Bookmark className="h-3.5 w-3.5 fill-current text-yellow-500" />
+                ) : (
+                  <BookmarkPlus className="h-3.5 w-3.5" />
+                )}
+              </Button>
 
               <button
                 onClick={() => onTogglePrev(question.id)}
@@ -99,7 +118,7 @@ export default function QuestionCard({
               >
                 {prevAttempt ? (
                   prevAttempt.success ? (
-                    <Check className="h-4 w-4 text-emerald-600" />
+                    <CheckCircle className="h-4 w-4 text-emerald-600" />
                   ) : (
                     <X className="h-4 w-4 text-red-600" />
                   )
@@ -111,7 +130,7 @@ export default function QuestionCard({
           </div>
 
           <div className="flex justify-between">
-            <h3 className="text-base font-medium truncate">{question.title}</h3>
+            <h3 className="text-sm font-medium truncate">{question.title}</h3>
           </div>
         </div>
       </div>
@@ -119,13 +138,17 @@ export default function QuestionCard({
       {/* Row 2: data badges (wrap) */}
       <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
         {question.tags.map((t) => (
-          <Badge variant="questionBadge" key={t}>{t}</Badge>
+          <Badge variant="questionBadge" key={t}>
+            {t}
+          </Badge>
         ))}
 
         <Badge variant="questionBadge">Attempts: {attempts}</Badge>
 
         {/* small circular accuracy */}
-        <Badge variant="questionBadge">Avg. Accuracy: {Math.round(accuracy * 100)}%</Badge>
+        <Badge variant="questionBadge">
+          Avg. Accuracy: {Math.round(accuracy * 100)}%
+        </Badge>
 
         <Badge variant="questionBadge">{year}</Badge>
       </div>

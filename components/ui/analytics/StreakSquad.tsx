@@ -64,14 +64,7 @@ export default function StreakSquad({
   const activeTab = mode && mode !== "tabs" ? mode : tab;
 
   return (
-    <div className="rounded-lg border bg-card p-4 flex flex-col gap-6">
-      <div className="flex justify-between items-center">
-        <h3 className="text-sm font-medium">{title ?? "Streak Squad"}</h3>
-        <div className="text-xs font-medium text-muted-foreground">
-          <span className="underline">Level 1</span> (7 days)
-        </div>
-      </div>
-
+    <div className="rounded-lg bg-card flex flex-col gap-6">
       <div className="space-y-4">
         {mode === "tabs" && (
           <div className="flex items-center gap-2">
