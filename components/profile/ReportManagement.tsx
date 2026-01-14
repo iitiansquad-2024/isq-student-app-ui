@@ -61,10 +61,10 @@ function getStatusIcon(status: Report["status"]) {
 }
 
 function getStatusBadge(status: Report["status"]) {
-  const variants: Record<Report["status"], "default" | "outline" | "subtle"> = {
-    "Pending": "outline",
+  const variants: Record<Report["status"], "default" | "outline" | "secondary"> = {
+    "Pending": "default",
     "Under Review": "default",
-    "Resolved": "subtle",
+    "Resolved": "secondary",
     "Rejected": "outline",
   }
   return <Badge variant={variants[status]}>{status}</Badge>

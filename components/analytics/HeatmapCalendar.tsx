@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Select, SelectItem } from "@/components/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 type HeatmapCalendarProps = {
   year: number
@@ -32,11 +32,16 @@ export default function HeatmapCalendar({ year, onYearChange, activityData }: He
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold">Activity Heatmap</h3>
         <Select value={year.toString()} onValueChange={(val) => onYearChange(parseInt(val))}>
-          {years.map((y) => (
-            <SelectItem key={y} value={y.toString()}>
-              {y}
-            </SelectItem>
-          ))}
+          <SelectTrigger className="w-[120px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {years.map((y) => (
+              <SelectItem key={y} value={y.toString()}>
+                {y}
+              </SelectItem>
+            ))}
+          </SelectContent>
         </Select>
       </div>
 

@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search, Sliders, X } from "lucide-react"
 import QuestionCard from "@/components/ui/question-card"
-import { Select, SelectItem } from "@/components/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 type Question = {
   id: string
@@ -108,8 +108,13 @@ export default function RevisionPage() {
 
         <div className="flex items-center gap-2">
           <Select value={sortBy} onValueChange={(val) => setSortBy(val as any)}>
-            <SelectItem value="date-desc">Latest First</SelectItem>
-            <SelectItem value="date-asc">Oldest First</SelectItem>
+            <SelectTrigger className="w-[150px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="date-desc">Latest First</SelectItem>
+              <SelectItem value="date-asc">Oldest First</SelectItem>
+            </SelectContent>
           </Select>
         </div>
       </header>

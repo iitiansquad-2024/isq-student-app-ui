@@ -17,6 +17,13 @@ const SAMPLE_BOOKMARKED_QUESTIONS: Question[] = [
   { id: "q3", title: "Calculate the limit of sin(x)/x as x approaches 0", difficulty: "Medium", tags: ["calculus", "limits"], paper: "JEE Main 2023" },
 ]
 
+// Static data to avoid hydration mismatches
+const STATIC_QUESTION_DATA = {
+  q1: { attempts: 15, accuracy: 0.73, prevAttempt: { success: true, accuracy: 0.73 } },
+  q2: { attempts: 8, accuracy: 0.38, prevAttempt: { success: false, accuracy: 0.38 } },
+  q3: { attempts: 22, accuracy: 0.64, prevAttempt: { success: true, accuracy: 0.64 } },
+}
+
 export default function BookmarkedQuestions() {
   const [bookmarked, setBookmarked] = useState<Record<string, boolean>>(
     Object.fromEntries(SAMPLE_BOOKMARKED_QUESTIONS.map(q => [q.id, true]))
@@ -46,26 +53,33 @@ export default function BookmarkedQuestions() {
           <p className="text-xs sm:text-sm mt-1">Bookmark questions while practicing to see them here</p>
         </div>
       ) : (
-        activeBookmarks.map((q) => (
-          <QuestionCard
-            key={q.id}
-            question={q}
-            attempts={Math.floor(Math.random() * 50) + 1}
-            accuracy={Math.random()}
-            year={2024}
-            selected={!!selectedIds[q.id]}
-            bookmarked={!!bookmarked[q.id]}
-            prevOpen={!!prevOpen[q.id]}
-            prevAttempt={{
-              success: Math.random() > 0.5,
-              time: Date.now() - Math.random() * 1000 * 60 * 60 * 24 * 7,
-              accuracy: Math.random(),
-            }}
-            onToggleSelect={toggleSelect}
-            onToggleBookmark={toggleBookmark}
-            onTogglePrev={togglePrev}
-          />
-        ))
+        activeBookmarks.map((q) => {
+          const data = STATIC_QUESTION_DATA[q.id as keyof typeof STATIC_QUESTION_DATA] || { 
+            attempts: 10, 
+            accuracy: 0.5, 
+            prevAttempt: { success: false, accuracy: 0.5 } 
+          }
+          return (
+            <QuestionCard
+              key={q.id}
+              question={q}
+              attempts={data.attempts}
+              accuracy={data.accuracy}
+              year={2024}
+              selected={!!selectedIds[q.id]}
+              bookmarked={!!bookmarked[q.id]}
+              prevOpen={!!prevOpen[q.id]}
+              prevAttempt={{
+                success: data.prevAttempt.success,
+                time: new Date('2024-01-10').getTime(),
+                accuracy: data.prevAttempt.accuracy,
+              }}
+              onToggleSelect={toggleSelect}
+              onToggleBookmark={toggleBookmark}
+              onTogglePrev={togglePrev}
+            />
+          )
+        })
       )}
     </div>
   )

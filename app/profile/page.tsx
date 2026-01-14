@@ -29,7 +29,7 @@ import { CollapsibleCard } from "@/components/ui/collapsible-card";
 import { useSearchParams } from "next/navigation";
 import sampleMembers from "@/lib/members";
 import Link from "next/link";
-import { useState, useMemo } from "react";
+import { useState, useMemo, Suspense } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -194,7 +194,7 @@ function generateUserActivityData(
   return data;
 }
 
-export default function ProfilePage() {
+function ProfilePageContent() {
   const { state, remaining } = useQuota(20);
   const search = useSearchParams();
   const memberId = search.get("member");
@@ -402,5 +402,13 @@ export default function ProfilePage() {
         </div>
       )}
     </section>
+  );
+}
+
+export default function ProfilePage() {
+  return (
+    <Suspense fallback={<div className="py-8">Loading...</div>}>
+      <ProfilePageContent />
+    </Suspense>
   );
 }

@@ -4,7 +4,7 @@ import React from "react";
 import { Bookmark, Check, X, Clock, CheckCircle, XCircle, BookmarkPlus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import Checkbox from "@/components/ui/checkbox";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "./button";
 
 type Question = {
@@ -46,6 +46,8 @@ const getDifficultyColor = (difficulty: string) => {
   }
 };
 
+import { useRouter } from "next/navigation";
+
 export default function QuestionCard({
   question,
   attempts,
@@ -59,12 +61,26 @@ export default function QuestionCard({
   onToggleBookmark,
   onTogglePrev,
 }: Props) {
+  const router = useRouter();
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Don't navigate if clicking on buttons or checkboxes
+    const target = e.target as HTMLElement;
+    if (
+      target.tagName === "BUTTON" ||
+      target.tagName === "INPUT" ||
+      target.closest("button") ||
+      target.closest("input")
+    ) {
+      return;
+    }
+    router.push(`/question/${question.id}`);
+  };
+
   return (
     <article
-      className="rounded-md border border-border p-4"
-      onClick={() => {
-        // onTogglePrev(question.id);
-      }}
+      className="rounded-md border border-border p-4 hover:border-primary/50 transition-colors cursor-pointer"
+      onClick={handleCardClick}
     >
       {/* Row 1: checkbox, heading, actions (wrap on overflow) */}
       <div className="flex items-center justify-between gap-3 w-full">
@@ -104,15 +120,9 @@ export default function QuestionCard({
               <button
                 onClick={() => onTogglePrev(question.id)}
                 className="rounded-md p-1 text-muted-foreground"
-                title={
+                aria-label={
                   prevAttempt
-                    ? `${
-                        prevAttempt.success ? "Success" : "Failed"
-                      } — ${new Date(
-                        prevAttempt.time
-                      ).toLocaleString()} — ${Math.round(
-                        prevAttempt.accuracy * 100
-                      )}%`
+                    ? `${prevAttempt.success ? "Success" : "Failed"} — ${Math.round(prevAttempt.accuracy * 100)}%`
                     : "Previous attempts"
                 }
               >

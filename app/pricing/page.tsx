@@ -9,7 +9,7 @@ export default function PricingPage() {
     <main className="min-h-screen bg-gradient-to-b from-white to-gray-50 py-20">
       <div className="container mx-auto px-6">
         <div className="text-center max-w-3xl mx-auto">
-          <Badge variant="primary-dark" className="mb-4">Premium</Badge>
+          <Badge variant="secondary" className="mb-4">Premium</Badge>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
             Upgrade to Premium — study smarter, faster
           </h1>
@@ -58,7 +58,7 @@ export default function PricingPage() {
                 <h3 className="text-lg font-semibold">Premium</h3>
                 <p className="mt-1 text-sm text-muted-foreground">For focused revision and top performance</p>
               </div>
-              <Badge variant="primary-dark">Most popular</Badge>
+              <Badge variant="secondary">Most popular</Badge>
             </div>
 
             <div className="mt-6">

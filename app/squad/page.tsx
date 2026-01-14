@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import Avatar from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -59,7 +59,7 @@ function ProgressRing({ pct }: { pct: number }) {
 
 const ITEMS_PER_PAGE = 10;
 
-export default function SquadPage() {
+function SquadPageContent() {
   const members = sampleMembers;
 
   // keep member id '6' only in the squad stream; exclude from leaderboard
@@ -88,7 +88,7 @@ export default function SquadPage() {
     <section className="py-8 flex flex-col gap-6">
       <PageHeader
         title="Leaderboard"
-        subtitle={<p>Manage your squad and view global leaderboard</p>}
+        subtitle="Manage your squad and view global leaderboard"
         actions={
           <div>
             {/* <Button size="sm">Invite members</Button> */}
@@ -243,5 +243,13 @@ export default function SquadPage() {
         </aside>
       </div>
     </section>
+  );
+}
+
+export default function SquadPage() {
+  return (
+    <Suspense fallback={<div className="py-8">Loading...</div>}>
+      <SquadPageContent />
+    </Suspense>
   );
 }
