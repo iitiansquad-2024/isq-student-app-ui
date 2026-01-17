@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { login, initiateGoogleOAuth, getUserProfile } from '@/lib/authApi';
 import { useAuth } from '@/contexts/AuthContext';
+import Footer from '@/components/ui/footer';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -194,6 +195,7 @@ export default function LoginPage() {
           </Card>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

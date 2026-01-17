@@ -289,6 +289,93 @@ export default function BlogDetailPage() {
     }
   };
 
+  const handlePlayPause = () => {
+    if (isPlaying) {
+      window.speechSynthesis.pause();
+      setIsPlaying(false);
+    } else {
+      if (window.speechSynthesis.paused && hasAudioStarted) {
+        window.speechSynthesis.resume();
+        setIsPlaying(true);
+      } else {
+        if (window.speechSynthesis.speaking) {
+          window.speechSynthesis.cancel();
+        }
+        
+        const utterance = new SpeechSynthesisUtterance(post.content);
+        utterance.rate = 0.9;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+        
+        utterance.onstart = () => {
+          setHasAudioStarted(true);
+          setIsPlaying(true);
+        };
+        
+        utterance.onend = () => {
+          setIsPlaying(false);
+          setHasAudioStarted(false);
+          utteranceRef.current = null;
+        };
+        
+        utterance.onerror = (error) => {
+          if (error.error !== 'canceled' && error.error !== 'interrupted') {
+            console.error('Audio error:', error);
+          }
+        };
+        
+        utteranceRef.current = utterance;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+  };
+
+  const handleRestart = () => {
+    window.speechSynthesis.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(post.content);
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+    
+    utterance.onstart = () => {
+      setHasAudioStarted(true);
+      setIsPlaying(true);
+    };
+    
+    utterance.onend = () => {
+      setIsPlaying(false);
+      setHasAudioStarted(false);
+      utteranceRef.current = null;
+    };
+    
+    utterance.onerror = (error) => {
+      if (error.error !== 'canceled' && error.error !== 'interrupted') {
+        console.error('Audio error:', error);
+      }
+    };
+    
+    utteranceRef.current = utterance;
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const handleStop = () => {
+    window.speechSynthesis.cancel();
+    setIsPlaying(false);
+    setHasAudioStarted(false);
+    utteranceRef.current = null;
+  };
+
+  const generateSummary = () => {
+    return [
+      '🎯 **Key Points**: Main concepts and strategies covered in the article',
+      '⏰ **Time Management**: Effective planning and scheduling tips',
+      '📚 **Study Focus**: Important topics and areas to concentrate on',
+      '💡 **Success Tips**: Practical advice from experts and toppers',
+      '🚫 **Common Mistakes**: Things to avoid during preparation'
+    ];
+  };
+
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newComment.trim()) return;
@@ -400,28 +487,232 @@ export default function BlogDetailPage() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-3">
-            <Button
-              variant={isLiked ? "default" : "outline"}
-              size="sm"
-              onClick={handleLike}
-              className={isLiked ? "bg-red-500 hover:bg-red-600 text-white" : ""}
-            >
-              <Heart className={`h-4 w-4 mr-2 ${isLiked ? 'fill-current' : ''}`} />
-              {likes}
-            </Button>
-            <Button variant="outline" size="sm" onClick={handleShare}>
-              <Share2 className="h-4 w-4 mr-2" />
-              Share
-            </Button>
+          <div className="flex items-center justify-between border-t border-b border-gray-200 py-4">
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleLike}
+                className={`flex items-center space-x-2 ${isLiked ? 'text-red-500' : 'text-gray-600'}`}
+              >
+                <Heart className={`h-5 w-5 ${isLiked ? 'fill-current' : ''}`} />
+                <span>{likes}</span>
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center space-x-2 text-gray-600"
+                onClick={() => document.getElementById('comments-section')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                <MessageCircle className="h-5 w-5" />
+                <span>{comments.length}</span>
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handlePlayPause}
+                className="flex items-center space-x-2 text-gray-600 hover:text-yellow-600"
+              >
+                {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+                <span>{isPlaying ? 'Pause' : 'Listen'}</span>
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowSummary(!showSummary)}
+                className="flex items-center space-x-2 text-gray-600 hover:text-yellow-600"
+              >
+                <FileText className="h-5 w-5" />
+                <span>Summary</span>
+              </Button>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleShare}
+                className="text-gray-600"
+              >
+                <Share2 className="h-5 w-5" />
+              </Button>
+            </div>
           </div>
         </header>
 
-        <Separator className="my-8" />
+        {/* Article Summary */}
+        {showSummary && (
+          <Card className="mb-8 border-yellow-400/20 bg-yellow-50">
+            <CardHeader>
+              <CardTitle className="flex items-center text-gray-900">
+                <FileText className="h-5 w-5 mr-2" />
+                Article Summary
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {generateSummary().map((point, index) => (
+                  <div key={index} className="flex items-start space-x-2">
+                    <span className="text-gray-900 font-medium text-sm">{point.split(' ')[0]}</span>
+                    <span className="text-gray-700 text-sm">{point.substring(point.indexOf(' ') + 1)}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
-        {/* Article Content */}
-        <div className="mb-12">
-          <MarkdownRenderer content={post.content} />
+        {/* Audio Player Info */}
+        {hasAudioStarted && (
+          <Card className="mb-8 border-yellow-400/20 bg-yellow-50">
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-3">
+                <Headphones className="h-5 w-5 text-yellow-600" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-900">
+                    {isPlaying ? 'Audio Playback Active' : 'Audio Paused'}
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    {isPlaying 
+                      ? 'Article is being read aloud.' 
+                      : 'Paused - Click play to resume from where you left off.'}
+                  </p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    onClick={handlePlayPause}
+                    title={isPlaying ? 'Pause' : 'Resume'}
+                  >
+                    {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    onClick={handleRestart}
+                    title="Restart from beginning"
+                  >
+                    <RotateCcw className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    onClick={handleStop} 
+                    title="Stop"
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    <Square className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Main Content with TOC */}
+        <div className="relative">
+          {/* Table of Contents - Desktop Sidebar */}
+          {tableOfContents.length > 0 && isTOCVisible && (
+            <div className="hidden xl:block">
+              <div className="fixed top-32 right-8 w-64 max-h-[calc(100vh-200px)] overflow-y-auto transition-opacity duration-300" ref={tocRef}>
+                <Card className="border-yellow-400/20">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-sm font-semibold text-gray-900 flex items-center">
+                        <List className="h-4 w-4 mr-2" />
+                        Table of Contents
+                      </CardTitle>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowTOC(!showTOC)}
+                        className="h-6 w-6 p-0"
+                      >
+                        {showTOC ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  {showTOC && (
+                    <CardContent className="pt-0">
+                      <nav className="space-y-1">
+                        {tableOfContents.map((heading) => (
+                          <button
+                            key={heading.id}
+                            data-heading-id={heading.id}
+                            onClick={() => scrollToSection(heading.id)}
+                            className={`
+                              w-full text-left text-sm py-1.5 px-2 rounded transition-colors
+                              ${heading.level === 1 ? 'font-semibold' : ''}
+                              ${heading.level === 2 ? 'pl-4 font-medium' : ''}
+                              ${heading.level === 3 ? 'pl-6 text-xs' : ''}
+                              ${activeSection === heading.id 
+                                ? 'bg-yellow-400 text-gray-900 font-semibold' 
+                                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                              }
+                            `}
+                          >
+                            {heading.text}
+                          </button>
+                        ))}
+                      </nav>
+                    </CardContent>
+                  )}
+                </Card>
+              </div>
+            </div>
+          )}
+
+          {/* Mobile TOC */}
+          {tableOfContents.length > 0 && (
+            <div className="xl:hidden mb-6">
+              <Card className="border-yellow-400/20">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between cursor-pointer" onClick={() => setShowTOC(!showTOC)}>
+                    <CardTitle className="text-sm font-semibold text-gray-900 flex items-center">
+                      <List className="h-4 w-4 mr-2" />
+                      Table of Contents
+                    </CardTitle>
+                    {showTOC ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                  </div>
+                </CardHeader>
+                {showTOC && (
+                  <CardContent className="pt-0">
+                    <nav className="space-y-1">
+                      {tableOfContents.map((heading) => (
+                        <button
+                          key={heading.id}
+                          data-heading-id={heading.id}
+                          onClick={() => scrollToSection(heading.id)}
+                          className={`
+                            w-full text-left text-sm py-1.5 px-2 rounded transition-colors
+                            ${heading.level === 1 ? 'font-semibold' : ''}
+                            ${heading.level === 2 ? 'pl-4 font-medium' : ''}
+                            ${heading.level === 3 ? 'pl-6 text-xs' : ''}
+                            ${activeSection === heading.id 
+                              ? 'bg-yellow-400 text-gray-900 font-semibold' 
+                              : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                            }
+                          `}
+                        >
+                          {heading.text}
+                        </button>
+                      ))}
+                    </nav>
+                  </CardContent>
+                )}
+              </Card>
+            </div>
+          )}
+
+          {/* Article Content */}
+          <div className="mb-12" ref={contentRef}>
+            <MarkdownRenderer content={post.content} />
+          </div>
+          <div ref={articleEndRef}></div>
         </div>
 
         {/* Tags */}
@@ -456,7 +747,7 @@ export default function BlogDetailPage() {
         </div>
 
         {/* Comments Section - Collapsible */}
-        <div className="mb-12">
+        <div className="mb-12" id="comments-section">
           <button
             onClick={() => setShowComments(!showComments)}
             className="flex items-center justify-between w-full mb-6 group"

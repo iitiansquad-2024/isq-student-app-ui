@@ -459,12 +459,36 @@ function ProfilePageContent() {
             }
           >
             <div>
-              <StreakSquad
-                mode="leaderboard"
+              <StreakSquad 
+                mode="leaderboard" 
                 title="Global Leaderboard"
                 viewAllHref="/squad?tab=leaderboard"
                 size={user ? 5 : 20}
               />
+              
+              {user && (
+                <div className="mt-6 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-200">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600 mb-1">Your Rank</p>
+                      <p className="text-2xl font-bold text-gray-900">#42</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm text-gray-600 mb-1">Your XP</p>
+                      <p className="text-2xl font-bold text-yellow-600">2,450 XP</p>
+                    </div>
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-yellow-200">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Next Rank: #41</span>
+                      <span className="text-gray-900 font-medium">150 XP to go</span>
+                    </div>
+                    <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
+                      <div className="bg-yellow-500 h-2 rounded-full" style={{ width: '60%' }}></div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </CollapsibleCard>
         </>
