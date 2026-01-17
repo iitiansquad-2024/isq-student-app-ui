@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
@@ -8,7 +8,6 @@ import {
   Clock, 
   Heart, 
   Share2, 
-  Bookmark, 
   ArrowLeft, 
   MessageCircle, 
   TrendingUp,
@@ -21,7 +20,14 @@ import {
   ChevronUp,
   Brain,
   CheckCircle2,
-  XCircle
+  XCircle,
+  Headphones,
+  Play,
+  Pause,
+  RotateCcw,
+  Square,
+  FileText,
+  List
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -93,8 +99,10 @@ export default function BlogDetailPage() {
   const params = useParams();
   const router = useRouter();
   const [isLiked, setIsLiked] = useState(false);
-  const [isBookmarked, setIsBookmarked] = useState(false);
   const [likes, setLikes] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [hasAudioStarted, setHasAudioStarted] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [comments, setComments] = useState<Comment[]>(mockComments);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
@@ -103,6 +111,14 @@ export default function BlogDetailPage() {
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizAnswers, setQuizAnswers] = useState<{[key: number]: number}>({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>('');
+  const [showTOC, setShowTOC] = useState(true);
+  const [isTOCVisible, setIsTOCVisible] = useState(true);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const tocRef = useRef<HTMLDivElement>(null);
+  const isClickScrolling = useRef(false);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const articleEndRef = useRef<HTMLDivElement>(null);
 
   const post = MOCK_BLOG_POSTS.find(p => p.id === params.id);
   const quizQuestions: QuizQuestion[] = post ? (MOCK_QUIZ_QUESTIONS[post.id] || []) : [];
@@ -112,6 +128,130 @@ export default function BlogDetailPage() {
       setLikes(post.likes);
     }
   }, [post]);
+
+  // Extract headings for Table of Contents
+  const extractHeadings = (content: string) => {
+    const lines = content.trim().split('\n');
+    const headings: { id: string; text: string; level: number }[] = [];
+    
+    lines.forEach((line, index) => {
+      if (line.startsWith('# ')) {
+        const text = line.substring(2).trim();
+        headings.push({ id: `heading-${index}`, text, level: 1 });
+      } else if (line.startsWith('## ')) {
+        const text = line.substring(3).trim();
+        headings.push({ id: `heading-${index}`, text, level: 2 });
+      } else if (line.startsWith('### ')) {
+        const text = line.substring(4).trim();
+        headings.push({ id: `heading-${index}`, text, level: 3 });
+      }
+    });
+    
+    return headings;
+  };
+
+  const tableOfContents = post ? extractHeadings(post.content) : [];
+
+  // Scroll to section
+  const scrollToSection = (id: string) => {
+    isClickScrolling.current = true;
+    setActiveSection(id);
+    
+    const element = document.getElementById(id);
+    if (element) {
+      const offset = 120;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+      
+      setTimeout(() => {
+        if (tocRef.current) {
+          const activeButton = tocRef.current.querySelector(`button[data-heading-id="${id}"]`);
+          if (activeButton) {
+            activeButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }
+      }, 100);
+      
+      setTimeout(() => {
+        isClickScrolling.current = false;
+      }, 1000);
+    }
+  };
+
+  // Track active section on scroll
+  useEffect(() => {
+    let ticking = false;
+    
+    const handleScroll = () => {
+      if (isClickScrolling.current) return;
+      
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const headingElements = tableOfContents.map(h => ({
+            id: h.id,
+            element: document.getElementById(h.id)
+          }));
+          
+          const scrollPosition = window.scrollY + 200;
+          let currentSection = '';
+          
+          for (let i = 0; i < headingElements.length; i++) {
+            const { id, element } = headingElements[i];
+            if (element && element.offsetTop <= scrollPosition) {
+              currentSection = id;
+            } else {
+              break;
+            }
+          }
+
+          if (currentSection && currentSection !== activeSection) {
+            setActiveSection(currentSection);
+            
+            if (tocRef.current) {
+              const activeButton = tocRef.current.querySelector(`button[data-heading-id="${currentSection}"]`);
+              if (activeButton) {
+                activeButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+            }
+          }
+          
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [activeSection, tableOfContents]);
+
+  // Hide TOC when scrolling past article
+  useEffect(() => {
+    const handleTOCVisibility = () => {
+      if (articleEndRef.current) {
+        const articleEnd = articleEndRef.current.getBoundingClientRect().top;
+        const windowHeight = window.innerHeight;
+        
+        if (articleEnd < windowHeight * 0.3) {
+          setIsTOCVisible(false);
+        } else {
+          setIsTOCVisible(true);
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleTOCVisibility, { passive: true });
+    handleTOCVisibility();
+    
+    return () => window.removeEventListener('scroll', handleTOCVisibility);
+  }, []);
 
   if (!post) {
     return (
@@ -269,14 +409,6 @@ export default function BlogDetailPage() {
             >
               <Heart className={`h-4 w-4 mr-2 ${isLiked ? 'fill-current' : ''}`} />
               {likes}
-            </Button>
-            <Button
-              variant={isBookmarked ? "default" : "outline"}
-              size="sm"
-              onClick={() => setIsBookmarked(!isBookmarked)}
-              className={isBookmarked ? "bg-yellow-400 hover:bg-yellow-500 text-gray-900" : ""}
-            >
-              <Bookmark className={`h-4 w-4 ${isBookmarked ? 'fill-current' : ''}`} />
             </Button>
             <Button variant="outline" size="sm" onClick={handleShare}>
               <Share2 className="h-4 w-4 mr-2" />
