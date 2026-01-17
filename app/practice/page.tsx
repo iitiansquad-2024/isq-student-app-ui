@@ -6,6 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Search, Sliders, X } from "lucide-react"
 import Streak from "@/components/ui/streak"
 import QuestionCard from "@/components/ui/question-card"
+import PracticeFilters from "@/components/practice/PracticeFilters"
+import PresetFilters from "@/components/practice/PresetFilters"
+import SortByComponent, { SortField, SortOrder } from "@/components/practice/SortByComponent"
+import ActiveFilters from "@/components/practice/ActiveFilters"
+import Footer from "@/components/ui/footer"
 
 type Question = {
   id: string
@@ -22,47 +27,98 @@ const SAMPLE_QUESTIONS: Question[] = [
   { id: "q4", title: "Multiple choice: identify the verb", difficulty: "Easy", tags: ["grammar", "mcq"], paper: "BITSAT 2024" },
 ]
 
-export default function PracticePage() {
-  // Preset filters (exclude 'All' which behaves as no filter)
-  const initialFilters = ["Easy", "Medium", "Hard", "MCQ"]
+interface FilterState {
+  subjects: string[]
+  chapters: string[]
+  topics: string[]
+  years: string[]
+  difficulty: string[]
+  questionType: string[]
+  previousYearOnly: boolean
+}
 
-  const [filtersOrder, setFiltersOrder] = useState<string[]>(initialFilters)
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([])
-  const [prevPositions, setPrevPositions] = useState<Record<string, number | null>>({})
-  const [expandedFilters, setExpandedFilters] = useState(false)
+export default function PracticePage() {
   const [query, setQuery] = useState("")
-  const [showFilters, setShowFilters] = useState(false)
+  const [filters, setFilters] = useState<FilterState>({
+    subjects: [],
+    chapters: [],
+    topics: [],
+    years: [],
+    difficulty: [],
+    questionType: [],
+    previousYearOnly: true
+  })
+
+  const presetFilters = ["Easy", "Medium", "Hard", "MCQ", "Numerical", "Previous Year"]
+  const [selectedPresets, setSelectedPresets] = useState<string[]>([])
+  const [sortField, setSortField] = useState<SortField | null>(null)
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc")
+  const [displayCount, setDisplayCount] = useState(10)
 
   const visibleCount = 3
-
-  const matchesFilter = (qItem: Question, f: string) => {
-    if (f === "MCQ") return qItem.tags.includes("mcq")
-    if (["Easy", "Medium", "Hard"].includes(f)) return qItem.difficulty === f
-    return qItem.tags.includes(f.toLowerCase())
-  }
 
   const filtered = useMemo(() => {
     let list = SAMPLE_QUESTIONS
 
-    if (selectedFilters.length > 0) {
+    // Apply preset filters
+    if (selectedPresets.length > 0) {
       list = list.filter((q) => {
-        return selectedFilters.some((f) => {
-          if (f === "MCQ") return q.tags.includes("mcq")
-          if (["Easy", "Medium", "Hard"].includes(f)) return q.difficulty === f
-          return q.tags.includes(f.toLowerCase())
+        return selectedPresets.every((preset) => {
+          if (preset === "Easy" || preset === "Medium" || preset === "Hard") {
+            return q.difficulty === preset
+          }
+          if (preset === "MCQ") {
+            return q.tags.includes("mcq")
+          }
+          if (preset === "Previous Year") {
+            return true
+          }
+          return true
         })
       })
     }
 
+    // Apply difficulty filter
+    if (filters.difficulty.length > 0) {
+      list = list.filter((q) => filters.difficulty.includes(q.difficulty))
+    }
+
+    // Apply search query
     if (query.trim()) {
       const q = query.toLowerCase()
       list = list.filter((it) => it.title.toLowerCase().includes(q) || it.tags.join(" ").includes(q))
     }
 
-    return list
-  }, [selectedFilters, query])
+    // Apply sorting
+    if (sortField) {
+      list = [...list].sort((a, b) => {
+        let aValue: any, bValue: any
+        
+        switch (sortField) {
+          case "id":
+            aValue = parseInt(a.id.replace("q", ""))
+            bValue = parseInt(b.id.replace("q", ""))
+            break
+          case "year":
+            aValue = parseInt(a.paper.match(/\d{4}/)?.[0] || "0")
+            bValue = parseInt(b.paper.match(/\d{4}/)?.[0] || "0")
+            break
+          case "difficulty":
+            const diffOrder = { Easy: 1, Medium: 2, Hard: 3 }
+            aValue = diffOrder[a.difficulty]
+            bValue = diffOrder[b.difficulty]
+            break
+          default:
+            return 0
+        }
+        
+        return sortOrder === "asc" ? aValue - bValue : bValue - aValue
+      })
+    }
 
-  // selection, bookmark and previous-attempt UI state per question
+    return list
+  }, [filters, query, selectedPresets, sortField, sortOrder])
+
   const [selectedIds, setSelectedIds] = useState<Record<string, boolean>>({})
   const [bookmarked, setBookmarked] = useState<Record<string, boolean>>({})
   const [prevOpen, setPrevOpen] = useState<Record<string, boolean>>({})
@@ -79,20 +135,6 @@ export default function PracticePage() {
     setPrevOpen((s) => ({ ...s, [id]: !s[id] }))
   }
 
-  // counts for each preset filter considering current query
-  const filterCounts = useMemo(() => {
-    const counts: Record<string, number> = {}
-    const q = query.trim().toLowerCase()
-    for (const f of filtersOrder) {
-      counts[f] = SAMPLE_QUESTIONS.filter((item) => {
-        if (!matchesFilter(item, f)) return false
-        if (!q) return true
-        return item.title.toLowerCase().includes(q) || item.tags.join(" ").includes(q)
-      }).length
-    }
-    return counts
-  }, [filtersOrder, query])
-
   return (
     <section className="py-8">
       <header className="mb-4 flex items-center justify-between">
@@ -106,107 +148,77 @@ export default function PracticePage() {
         </div>
       </header>
 
-      {/* 1. Preset filters (multi-select, expandable) */}
-      <div className="mb-4 rounded-xl bg-stone-50">
-        <div className="flex items-center gap-2 overflow-x-auto py-2 px-0.5 flex-wrap">
-          {(expandedFilters ? filtersOrder : filtersOrder.slice(0, visibleCount)).map((f) => {
-            const selected = selectedFilters.includes(f)
-            return (
-              <div key={f} className="relative">
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault()
-                      if (selected) return
-                      setPrevPositions((p) => ({ ...p, [f]: filtersOrder.indexOf(f) }))
-                      setFiltersOrder((arr) => [f, ...arr.filter((x) => x !== f)])
-                      setSelectedFilters((s) => [f, ...s])
-                    }
-                  }}
-                  onClick={() => {
-                    if (selected) return
-                    // select and move to front, store previous position
-                    setPrevPositions((p) => ({ ...p, [f]: filtersOrder.indexOf(f) }))
-                    setFiltersOrder((arr) => [f, ...arr.filter((x) => x !== f)])
-                    setSelectedFilters((s) => [f, ...s])
-                  }}
-                  className={`focus:ring-2 focus:ring-primary-dark flex cursor-pointer items-center gap-2 rounded-full px-3 py-1 text-sm font-medium transition ${
-                    selected ? "bg-primary text-primary-foreground" : "bg-transparent text-muted-foreground"
-                  }`}
-                >
-                  <span>
-                    {f} <span className="ml-1 text-xs text-muted-foreground">({filterCounts[f] ?? 0})</span>
-                  </span>
-                  {selected ? (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        // remove and restore previous position
-                        const prev = prevPositions[f]
-                        setFiltersOrder((arr) => {
-                          const without = arr.filter((x) => x !== f)
-                          const insertAt = prev != null ? Math.min(Math.max(prev, 0), without.length) : without.length
-                          const res = [...without]
-                          res.splice(insertAt, 0, f)
-                          return res
-                        })
-                        setPrevPositions((p) => {
-                          const copy = { ...p }
-                          delete copy[f]
-                          return copy
-                        })
-                        setSelectedFilters((s) => s.filter((x) => x !== f))
-                      }}
-                      aria-label={`Remove ${f}`}
-                      className="ml-1 inline-flex items-center justify-center rounded-full p-0.5 text-muted-foreground cursor-pointer hover:bg-black/5"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  ) : null}
-                </div>
-              </div>
-            )
-          })}
+      {/* Preset Filters */}
+      <PresetFilters
+        presetFilters={presetFilters}
+        selectedPresets={selectedPresets}
+        onTogglePreset={(filter) => {
+          setSelectedPresets((prev) =>
+            prev.includes(filter)
+              ? prev.filter((f) => f !== filter)
+              : [...prev, filter]
+          )
+        }}
+      />
 
-          {filtersOrder.length > visibleCount ? (
-            <button
-              className="ml-2 rounded-full px-3 py-1 text-sm text-muted-foreground cursor-pointer hover:bg-background/50 underline"
-              onClick={() => setExpandedFilters((s) => !s)}
-            >
-              {expandedFilters ? "Show less" : "Show all"}
-            </button>
-          ) : null}
+      {/* Active Filters Display */}
+      <ActiveFilters
+        filters={filters}
+        onRemoveFilter={(type, value) => {
+          setFilters((prev) => ({
+            ...prev,
+            [type]: (prev[type] as string[]).filter((item) => item !== value),
+          }))
+        }}
+        onClearAll={() => {
+          setFilters({
+            subjects: [],
+            chapters: [],
+            topics: [],
+            years: [],
+            difficulty: [],
+            questionType: [],
+            previousYearOnly: true,
+          })
+        }}
+      />
+
+      {/* Search, Sort and Filter Button */}
+      <div className="mb-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input 
+            placeholder="Search questions or tags" 
+            value={query} 
+            onChange={(e) => setQuery(e.target.value)}
+            className="pl-9"
+          />
         </div>
+
+        {/* Sort By Component */}
+        <SortByComponent
+          sortField={sortField}
+          sortOrder={sortOrder}
+          onSortChange={(field, order) => {
+            setSortField(field)
+            setSortOrder(order)
+          }}
+        />
+
+        {/* Filter Button - Both Mobile and Desktop */}
+        <PracticeFilters 
+          filters={filters} 
+          onFiltersChange={setFilters}
+          isMobile={true}
+        />
       </div>
-
-      {/* 2. Search and filter row */}
-      <div className="mb-4 flex w-full items-center gap-3">
-        <div className="flex w-full items-center gap-2">
-          <Search className="h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search questions or tags" value={query} onChange={(e) => setQuery(e.target.value)} />
-        </div>
-
-        <Button variant="outline" onClick={() => setShowFilters((s) => !s)} className="px-3">
-          <Sliders className="mr-2 h-4 w-4" />
-          Filters
-        </Button>
-      </div>
-
-      {/* Optional filter area */}
-      {showFilters ? (
-        <div className="mb-4 rounded-md border border-border p-3">
-          <div className="text-sm text-muted-foreground">No advanced filters configured — placeholder area.</div>
-        </div>
-      ) : null}
 
       {/* 3. Question list row */}
       <div className="space-y-3">
         {filtered.length === 0 ? (
           <div className="rounded-md border border-border p-4 text-muted-foreground">No questions match your search.</div>
         ) : (
-          filtered.map((q) => {
+          filtered.slice(0, displayCount).map((q) => {
             const attempts = q.id === "q1" ? 12 : q.id === "q2" ? 34 : q.id === "q3" ? 7 : 3
             const accuracy = q.id === "q1" ? 0.82 : q.id === "q2" ? 0.63 : q.id === "q3" ? 0.49 : 0.92
             const year = q.id === "q1" ? 2024 : q.id === "q2" ? 2025 : q.id === "q3" ? 2023 : 2026
@@ -240,6 +252,21 @@ export default function PracticePage() {
           })
         )}
       </div>
+
+      {/* Load More Button */}
+      {filtered.length > displayCount && (
+        <div className="flex justify-center mt-6">
+          <Button
+            variant="outline"
+            onClick={() => setDisplayCount(prev => prev + 10)}
+            className="min-w-[200px]"
+          >
+            Load More Questions
+          </Button>
+        </div>
+      )}
+
+      <Footer />
     </section>
   )
 }

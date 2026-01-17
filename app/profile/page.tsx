@@ -16,6 +16,7 @@ import {
   BarChart3,
   Medal,
   ChevronDown,
+  LogIn,
 } from "lucide-react";
 import StreakSquad from "@/components/ui/analytics/StreakSquad";
 import PageHeader from "@/components/ui/page-header";
@@ -26,38 +27,99 @@ import AttemptHistory from "@/components/profile/AttemptHistory";
 import ReportManagement from "@/components/profile/ReportManagement";
 import HeatmapCalendar from "@/components/analytics/HeatmapCalendar";
 import { CollapsibleCard } from "@/components/ui/collapsible-card";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import sampleMembers from "@/lib/members";
 import Link from "next/link";
-import { useState, useMemo, Suspense } from "react";
+import { useState, useMemo, Suspense, useEffect } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
+import { logout } from "@/lib/authApi";
 
 function ProfileCard({ viewed }: { viewed?: any }) {
-  const defaultProfile = {
-    id: "me",
-    name: "Anita Verma",
-    email: "anita.verma@example.com",
-    preferredExam: "JEE",
-    totalQuestions: 120,
-    xp: 200,
-    joined: "2023-08-01",
-    avatarUrl: null,
-    streakDays: 5,
-    goal: 7,
-  };
-
+  const { user } = useAuth();
+  const router = useRouter();
+  
+  // If not viewing another user and not authenticated, show login prompt
+  if (!viewed && !user) {
+    return (
+      <CollapsibleCard
+        title="Details"
+        defaultExpanded
+        className="border-border bg-background"
+      >
+        <div className="flex flex-col items-center justify-center py-8 text-center">
+          <LogIn className="h-16 w-16 text-gray-400 mb-4" />
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Sign In Required</h3>
+          <p className="text-gray-600 mb-6 max-w-sm">
+            Please sign in to view your profile and access personalized features.
+          </p>
+          <div className="flex gap-3">
+            <Button
+              onClick={() => router.push('/login')}
+              className="bg-yellow-400 text-gray-900 hover:bg-yellow-500"
+            >
+              <LogIn className="h-4 w-4 mr-2" />
+              Sign In
+            </Button>
+            <Button
+              onClick={() => router.push('/signup')}
+              variant="outline"
+            >
+              Create Account
+            </Button>
+          </div>
+        </div>
+      </CollapsibleCard>
+    );
+  }
+  
   const initial = viewed
     ? {
-        ...viewed,
+        id: viewed.id,
+        name: viewed.name,
         email: `${viewed.id}@example.com`,
         preferredExam: "JEE",
         totalQuestions: (viewed.streakDays ?? 0) * 10,
+        xp: viewed.xp ?? 0,
+        joined: viewed.joined ?? "2024-01-01",
+        avatarUrl: viewed.avatarUrl ?? null,
+        streakDays: viewed.streakDays ?? 0,
+        goal: 7,
       }
-    : defaultProfile;
+    : {
+        id: user?.id ?? "me",
+        name: user?.name ?? "User",
+        email: user?.email ?? "user@example.com",
+        preferredExam: "JEE",
+        totalQuestions: 0,
+        xp: 0,
+        joined: "2024-01-01",
+        avatarUrl: user?.image_url ?? null,
+        streakDays: 0,
+        goal: 7,
+      };
 
   const [profile, setProfile] = useState(initial);
   const [editing, setEditing] = useState(false);
+  
+  // Update profile when user data changes
+  useEffect(() => {
+    if (!viewed && user) {
+      setProfile({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        preferredExam: "JEE",
+        totalQuestions: 0,
+        xp: 0,
+        joined: "2024-01-01",
+        avatarUrl: user.image_url ?? null,
+        streakDays: 0,
+        goal: 7,
+      });
+    }
+  }, [user, viewed]);
 
   const rank = useMemo(() => {
     const sorted = [...sampleMembers].sort(
@@ -195,6 +257,8 @@ function generateUserActivityData(
 }
 
 function ProfilePageContent() {
+  const { user, loading, logout: authLogout } = useAuth();
+  const router = useRouter();
   const { state, remaining } = useQuota(20);
   const search = useSearchParams();
   const memberId = search.get("member");
@@ -202,6 +266,7 @@ function ProfilePageContent() {
   const [activeTab, setActiveTab] = useState("bookmarks");
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const viewedUserActivity = useMemo(() => {
     if (!viewed) return {};
@@ -221,6 +286,50 @@ function ProfilePageContent() {
       avgPerDay: avgPerDay.toFixed(1),
     };
   }, [viewedUserActivity, viewed]);
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login prompt if not authenticated and not viewing another member
+  if (!user && !viewed) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center max-w-md mx-auto p-8">
+          <div className="mb-6">
+            <LogIn className="h-16 w-16 mx-auto text-gray-400 mb-4" />
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Sign In Required</h2>
+            <p className="text-gray-600 mb-6">
+              Please sign in to view your profile and access personalized features.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button
+              onClick={() => router.push('/login')}
+              className="bg-yellow-400 text-gray-900 hover:bg-yellow-500"
+            >
+              <LogIn className="h-4 w-4 mr-2" />
+              Sign In
+            </Button>
+            <Button
+              onClick={() => router.push('/signup')}
+              variant="outline"
+            >
+              Create Account
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <section className="py-8 flex flex-col gap-4">
@@ -242,12 +351,24 @@ function ProfilePageContent() {
                   </Button>
                 </div>
               )}
-              {!viewed && (
+              {!viewed && user && (
                 <>
                   <Button size="sm" variant="ghost" aria-label="Settings">
                     <Settings className="h-4 w-4" />
                   </Button>
-                  <Button size="sm" variant="ghost" aria-label="Logout">
+                  <Button 
+                    size="sm" 
+                    variant="ghost" 
+                    aria-label="Logout"
+                    onClick={async () => {
+                      try {
+                        await logout();
+                        router.push('/login');
+                      } catch (error) {
+                        console.error('Logout failed:', error);
+                      }
+                    }}
+                  >
                     <LogOut className="h-4 w-4" />
                   </Button>
                 </>
@@ -304,7 +425,7 @@ function ProfilePageContent() {
         </div>
       )}
 
-      {/* Squad sections - only show for own profile */}
+      {/* Squad sections - Always show for non-viewed profiles */}
       {!viewed && (
         <>
           <CollapsibleCard
@@ -342,6 +463,7 @@ function ProfilePageContent() {
                 mode="leaderboard"
                 title="Global Leaderboard"
                 viewAllHref="/squad?tab=leaderboard"
+                size={user ? 5 : 20}
               />
             </div>
           </CollapsibleCard>

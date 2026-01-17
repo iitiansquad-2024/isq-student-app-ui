@@ -3,8 +3,17 @@
 import { motion, AnimatePresence } from "framer-motion"
 import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import Link from "next/link"
 
-export function Sidebar({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
+export function Sidebar({ 
+  open, 
+  onOpenChange,
+  onBlogOpen 
+}: { 
+  open: boolean
+  onOpenChange: (v: boolean) => void
+  onBlogOpen?: () => void
+}) {
   return (
     <AnimatePresence>
       {open ? (
@@ -34,18 +43,41 @@ export function Sidebar({ open, onOpenChange }: { open: boolean; onOpenChange: (
             </div>
 
             <nav className="flex h-full flex-col gap-2 p-4">
-              <a className="block rounded-md px-3 py-2 text-primary hover:bg-primary/10" href="#">
+              <a 
+                className="block rounded-md px-3 py-2 text-primary hover:bg-primary/10" 
+                href="/practice"
+                onClick={() => onOpenChange(false)}
+              >
                 Practice
               </a>
-              <a className="block rounded-md px-3 py-2 hover:bg-primary/10" href="#">
+              <a 
+                className="block rounded-md px-3 py-2 hover:bg-primary/10" 
+                href="/analytics"
+                onClick={() => onOpenChange(false)}
+              >
                 Analytics
               </a>
-              <a className="block rounded-md px-3 py-2 hover:bg-primary/10" href="#">
+              <a 
+                className="block rounded-md px-3 py-2 hover:bg-primary/10" 
+                href="/revision"
+                onClick={() => onOpenChange(false)}
+              >
                 Revision
               </a>
-              <a className="block rounded-md px-3 py-2 hover:bg-primary/10" href="#">
+              <a 
+                className="block rounded-md px-3 py-2 hover:bg-primary/10" 
+                href="/profile"
+                onClick={() => onOpenChange(false)}
+              >
                 Profile
               </a>
+              <Link 
+                href="/blog"
+                className="block rounded-md px-3 py-2 hover:bg-primary/10 text-left w-full" 
+                onClick={() => onOpenChange(false)}
+              >
+                Blog
+              </Link>
             </nav>
           </motion.aside>
         </>

@@ -1,24 +1,31 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { TrendingUp, Target, Award, BookOpen, CheckCircle2, XCircle, Clock, Zap } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import StreakAnalytics from "@/components/ui/analytics/StreakAnalytics"
 import CoverageAnalytics from "@/components/ui/analytics/CoverageAnalytics"
 import RevisionDebtAnalytics from "@/components/ui/analytics/RevisionDebtAnalytics"
-import HeatmapCalendar from "@/components/analytics/HeatmapCalendar"
+import ActivityHeatmap from "@/components/ui/activity-heatmap"
 import CoverageStats from "@/components/analytics/CoverageStats"
 
-function generateSampleActivityData(year: number): Record<string, number> {
+function generateSampleActivityData(year: number, seed: number): Record<string, number> {
   const data: Record<string, number> = {}
   const startDate = new Date(year, 0, 1)
   const endDate = new Date(year, 11, 31)
   
+  // Use seed for consistent random generation
+  let random = seed
+  const seededRandom = () => {
+    random = (random * 9301 + 49297) % 233280
+    return random / 233280
+  }
+  
   for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
     const dateKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
-    if (Math.random() > 0.6) {
-      data[dateKey] = Math.floor(Math.random() * 15) + 1
+    if (seededRandom() > 0.6) {
+      data[dateKey] = Math.floor(seededRandom() * 15) + 1
     }
   }
   
@@ -29,10 +36,19 @@ export default function AnalyticsPage() {
   const [selectedSubject, setSelectedSubject] = useState<"all" | "physics" | "chemistry" | "mathematics">("all")
   const currentYear = new Date().getFullYear()
   const [selectedYear, setSelectedYear] = useState(currentYear)
+  const [mounted, setMounted] = useState(false)
   
-  const activityData = useMemo(() => generateSampleActivityData(selectedYear), [selectedYear])
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+  
+  const activityData = useMemo(() => {
+    if (!mounted) return {}
+    return generateSampleActivityData(selectedYear, selectedYear)
+  }, [selectedYear, mounted])
   
   const yearStats = useMemo(() => {
+    if (!activityData) return {}
     const values = Object.values(activityData)
     const totalAttempted = values.reduce((sum, count) => sum + count, 0)
     const daysActive = values.filter(count => count > 0).length
@@ -236,11 +252,7 @@ export default function AnalyticsPage() {
           </div>
         </div>
         
-        <HeatmapCalendar 
-          year={selectedYear} 
-          onYearChange={setSelectedYear}
-          activityData={activityData}
-        />
+        <ActivityHeatmap />
       </div>
 
       {/* Coverage Stats */}

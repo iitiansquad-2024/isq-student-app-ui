@@ -6,6 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Search, Sliders, X } from "lucide-react"
 import QuestionCard from "@/components/ui/question-card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import PracticeFilters from "@/components/practice/PracticeFilters"
+import PresetFilters from "@/components/practice/PresetFilters"
+import SortByComponent, { SortField, SortOrder } from "@/components/practice/SortByComponent"
+import ActiveFilters from "@/components/practice/ActiveFilters"
+import Footer from "@/components/ui/footer"
 
 type Question = {
   id: string
@@ -26,48 +31,100 @@ const SAMPLE_REVISION_QUESTIONS: Question[] = [
   { id: "q6", title: "Organic reaction mechanism", difficulty: "Hard", tags: ["chemistry", "organic"], paper: "JEE Advanced 2024", attemptDate: "2024-01-07", correct: false },
 ]
 
+interface FilterState {
+  subjects: string[]
+  chapters: string[]
+  topics: string[]
+  years: string[]
+  difficulty: string[]
+  questionType: string[]
+  previousYearOnly: boolean
+}
+
 export default function RevisionPage() {
-  const initialFilters = ["Correct", "Incorrect", "Easy", "Medium", "Hard"]
-
-  const [filtersOrder, setFiltersOrder] = useState<string[]>(initialFilters)
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([])
-  const [prevPositions, setPrevPositions] = useState<Record<string, number | null>>({})
-  const [expandedFilters, setExpandedFilters] = useState(false)
   const [query, setQuery] = useState("")
-  const [showFilters, setShowFilters] = useState(false)
   const [sortBy, setSortBy] = useState<"date-desc" | "date-asc">("date-desc")
+  const [filters, setFilters] = useState<FilterState>({
+    subjects: [],
+    chapters: [],
+    topics: [],
+    years: [],
+    difficulty: [],
+    questionType: [],
+    previousYearOnly: true
+  })
 
-  const visibleCount = 3
-
-  const matchesFilter = (qItem: Question, f: string) => {
-    if (f === "Correct") return qItem.correct
-    if (f === "Incorrect") return !qItem.correct
-    if (["Easy", "Medium", "Hard"].includes(f)) return qItem.difficulty === f
-    return qItem.tags.includes(f.toLowerCase())
-  }
+  const presetFilters = ["Easy", "Medium", "Hard", "Correct", "Incorrect"]
+  const [selectedPresets, setSelectedPresets] = useState<string[]>([])
+  const [sortField, setSortField] = useState<SortField | null>(null)
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc")
+  const [displayCount, setDisplayCount] = useState(10)
 
   const filtered = useMemo(() => {
     let list = SAMPLE_REVISION_QUESTIONS
 
-    if (selectedFilters.length > 0) {
+    // Apply preset filters
+    if (selectedPresets.length > 0) {
       list = list.filter((q) => {
-        return selectedFilters.some((f) => matchesFilter(q, f))
+        return selectedPresets.every((preset) => {
+          if (preset === "Easy" || preset === "Medium" || preset === "Hard") {
+            return q.difficulty === preset
+          }
+          if (preset === "Correct") {
+            return q.correct === true
+          }
+          if (preset === "Incorrect") {
+            return q.correct === false
+          }
+          return true
+        })
       })
     }
 
+    // Apply difficulty filter
+    if (filters.difficulty.length > 0) {
+      list = list.filter((q) => filters.difficulty.includes(q.difficulty))
+    }
+
+    // Apply search query
     if (query.trim()) {
       const q = query.toLowerCase()
       list = list.filter((it) => it.title.toLowerCase().includes(q) || it.tags.join(" ").includes(q) || it.paper.toLowerCase().includes(q))
     }
 
+    // Sort by date or custom field
     list = [...list].sort((a, b) => {
-      const dateA = new Date(a.attemptDate).getTime()
-      const dateB = new Date(b.attemptDate).getTime()
-      return sortBy === "date-desc" ? dateB - dateA : dateA - dateB
+      if (sortField) {
+        let aValue: any, bValue: any
+        
+        switch (sortField) {
+          case "id":
+            aValue = parseInt(a.id.replace("q", ""))
+            bValue = parseInt(b.id.replace("q", ""))
+            break
+          case "year":
+            aValue = parseInt(a.paper.match(/\d{4}/)?.[0] || "0")
+            bValue = parseInt(b.paper.match(/\d{4}/)?.[0] || "0")
+            break
+          case "difficulty":
+            const diffOrder = { Easy: 1, Medium: 2, Hard: 3 }
+            aValue = diffOrder[a.difficulty]
+            bValue = diffOrder[b.difficulty]
+            break
+          default:
+            return 0
+        }
+        
+        return sortOrder === "asc" ? aValue - bValue : bValue - aValue
+      } else {
+        const dateA = new Date(a.attemptDate).getTime()
+        const dateB = new Date(b.attemptDate).getTime()
+        return sortBy === "date-desc" ? dateB - dateA : dateA - dateB
+      }
     })
 
     return list
-  }, [selectedFilters, query, sortBy])
+  }, [filters, query, sortBy, selectedPresets, sortField, sortOrder])
 
   const [selectedIds, setSelectedIds] = useState<Record<string, boolean>>({})
   const [bookmarked, setBookmarked] = useState<Record<string, boolean>>({})
@@ -84,19 +141,6 @@ export default function RevisionPage() {
   function togglePrev(id: string) {
     setPrevOpen((s) => ({ ...s, [id]: !s[id] }))
   }
-
-  const filterCounts = useMemo(() => {
-    const counts: Record<string, number> = {}
-    const q = query.trim().toLowerCase()
-    for (const f of filtersOrder) {
-      counts[f] = SAMPLE_REVISION_QUESTIONS.filter((item) => {
-        if (!matchesFilter(item, f)) return false
-        if (!q) return true
-        return item.title.toLowerCase().includes(q) || item.tags.join(" ").includes(q) || item.paper.toLowerCase().includes(q)
-      }).length
-    }
-    return counts
-  }, [filtersOrder, query])
 
   return (
     <section className="py-8">
@@ -119,101 +163,66 @@ export default function RevisionPage() {
         </div>
       </header>
 
-      <div className="mb-4 rounded-xl bg-stone-50">
-        <div className="flex items-center gap-2 overflow-x-auto py-2 px-0.5 flex-wrap">
-          {(expandedFilters ? filtersOrder : filtersOrder.slice(0, visibleCount)).map((f) => {
-            const selected = selectedFilters.includes(f)
-            return (
-              <div key={f} className="relative">
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault()
-                      if (selected) return
-                      setPrevPositions((p) => ({ ...p, [f]: filtersOrder.indexOf(f) }))
-                      setFiltersOrder((arr) => [f, ...arr.filter((x) => x !== f)])
-                      setSelectedFilters((s) => [f, ...s])
-                    }
-                  }}
-                  onClick={() => {
-                    if (selected) return
-                    setPrevPositions((p) => ({ ...p, [f]: filtersOrder.indexOf(f) }))
-                    setFiltersOrder((arr) => [f, ...arr.filter((x) => x !== f)])
-                    setSelectedFilters((s) => [f, ...s])
-                  }}
-                  className={`focus:ring-2 focus:ring-primary-dark flex cursor-pointer items-center gap-2 rounded-full px-3 py-1 text-sm font-medium transition ${
-                    selected ? "bg-primary text-primary-foreground" : "bg-transparent text-muted-foreground"
-                  }`}
-                >
-                  <span>
-                    {f} <span className="ml-1 text-xs text-muted-foreground">({filterCounts[f] ?? 0})</span>
-                  </span>
-                  {selected ? (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        const prev = prevPositions[f]
-                        setFiltersOrder((arr) => {
-                          const without = arr.filter((x) => x !== f)
-                          const insertAt = prev != null ? Math.min(Math.max(prev, 0), without.length) : without.length
-                          const res = [...without]
-                          res.splice(insertAt, 0, f)
-                          return res
-                        })
-                        setPrevPositions((p) => {
-                          const copy = { ...p }
-                          delete copy[f]
-                          return copy
-                        })
-                        setSelectedFilters((s) => s.filter((x) => x !== f))
-                      }}
-                      aria-label={`Remove ${f}`}
-                      className="ml-1 inline-flex items-center justify-center rounded-full p-0.5 text-muted-foreground cursor-pointer hover:bg-black/5"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  ) : null}
-                </div>
-              </div>
-            )
-          })}
+      {/* Preset Filters */}
+      <PresetFilters
+        presetFilters={presetFilters}
+        selectedPresets={selectedPresets}
+        onTogglePreset={(filter) => {
+          setSelectedPresets((prev) =>
+            prev.includes(filter)
+              ? prev.filter((f) => f !== filter)
+              : [...prev, filter]
+          )
+        }}
+      />
 
-          {filtersOrder.length > visibleCount ? (
-            <button
-              className="ml-2 rounded-full px-3 py-1 text-sm text-muted-foreground cursor-pointer hover:bg-background/50 underline"
-              onClick={() => setExpandedFilters((s) => !s)}
-            >
-              {expandedFilters ? "Show less" : "Show all"}
-            </button>
-          ) : null}
+      {/* Active Filters Display */}
+      <ActiveFilters
+        filters={filters}
+        onRemoveFilter={(type, value) => {
+          setFilters((prev) => ({
+            ...prev,
+            [type]: (prev[type] as string[]).filter((item) => item !== value),
+          }))
+        }}
+        onClearAll={() => {
+          setFilters({
+            subjects: [],
+            chapters: [],
+            topics: [],
+            years: [],
+            difficulty: [],
+            questionType: [],
+            previousYearOnly: true,
+          })
+        }}
+      />
+
+      {/* Search, Sort and Filter Button */}
+      <div className="mb-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input 
+            placeholder="Search questions or tags" 
+            value={query} 
+            onChange={(e) => setQuery(e.target.value)}
+            className="pl-9"
+          />
         </div>
+
+        {/* Filter Button - Both Mobile and Desktop */}
+        <PracticeFilters 
+          filters={filters} 
+          onFiltersChange={setFilters}
+          isMobile={true}
+        />
       </div>
-
-      <div className="mb-4 flex w-full items-center gap-3">
-        <div className="flex w-full items-center gap-2">
-          <Search className="h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search questions or tags" value={query} onChange={(e) => setQuery(e.target.value)} />
-        </div>
-
-        <Button variant="outline" onClick={() => setShowFilters((s) => !s)} className="px-3">
-          <Sliders className="mr-2 h-4 w-4" />
-          Filters
-        </Button>
-      </div>
-
-      {showFilters ? (
-        <div className="mb-4 rounded-md border border-border p-3">
-          <div className="text-sm text-muted-foreground">No advanced filters configured — placeholder area.</div>
-        </div>
-      ) : null}
 
       <div className="space-y-3">
         {filtered.length === 0 ? (
           <div className="rounded-md border border-border p-4 text-muted-foreground">No questions match your search.</div>
         ) : (
-          filtered.map((q) => {
+          filtered.slice(0, displayCount).map((q) => {
             const attempts = Math.floor(Math.random() * 10) + 1
             const accuracy = Math.random()
             const year = parseInt(q.paper.match(/\d{4}/)?.[0] || "2024")
@@ -243,6 +252,21 @@ export default function RevisionPage() {
           })
         )}
       </div>
+
+      {/* Load More Button */}
+      {filtered.length > displayCount && (
+        <div className="flex justify-center mt-6">
+          <Button
+            variant="outline"
+            onClick={() => setDisplayCount(prev => prev + 10)}
+            className="min-w-[200px]"
+          >
+            Load More Questions
+          </Button>
+        </div>
+      )}
+
+      <Footer />
     </section>
   )
 }

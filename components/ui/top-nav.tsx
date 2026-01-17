@@ -1,9 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { Bell, EllipsisVertical, Menu, X } from "lucide-react";
+import { Bell, EllipsisVertical, Menu, X, LogIn, UserPlus, LogOut, User } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Select,
   SelectContent,
@@ -11,6 +14,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./dropdown-menu";
 import { Button } from "./button";
 import { Badge } from "./badge";
 import Avatar from "./avatar";
@@ -26,6 +37,10 @@ export function TopNav({
   open,
   onOpenChange,
 }: TopNavProps) {
+  const router = useRouter();
+  const { user, loading, logout: authLogout } = useAuth();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  
   const examOptions = [
     { id: "jee", name: "JEE Main & Advanced" },
     { id: "neet", name: "NEET" },
@@ -33,11 +48,29 @@ export function TopNav({
     { id: "upsc", name: "UPSC" },
   ];
 
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      await authLogout();
+      router.push('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
   return (
     <header className="fixed inset-x-0 top-0 z-50 bg-white">
       <div className="flex w-full items-center justify-between gap-4  px-4 py-2 backdrop-blur-sm ring-0 border-b border-b-stone-200">
         <div className="flex items-center gap-4">
-          <Menu className="h-5 w-5" />
+          <button 
+            onClick={() => onOpenChange(!open)}
+            className="cursor-pointer hover:bg-gray-100 rounded-md p-1 transition-colors"
+            aria-label="Toggle menu"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
           <img src="/isq-logo-white.svg" alt="Logo" className="w-32 h-auto" />
         </div>
 
@@ -53,12 +86,62 @@ export function TopNav({
               variant="destructive"
             />
           </Button>
-          <Avatar src={""} name={"Guest"} size={36} />
-          {/* <Avatar className="h-8 w-8">
-            <AvatarFallback className="bg-brand text-gray-900">
-              {getInitials("Guest")}
-            </AvatarFallback>
-          </Avatar> */}
+          
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="focus:outline-none">
+                  <Avatar 
+                    src={user.image_url || ""} 
+                    name={user.name} 
+                    size={36} 
+                    className="cursor-pointer hover:ring-2 hover:ring-yellow-400 transition-all"
+                  />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium">{user.name}</p>
+                    <p className="text-xs text-muted-foreground">{user.email}</p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => router.push('/profile')} className="cursor-pointer">
+                  <User className="mr-2 h-4 w-4" />
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="focus:outline-none">
+                  <Avatar 
+                    src={""} 
+                    name={"Guest"} 
+                    size={36} 
+                    className="cursor-pointer hover:ring-2 hover:ring-yellow-400 transition-all"
+                  />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={() => router.push('/login')} className="cursor-pointer">
+                  <LogIn className="mr-2 h-4 w-4" />
+                  Sign In
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push('/signup')} className="cursor-pointer">
+                  <UserPlus className="mr-2 h-4 w-4" />
+                  Sign Up
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
       </div>
 

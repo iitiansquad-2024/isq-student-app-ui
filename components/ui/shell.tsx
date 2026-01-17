@@ -7,11 +7,19 @@ import BottomNav from "./bottom-nav"
 
 export default function Shell({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [blogOpen, setBlogOpen] = useState(false)
 
   return (
     <div className="min-h-screen bg-background font-sans text-foreground dark:bg-black">
       <TopNav showSecondRow={true} open={menuOpen} onOpenChange={setMenuOpen} />
-      <Sidebar open={menuOpen} onOpenChange={setMenuOpen} />
+      <Sidebar 
+        open={menuOpen} 
+        onOpenChange={setMenuOpen}
+        onBlogOpen={() => {
+          setBlogOpen(true)
+          setMenuOpen(false)
+        }}
+      />
 
       <div className="mx-auto max-w-3xl px-4 pt-24 pb-28">{children}</div>
 

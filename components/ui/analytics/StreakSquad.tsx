@@ -25,11 +25,13 @@ export default function StreakSquad({
   mode = "tabs",
   viewAllHref,
   title,
+  size = 5,
 }: {
   members?: Member[];
   mode?: "tabs" | "stream" | "leaderboard";
   viewAllHref?: string;
   title?: string;
+  size?: number;
 }) {
   const sample: Member[] = [
     {
