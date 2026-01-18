@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 // Define protected routes that require authentication
-const protectedRoutes = ['/profile', '/analytics', '/practice', '/revision'];
+const protectedRoutes = ['/profile', '/analytics', '/revision'];
 
 // Define public routes that should redirect to home if already authenticated
 const authRoutes = ['/login', '/signup', '/forgot-password'];
