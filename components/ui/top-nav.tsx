@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Bell, EllipsisVertical, Menu, X, LogIn, UserPlus, LogOut, User, Moon, Sun } from "lucide-react";
@@ -9,6 +9,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useExam } from "@/contexts/ExamContext";
 import {
   Select,
   SelectContent,
@@ -42,14 +43,13 @@ export function TopNav({
   const router = useRouter();
   const { user, loading, logout: authLogout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { selectedExam, setSelectedExam, exams } = useExam();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  
-  const examOptions = [
-    { id: "jee", name: "JEE Main & Advanced" },
-    { id: "neet", name: "NEET" },
-    { id: "gate", name: "GATE" },
-    { id: "upsc", name: "UPSC" },
-  ];
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -64,7 +64,7 @@ export function TopNav({
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 bg-background border-b border-border">
+    <header className="fixed inset-x-0 top-0 z-[60] bg-background border-b border-border">
       <div className="flex w-full items-center justify-between gap-4 px-4 py-2 backdrop-blur-sm">
         <div className="flex items-center gap-4">
           <button 
@@ -169,22 +169,26 @@ export function TopNav({
       </div>
 
       <div className="w-full border-b border-border px-4 py-2 text-sm flex justify-between">
-        <Select defaultValue="jee">
-          <SelectTrigger className="text-xs h-fit cursor-pointer transition-colors duration-100 hover:bg-accent">
-            <SelectValue placeholder="Select exam" className="text-xs" />
-          </SelectTrigger>
-          <SelectContent className="text-xs">
-            {examOptions.map((exam) => (
-              <SelectItem
-                key={exam.id}
-                value={exam.id}
-                className="text-xs hover:bg-accent transition-colors duration-100 cursor-pointer"
-              >
-                {exam.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        {mounted ? (
+          <Select value={selectedExam} onValueChange={setSelectedExam}>
+            <SelectTrigger className="text-xs h-fit cursor-pointer transition-colors duration-100 hover:bg-accent">
+              <SelectValue placeholder="Select exam" className="text-xs" />
+            </SelectTrigger>
+            <SelectContent className="text-xs">
+              {exams.map((exam) => (
+                <SelectItem
+                  key={exam.id}
+                  value={exam.id}
+                  className="text-xs hover:bg-accent transition-colors duration-100 cursor-pointer"
+                >
+                  {exam.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        ) : (
+          <div className="w-full h-6 bg-muted/50 animate-pulse rounded" />
+        )}
         <Button
           variant="ghost"
           size="icon"

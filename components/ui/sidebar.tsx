@@ -19,7 +19,7 @@ export function Sidebar({
       {open ? (
         <>
           <motion.div
-            className="fixed inset-0 z-40 bg-black/30"
+            className="fixed inset-0 z-[70] bg-black/30"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -28,7 +28,7 @@ export function Sidebar({
 
           <motion.aside
             className={cn(
-              "fixed left-0 top-0 z-50 h-full w-[84%] max-w-[320px] bg-background shadow-xl ring-1 ring-border/60"
+              "fixed left-0 top-0 z-[70] h-full w-[84%] max-w-[320px] bg-background shadow-xl ring-1 ring-border/60"
             )}
             initial={{ x: -300 }}
             animate={{ x: 0 }}
@@ -43,34 +43,34 @@ export function Sidebar({
             </div>
 
             <nav className="flex h-full flex-col gap-2 p-4">
-              <a 
-                className="block rounded-md px-3 py-2 text-primary hover:bg-primary/10" 
+              <Link 
                 href="/practice"
+                className="block rounded-md px-3 py-2 text-primary hover:bg-primary/10" 
                 onClick={() => onOpenChange(false)}
               >
                 Practice
-              </a>
-              <a 
-                className="block rounded-md px-3 py-2 hover:bg-primary/10" 
+              </Link>
+              <Link 
                 href="/analytics"
+                className="block rounded-md px-3 py-2 hover:bg-primary/10" 
                 onClick={() => onOpenChange(false)}
               >
                 Analytics
-              </a>
-              <a 
-                className="block rounded-md px-3 py-2 hover:bg-primary/10" 
+              </Link>
+              <Link 
                 href="/revision"
+                className="block rounded-md px-3 py-2 hover:bg-primary/10" 
                 onClick={() => onOpenChange(false)}
               >
                 Revision
-              </a>
-              <a 
-                className="block rounded-md px-3 py-2 hover:bg-primary/10" 
+              </Link>
+              <Link 
                 href="/profile"
+                className="block rounded-md px-3 py-2 hover:bg-primary/10" 
                 onClick={() => onOpenChange(false)}
               >
                 Profile
-              </a>
+              </Link>
               <Link 
                 href="/blog"
                 className="block rounded-md px-3 py-2 hover:bg-primary/10 text-left w-full" 

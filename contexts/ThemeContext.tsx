@@ -17,16 +17,29 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
-    const savedTheme = localStorage.getItem("theme") as Theme | null
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+    // Check if theme was already initialized by the script
+    const isInitialized = sessionStorage.getItem('theme-initialized')
     
-    const initialTheme = savedTheme || (prefersDark ? "dark" : "light")
-    setThemeState(initialTheme)
-    
-    if (initialTheme === "dark") {
-      document.documentElement.classList.add("dark")
+    if (isInitialized) {
+      // Theme already set by script, just sync state
+      const hasDarkClass = document.documentElement.classList.contains('dark')
+      setThemeState(hasDarkClass ? 'dark' : 'light')
+    } else {
+      // Fallback to original logic
+      const savedTheme = localStorage.getItem("theme") as Theme | null
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      
+      const initialTheme = savedTheme || (prefersDark ? "dark" : "light")
+      setThemeState(initialTheme)
+      
+      if (initialTheme === "dark") {
+        document.documentElement.classList.add("dark")
+      } else {
+        document.documentElement.classList.remove("dark")
+      }
     }
+    
+    setMounted(true)
   }, [])
 
   const setTheme = (newTheme: Theme) => {
@@ -45,7 +58,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }
 
   if (!mounted) {
-    return <>{children}</>
+    return <div style={{ visibility: 'hidden' }}>{children}</div>
   }
 
   return (

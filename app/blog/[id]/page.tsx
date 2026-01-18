@@ -434,7 +434,7 @@ export default function BlogDetailPage() {
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       {/* Sticky Header - Only Back Button */}
-      <div className="sticky top-0 z-50 bg-background border-b border-border">
+      <div className="sticky top-0 z-30 bg-background border-b border-border">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <Button
             variant="ghost"
