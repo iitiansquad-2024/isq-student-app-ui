@@ -15,19 +15,19 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
       // Headers
       if (line.startsWith('# ')) {
         elements.push(
-          <h1 key={index} id={`heading-${index}`} className="text-3xl font-bold text-gray-900 mb-6 mt-8 scroll-mt-24">
+          <h1 key={index} id={`heading-${index}`} className="text-3xl font-bold text-foreground mb-6 mt-8 scroll-mt-24">
             {line.substring(2)}
           </h1>
         );
       } else if (line.startsWith('## ')) {
         elements.push(
-          <h2 key={index} id={`heading-${index}`} className="text-2xl font-bold text-gray-900 mb-4 mt-8 scroll-mt-24">
+          <h2 key={index} id={`heading-${index}`} className="text-2xl font-bold text-foreground mb-4 mt-8 scroll-mt-24">
             {line.substring(3)}
           </h2>
         );
       } else if (line.startsWith('### ')) {
         elements.push(
-          <h3 key={index} id={`heading-${index}`} className="text-xl font-semibold text-gray-900 mb-3 mt-6 scroll-mt-24">
+          <h3 key={index} id={`heading-${index}`} className="text-xl font-semibold text-foreground mb-3 mt-6 scroll-mt-24">
             {line.substring(4)}
           </h3>
         );
@@ -35,7 +35,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
       // Bold headings
       else if (line.startsWith('**') && line.endsWith('**') && line.length > 4) {
         elements.push(
-          <h4 key={index} className="text-lg font-semibold text-gray-800 mb-2 mt-4">
+          <h4 key={index} className="text-lg font-semibold text-foreground mb-2 mt-4">
             {line.substring(2, line.length - 2)}
           </h4>
         );
@@ -43,7 +43,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
       // Italic (quotes)
       else if (line.startsWith('*') && line.endsWith('*') && !line.startsWith('**') && line.length > 2) {
         elements.push(
-          <p key={index} className="text-gray-600 italic mb-4 pl-4 border-l-4 border-yellow-400">
+          <p key={index} className="text-muted-foreground italic mb-4 pl-4 border-l-4 border-yellow-400">
             {line.substring(1, line.length - 1)}
           </p>
         );
@@ -61,7 +61,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         });
         
         elements.push(
-          <li key={index} className="text-gray-700 mb-2 ml-6 list-disc">
+          <li key={index} className="mb-2 ml-6 list-disc">
             {renderedContent}
           </li>
         );
@@ -79,7 +79,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         });
         
         elements.push(
-          <li key={index} className="text-gray-700 mb-2 ml-6 list-decimal">
+          <li key={index} className="text-foreground mb-2 ml-6 list-decimal">
             {renderedContent}
           </li>
         );
@@ -100,7 +100,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         });
         
         elements.push(
-          <p key={index} className="text-gray-700 mb-4 leading-relaxed">
+          <p key={index} className="text-foreground mb-4 leading-relaxed">
             {renderedContent}
           </p>
         );
@@ -111,7 +111,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
   };
 
   return (
-    <div className="prose prose-lg max-w-none">
+    <div className="prose prose-lg max-w-none dark:prose-invert prose-headings:!text-foreground prose-p:!text-foreground prose-li:!text-foreground prose-strong:!text-foreground prose-em:!text-foreground prose-code:!text-foreground" style={{ color: 'var(--foreground)' }}>
       <div className="article-content">
         {renderContent(content)}
       </div>

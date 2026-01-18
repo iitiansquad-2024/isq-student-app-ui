@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { Bell, EllipsisVertical, Menu, X, LogIn, UserPlus, LogOut, User } from "lucide-react";
+import Link from "next/link";
+import { Bell, EllipsisVertical, Menu, X, LogIn, UserPlus, LogOut, User, Moon, Sun } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import {
   Select,
   SelectContent,
@@ -39,6 +41,7 @@ export function TopNav({
 }: TopNavProps) {
   const router = useRouter();
   const { user, loading, logout: authLogout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   
   const examOptions = [
@@ -61,17 +64,23 @@ export function TopNav({
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 bg-white">
-      <div className="flex w-full items-center justify-between gap-4  px-4 py-2 backdrop-blur-sm ring-0 border-b border-b-stone-200">
+    <header className="fixed inset-x-0 top-0 z-50 bg-background border-b border-border">
+      <div className="flex w-full items-center justify-between gap-4 px-4 py-2 backdrop-blur-sm">
         <div className="flex items-center gap-4">
           <button 
             onClick={() => onOpenChange(!open)}
-            className="cursor-pointer hover:bg-gray-100 rounded-md p-1 transition-colors"
+            className="cursor-pointer hover:bg-accent rounded-md p-1 transition-colors"
             aria-label="Toggle menu"
           >
             <Menu className="h-5 w-5" />
           </button>
-          <img src="/isq-logo-white.svg" alt="Logo" className="w-32 h-auto" />
+          <Link href="/" className="cursor-pointer">
+            <img 
+              src={theme === "dark" ? "/logo.svg" : "/isq-logo-white.svg"} 
+              alt="Logo" 
+              className="w-32 h-auto hover:opacity-80 transition-opacity" 
+            />
+          </Link>
         </div>
 
         <div className="flex items-center gap-2">
@@ -85,6 +94,20 @@ export function TopNav({
               className="absolute top-0 right-0 h-2 w-2 p-0"
               variant="destructive"
             />
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleTheme}
+            className="cursor-pointer transition-colors duration-100"
+            aria-label="Toggle theme"
+          >
+            {theme === "light" ? (
+              <Moon className="h-5 w-5" />
+            ) : (
+              <Sun className="h-5 w-5" />
+            )}
           </Button>
           
           {user ? (
@@ -145,9 +168,9 @@ export function TopNav({
         </div>
       </div>
 
-      <div className="w-full border-b px-4 py-2 text-sm flex justify-between">
+      <div className="w-full border-b border-border px-4 py-2 text-sm flex justify-between">
         <Select defaultValue="jee">
-          <SelectTrigger className="text-xs h-fit cursor-pointer transition-colors duration-100 hover:bg-stone-50">
+          <SelectTrigger className="text-xs h-fit cursor-pointer transition-colors duration-100 hover:bg-accent">
             <SelectValue placeholder="Select exam" className="text-xs" />
           </SelectTrigger>
           <SelectContent className="text-xs">
@@ -155,7 +178,7 @@ export function TopNav({
               <SelectItem
                 key={exam.id}
                 value={exam.id}
-                className="text-xs hover:bg-stone-50 transition-colors duration-100 cursor-pointer"
+                className="text-xs hover:bg-accent transition-colors duration-100 cursor-pointer"
               >
                 {exam.name}
               </SelectItem>
@@ -165,7 +188,7 @@ export function TopNav({
         <Button
           variant="ghost"
           size="icon"
-          className="md:hidden bg-stone-100 hover:bg-stone-200"
+          className="md:hidden bg-accent hover:bg-accent/80"
         >
           <EllipsisVertical className="h-5 w-5" />
         </Button>

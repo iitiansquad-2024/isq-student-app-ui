@@ -110,26 +110,26 @@ export default function BlogPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-yellow-400 to-orange-500 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
               Expert Insights & Study Tips
             </h1>
-            <p className="text-xl text-gray-800 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl text-foreground mb-8 max-w-3xl mx-auto">
               Learn from IIT toppers and medical college experts. Get the latest strategies, tips, and insights to excel in your competitive exams.
             </p>
             
             <div className="max-w-2xl mx-auto relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
               <Input
                 type="text"
                 placeholder="Search articles, topics, or authors..."
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
-                className="pl-12 pr-4 py-4 text-lg bg-white border-0 rounded-full shadow-lg focus:ring-2 focus:ring-yellow-600"
+                className="pl-12 pr-4 py-4 text-lg bg-background border-0 rounded-full shadow-lg focus:ring-2 focus:ring-yellow-600"
               />
             </div>
           </div>
@@ -137,7 +137,7 @@ export default function BlogPage() {
       </section>
 
       {/* Category Filter */}
-      <section className="bg-white border-b border-gray-200 sticky top-0 z-40">
+      <section className="bg-background border-b border-border sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center space-x-1 overflow-x-auto">
@@ -150,14 +150,14 @@ export default function BlogPage() {
                   className={`whitespace-nowrap ${
                     selectedCategory === category
                       ? 'bg-yellow-400 text-gray-900 hover:bg-yellow-500'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent'
                   }`}
                 >
                   {category}
                 </Button>
               ))}
             </div>
-            <div className="hidden md:flex items-center text-sm text-gray-500">
+            <div className="hidden md:flex items-center text-sm text-muted-foreground">
               <Filter className="h-4 w-4 mr-2" />
               {filteredPosts.length} articles
             </div>
@@ -175,7 +175,7 @@ export default function BlogPage() {
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center">
                     <Star className="h-6 w-6 text-yellow-500 mr-2" />
-                    <h2 className="text-2xl font-bold text-gray-900">Featured Articles</h2>
+                    <h2 className="text-2xl font-bold text-foreground">Featured Articles</h2>
                   </div>
                   {featuredPosts.length > 2 && (
                     <div className="flex items-center gap-2">
@@ -200,25 +200,25 @@ export default function BlogPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {displayedFeaturedPosts.map((post) => (
                     <Link key={post.id} href={`/blog/${post.id}`} className="group">
-                      <article className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-gray-100">
+                      <article className="bg-card rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-border">
                         <div className="aspect-[16/9] bg-gradient-to-br from-yellow-100 to-orange-100 relative overflow-hidden">
                           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                           <div className="absolute bottom-3 left-3 right-3">
                             <Badge className="bg-yellow-400 text-gray-900 mb-2 text-xs">
                               {post.category}
                             </Badge>
-                            <h3 className="text-lg font-bold text-white line-clamp-2 group-hover:text-yellow-400 transition-colors">
+                            <h3 className="text-lg font-bold text-foreground line-clamp-2 group-hover:text-yellow-400 transition-colors">
                               {post.title}
                             </h3>
                           </div>
                         </div>
                         
                         <div className="p-4">
-                          <p className="text-gray-600 mb-3 line-clamp-2 text-sm">
+                          <p className="text-muted-foreground mb-3 line-clamp-2 text-sm">
                             {post.excerpt}
                           </p>
                           
-                          <div className="flex items-center justify-between text-xs text-gray-500">
+                          <div className="flex items-center justify-between text-xs text-muted-foreground">
                             <div className="flex items-center space-x-3">
                               <span>{post.author.name}</span>
                               <span>•</span>
@@ -242,17 +242,17 @@ export default function BlogPage() {
                 <>
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center">
-                      <BookOpen className="h-6 w-6 text-gray-900 mr-2" />
-                      <h2 className="text-2xl font-bold text-gray-900">Latest Articles</h2>
+                      <BookOpen className="h-6 w-6 text-foreground mr-2" />
+                      <h2 className="text-2xl font-bold text-foreground">Latest Articles</h2>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-600 hidden sm:block">Sort by:</span>
+                      <span className="text-sm text-muted-foreground hidden sm:block">Sort by:</span>
                       <div className="flex gap-1">
                         <Button
                           variant={sortBy === 'latest' ? 'default' : 'ghost'}
                           size="sm"
                           onClick={() => setSortBy('latest')}
-                          className={sortBy === 'latest' ? 'bg-yellow-400 text-gray-900 hover:bg-yellow-500' : 'text-gray-600'}
+                          className={sortBy === 'latest' ? 'bg-yellow-400 text-gray-900 hover:bg-yellow-500' : 'text-muted-foreground'}
                         >
                           Latest
                         </Button>
@@ -260,7 +260,7 @@ export default function BlogPage() {
                           variant={sortBy === 'mostViewed' ? 'default' : 'ghost'}
                           size="sm"
                           onClick={() => setSortBy('mostViewed')}
-                          className={sortBy === 'mostViewed' ? 'bg-yellow-400 text-gray-900 hover:bg-yellow-500' : 'text-gray-600'}
+                          className={sortBy === 'mostViewed' ? 'bg-yellow-400 text-gray-900 hover:bg-yellow-500' : 'text-muted-foreground'}
                         >
                           Most Viewed
                         </Button>
@@ -268,7 +268,7 @@ export default function BlogPage() {
                           variant={sortBy === 'mostLiked' ? 'default' : 'ghost'}
                           size="sm"
                           onClick={() => setSortBy('mostLiked')}
-                          className={sortBy === 'mostLiked' ? 'bg-yellow-400 text-gray-900 hover:bg-yellow-500' : 'text-gray-600'}
+                          className={sortBy === 'mostLiked' ? 'bg-yellow-400 text-gray-900 hover:bg-yellow-500' : 'text-muted-foreground'}
                         >
                           Most Liked
                         </Button>
@@ -279,26 +279,26 @@ export default function BlogPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {paginatedPosts.map((post) => (
                       <Link key={post.id} href={`/blog/${post.id}`} className="group">
-                        <article className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-gray-100">
+                        <article className="bg-card rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-border">
                           <div className="flex">
                             <div className="w-32 h-24 bg-gradient-to-br from-yellow-100 to-orange-100 flex-shrink-0 relative">
                               <div className="absolute top-2 left-2">
-                                <Badge variant="secondary" className="bg-white/90 text-gray-900 text-xs">
+                                <Badge variant="secondary" className="bg-background/90 text-foreground text-xs">
                                   {post.category}
                                 </Badge>
                               </div>
                             </div>
                             
                             <div className="p-4 flex-1">
-                              <h3 className="text-base font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-yellow-600 transition-colors">
+                              <h3 className="text-base font-bold text-foreground mb-2 line-clamp-2 group-hover:text-yellow-600 transition-colors">
                                 {post.title}
                               </h3>
                               
-                              <p className="text-gray-600 mb-3 line-clamp-2 text-sm">
+                              <p className="text-muted-foreground mb-3 line-clamp-2 text-sm">
                                 {post.excerpt}
                               </p>
                               
-                              <div className="flex items-center justify-between text-xs text-gray-500">
+                              <div className="flex items-center justify-between text-xs text-muted-foreground">
                                 <div className="flex items-center space-x-2">
                                   <span>{post.author.name}</span>
                                   <span>•</span>
@@ -357,9 +357,9 @@ export default function BlogPage() {
               
               {filteredPosts.length === 0 && (
                 <div className="text-center py-12">
-                  <BookOpen className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-600 mb-2">No articles found</h3>
-                  <p className="text-gray-500">Try adjusting your search or filter criteria</p>
+                  <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-foreground mb-2">No articles found</h3>
+                  <p className="text-muted-foreground">Try adjusting your search or filter criteria</p>
                 </div>
               )}
             </section>
@@ -370,7 +370,7 @@ export default function BlogPage() {
             {/* Top Blogs */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center text-gray-900">
+                <CardTitle className="flex items-center text-foreground">
                   <TrendingUp className="h-5 w-5 mr-2" />
                   Top Blogs
                 </CardTitle>
@@ -378,15 +378,15 @@ export default function BlogPage() {
               <CardContent className="space-y-4">
                 {topBlogs.map((blog, index) => (
                   <Link key={blog.id} href={`/blog/${blog.id}`} className="group block">
-                    <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-accent transition-colors">
                       <div className="flex-shrink-0 w-8 h-8 bg-yellow-400 text-gray-900 rounded-full flex items-center justify-center text-sm font-bold">
                         {index + 1}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-semibold text-gray-900 group-hover:text-yellow-600 transition-colors line-clamp-2">
+                        <h4 className="text-sm font-semibold text-foreground group-hover:text-yellow-600 transition-colors line-clamp-2">
                           {blog.title}
                         </h4>
-                        <div className="flex items-center space-x-2 mt-1 text-xs text-gray-500">
+                        <div className="flex items-center space-x-2 mt-1 text-xs text-muted-foreground">
                           <Badge variant="outline" className="text-xs">{blog.category}</Badge>
                           <span>•</span>
                           <span>{formatViews(blog.views)} views</span>
@@ -399,7 +399,7 @@ export default function BlogPage() {
             </Card>
             
             {/* Newsletter Subscription */}
-            <Card className="bg-gray-900 text-white">
+            <Card className="bg-card text-foreground">
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Mail className="h-5 w-5 mr-2" />
@@ -407,7 +407,7 @@ export default function BlogPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-200 mb-4 text-sm">
+                <p className="text-muted-foreground mb-4 text-sm">
                   Get the latest study tips and strategies delivered to your inbox weekly.
                 </p>
                 <form onSubmit={handleSubscribe} className="space-y-3">
@@ -416,7 +416,7 @@ export default function BlogPage() {
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="bg-white text-gray-900 border-0"
+                    className="bg-background text-foreground border-0"
                     required
                   />
                   <Button 
@@ -426,7 +426,7 @@ export default function BlogPage() {
                     Subscribe
                   </Button>
                 </form>
-                <p className="text-xs text-gray-300 mt-2">
+                <p className="text-xs text-muted-foreground mt-2">
                   No spam. Unsubscribe anytime.
                 </p>
               </CardContent>
@@ -435,7 +435,7 @@ export default function BlogPage() {
             {/* Quick Links */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-gray-900">Quick Links</CardTitle>
+                <CardTitle className="text-foreground">Quick Links</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 {BLOG_CATEGORIES.slice(1).map((category) => (
@@ -444,7 +444,7 @@ export default function BlogPage() {
                     variant="ghost"
                     size="sm"
                     onClick={() => handleCategoryFilter(category)}
-                    className="w-full justify-start text-left text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    className="w-full justify-start text-left text-muted-foreground hover:text-foreground hover:bg-accent"
                   >
                     {category}
                   </Button>

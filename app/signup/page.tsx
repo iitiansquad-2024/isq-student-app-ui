@@ -370,12 +370,12 @@ export default function SignUpPage() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-yellow-50 to-orange-100">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-yellow-50 to-orange-100 dark:from-background dark:to-muted">
       <div className="flex-1 flex items-center justify-center py-12 px-4">
         <div className="max-w-md w-full">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">IITian Squad</h1>
-            <p className="text-gray-600">Your exam preparation companion</p>
+            <h1 className="text-4xl font-bold text-foreground mb-2">IITian Squad</h1>
+            <p className="text-muted-foreground">Your exam preparation companion</p>
           </div>
 
           <Card className="w-full shadow-xl">

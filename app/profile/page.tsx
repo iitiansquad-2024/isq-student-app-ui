@@ -179,25 +179,25 @@ function ProfileCard({ viewed }: { viewed?: any }) {
                 label: "Preferred Exam",
                 value: profile.preferredExam,
                 icon: Target,
-                iconClass: "bg-primary/10 text-primary",
+                iconClass: "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary",
               },
               {
                 label: "Questions",
                 value: profile.totalQuestions,
                 icon: BarChart3,
-                iconClass: "bg-emerald-100 text-emerald-700",
+                iconClass: "bg-emerald-500/10 text-emerald-600 dark:bg-emerald-400/20 dark:text-emerald-400",
               },
               {
                 label: "XP",
                 value: profile.xp,
                 icon: Award,
-                iconClass: "bg-indigo-100 text-indigo-700",
+                iconClass: "bg-indigo-500/10 text-indigo-600 dark:bg-indigo-400/20 dark:text-indigo-400",
               },
               {
                 label: "Rank",
                 value: rank,
                 icon: Medal,
-                iconClass: "bg-amber-100 text-amber-700",
+                iconClass: "bg-amber-500/10 text-amber-600 dark:bg-amber-400/20 dark:text-amber-400",
               },
             ].map((card, idx) => (
               <motion.div
@@ -213,14 +213,14 @@ function ProfileCard({ viewed }: { viewed?: any }) {
                   duration: 0.3,
                   ease: "easeOut",
                 }}
-                className="rounded-md border-border bg-stone-50/90 p-3 flex items-center gap-2"
+                className="rounded-md border-border bg-muted/50 p-3 flex items-center gap-2"
               >
                 <div className={cn("rounded-md p-2", card.iconClass)}>
                   <card.icon className="h-4 w-4" />
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">{card.label}</p>
-                  <p className="text-sm font-semibold leading-tight">
+                  <p className="text-sm font-semibold leading-tight text-foreground">
                     {card.value}
                   </p>
                 </div>
@@ -467,24 +467,24 @@ function ProfilePageContent() {
               />
               
               {user && (
-                <div className="mt-6 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-200">
+                <div className="mt-6 p-4 bg-gradient-to-r from-amber-500/5 to-orange-500/5 dark:from-amber-500/10 dark:to-orange-500/10 rounded-lg border border-amber-200 dark:border-amber-500/30">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">Your Rank</p>
-                      <p className="text-2xl font-bold text-gray-900">#42</p>
+                      <p className="text-sm text-muted-foreground mb-1">Your Rank</p>
+                      <p className="text-2xl font-bold text-foreground">#42</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm text-gray-600 mb-1">Your XP</p>
-                      <p className="text-2xl font-bold text-yellow-600">2,450 XP</p>
+                      <p className="text-sm text-muted-foreground mb-1">Your XP</p>
+                      <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">2,450 XP</p>
                     </div>
                   </div>
-                  <div className="mt-3 pt-3 border-t border-yellow-200">
+                  <div className="mt-3 pt-3 border-t border-amber-200 dark:border-amber-500/30">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Next Rank: #41</span>
-                      <span className="text-gray-900 font-medium">150 XP to go</span>
+                      <span className="text-muted-foreground">Next Rank: #41</span>
+                      <span className="text-foreground font-medium">150 XP to go</span>
                     </div>
-                    <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-yellow-500 h-2 rounded-full" style={{ width: '60%' }}></div>
+                    <div className="mt-2 w-full bg-muted rounded-full h-2">
+                      <div className="bg-amber-500 h-2 rounded-full" style={{ width: '60%' }}></div>
                     </div>
                   </div>
                 </div>

@@ -36,13 +36,13 @@ type Props = {
 const getDifficultyColor = (difficulty: string) => {
   switch (difficulty) {
     case "Easy":
-      return "bg-green-100 text-green-800";
+      return "bg-emerald-500/10 text-emerald-600 dark:bg-emerald-400/20 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/30";
     case "Medium":
-      return "bg-yellow-100 text-yellow-800";
+      return "bg-amber-500/10 text-amber-600 dark:bg-amber-400/20 dark:text-amber-400 border-amber-200 dark:border-amber-500/30";
     case "Hard":
-      return "bg-red-100 text-red-800";
+      return "bg-rose-500/10 text-rose-600 dark:bg-rose-400/20 dark:text-rose-400 border-rose-200 dark:border-rose-500/30";
     default:
-      return "bg-gray-100 text-gray-800";
+      return "bg-muted text-muted-foreground border-border";
   }
 };
 

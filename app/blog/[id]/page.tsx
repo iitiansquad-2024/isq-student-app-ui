@@ -432,15 +432,15 @@ export default function BlogDetailPage() {
   ).slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-gray-50 overflow-x-hidden">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       {/* Sticky Header - Only Back Button */}
-      <div className="sticky top-0 z-50 bg-white border-b border-gray-200">
+      <div className="sticky top-0 z-50 bg-background border-b border-border">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => router.push('/blog')}
-            className="hover:bg-gray-100"
+            className="hover:bg-accent"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to articles
@@ -455,7 +455,7 @@ export default function BlogDetailPage() {
           <Badge className="bg-yellow-400 text-gray-900 mb-4">
             {post.category}
           </Badge>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4 leading-tight">
             {post.title}
           </h1>
           
@@ -466,12 +466,12 @@ export default function BlogDetailPage() {
               size={48}
             />
             <div className="flex-1">
-              <div className="text-base font-semibold text-gray-900">{post.author.name}</div>
-              <div className="text-sm text-gray-600">{post.author.credentials}</div>
+              <div className="text-base font-semibold text-foreground">{post.author.name}</div>
+              <div className="text-sm text-muted-foreground">{post.author.credentials}</div>
             </div>
           </div>
           
-          <div className="flex items-center gap-4 text-sm text-gray-600 mb-6">
+          <div className="flex items-center gap-4 text-sm text-muted-foreground mb-6">
             <span className="flex items-center gap-1">
               <Calendar className="h-4 w-4" />
               {formatDate(post.publishedAt)}
@@ -487,13 +487,13 @@ export default function BlogDetailPage() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-between border-t border-b border-gray-200 py-4">
+          <div className="flex items-center justify-between border-t border-b border-border py-4">
             <div className="flex items-center space-x-4">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={handleLike}
-                className={`flex items-center space-x-2 ${isLiked ? 'text-red-500' : 'text-gray-600'}`}
+                className={`flex items-center space-x-2 ${isLiked ? 'text-red-500' : 'text-muted-foreground'}`}
               >
                 <Heart className={`h-5 w-5 ${isLiked ? 'fill-current' : ''}`} />
                 <span>{likes}</span>
@@ -502,7 +502,7 @@ export default function BlogDetailPage() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="flex items-center space-x-2 text-gray-600"
+                className="flex items-center space-x-2 text-muted-foreground"
                 onClick={() => document.getElementById('comments-section')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 <MessageCircle className="h-5 w-5" />
@@ -513,7 +513,7 @@ export default function BlogDetailPage() {
                 variant="ghost"
                 size="sm"
                 onClick={handlePlayPause}
-                className="flex items-center space-x-2 text-gray-600 hover:text-yellow-600"
+                className="flex items-center space-x-2 text-muted-foreground hover:text-yellow-600"
               >
                 {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
                 <span>{isPlaying ? 'Pause' : 'Listen'}</span>
@@ -523,7 +523,7 @@ export default function BlogDetailPage() {
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowSummary(!showSummary)}
-                className="flex items-center space-x-2 text-gray-600 hover:text-yellow-600"
+                className="flex items-center space-x-2 text-muted-foreground hover:text-yellow-600"
               >
                 <FileText className="h-5 w-5" />
                 <span>Summary</span>
@@ -535,7 +535,7 @@ export default function BlogDetailPage() {
                 variant="ghost"
                 size="sm"
                 onClick={handleShare}
-                className="text-gray-600"
+                className="text-muted-foreground"
               >
                 <Share2 className="h-5 w-5" />
               </Button>
@@ -545,9 +545,9 @@ export default function BlogDetailPage() {
 
         {/* Article Summary */}
         {showSummary && (
-          <Card className="mb-8 border-yellow-400/20 bg-yellow-50">
+          <Card className="mb-8 border-yellow-400/20 bg-yellow-50 dark:bg-yellow-950/20">
             <CardHeader>
-              <CardTitle className="flex items-center text-gray-900">
+              <CardTitle className="flex items-center text-foreground">
                 <FileText className="h-5 w-5 mr-2" />
                 Article Summary
               </CardTitle>
@@ -556,8 +556,8 @@ export default function BlogDetailPage() {
               <div className="space-y-2">
                 {generateSummary().map((point, index) => (
                   <div key={index} className="flex items-start space-x-2">
-                    <span className="text-gray-900 font-medium text-sm">{point.split(' ')[0]}</span>
-                    <span className="text-gray-700 text-sm">{point.substring(point.indexOf(' ') + 1)}</span>
+                    <span className="text-foreground font-medium text-sm">{point.split(' ')[0]}</span>
+                    <span className="text-muted-foreground text-sm">{point.substring(point.indexOf(' ') + 1)}</span>
                   </div>
                 ))}
               </div>
@@ -567,15 +567,15 @@ export default function BlogDetailPage() {
 
         {/* Audio Player Info */}
         {hasAudioStarted && (
-          <Card className="mb-8 border-yellow-400/20 bg-yellow-50">
+          <Card className="mb-8 border-yellow-400/20 bg-yellow-50 dark:bg-yellow-950/20">
             <CardContent className="p-4">
               <div className="flex items-center space-x-3">
                 <Headphones className="h-5 w-5 text-yellow-600" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">
+                  <p className="text-sm font-medium text-foreground">
                     {isPlaying ? 'Audio Playback Active' : 'Audio Paused'}
                   </p>
-                  <p className="text-xs text-gray-600">
+                  <p className="text-xs text-muted-foreground">
                     {isPlaying 
                       ? 'Article is being read aloud.' 
                       : 'Paused - Click play to resume from where you left off.'}
@@ -619,10 +619,10 @@ export default function BlogDetailPage() {
           {tableOfContents.length > 0 && isTOCVisible && (
             <div className="hidden xl:block">
               <div className="fixed top-32 right-8 w-64 max-h-[calc(100vh-200px)] overflow-y-auto transition-opacity duration-300" ref={tocRef}>
-                <Card className="border-yellow-400/20">
+                <Card className="border-yellow-400/20 dark:bg-card">
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-sm font-semibold text-gray-900 flex items-center">
+                      <CardTitle className="text-sm font-semibold text-foreground flex items-center">
                         <List className="h-4 w-4 mr-2" />
                         Table of Contents
                       </CardTitle>
@@ -651,7 +651,7 @@ export default function BlogDetailPage() {
                               ${heading.level === 3 ? 'pl-6 text-xs' : ''}
                               ${activeSection === heading.id 
                                 ? 'bg-yellow-400 text-gray-900 font-semibold' 
-                                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                                : 'text-muted-foreground hover:bg-accent hover:text-foreground'
                               }
                             `}
                           >
@@ -669,10 +669,10 @@ export default function BlogDetailPage() {
           {/* Mobile TOC */}
           {tableOfContents.length > 0 && (
             <div className="xl:hidden mb-6">
-              <Card className="border-yellow-400/20">
+              <Card className="border-yellow-400/20 dark:bg-card">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between cursor-pointer" onClick={() => setShowTOC(!showTOC)}>
-                    <CardTitle className="text-sm font-semibold text-gray-900 flex items-center">
+                    <CardTitle className="text-sm font-semibold text-foreground flex items-center">
                       <List className="h-4 w-4 mr-2" />
                       Table of Contents
                     </CardTitle>
@@ -694,7 +694,7 @@ export default function BlogDetailPage() {
                             ${heading.level === 3 ? 'pl-6 text-xs' : ''}
                             ${activeSection === heading.id 
                               ? 'bg-yellow-400 text-gray-900 font-semibold' 
-                              : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                              : 'text-muted-foreground hover:bg-accent hover:text-foreground'
                             }
                           `}
                         >
@@ -718,7 +718,7 @@ export default function BlogDetailPage() {
         {/* Tags */}
         <div className="mb-8">
           <div className="flex items-center gap-2 flex-wrap">
-            <Tag className="h-4 w-4 text-gray-500" />
+            <Tag className="h-4 w-4 text-muted-foreground" />
             {post.tags.map((tag) => (
               <Badge key={tag} variant="outline" className="text-sm">
                 {tag}
@@ -730,7 +730,7 @@ export default function BlogDetailPage() {
         <Separator className="my-8" />
 
         {/* Author Bio */}
-        <div className="bg-gray-50 rounded-lg p-6 mb-12">
+        <div className="bg-muted rounded-lg p-6 mb-12">
           <div className="flex items-start gap-4">
             <Avatar 
               src={post.author.avatar} 
@@ -739,9 +739,9 @@ export default function BlogDetailPage() {
               className="flex-shrink-0"
             />
             <div className="flex-1">
-              <div className="text-lg font-semibold text-gray-900 mb-1">{post.author.name}</div>
-              <div className="text-sm text-gray-600 mb-2">{post.author.credentials}</div>
-              <p className="text-gray-700">{post.author.bio}</p>
+              <div className="text-lg font-semibold text-foreground mb-1">{post.author.name}</div>
+              <div className="text-sm text-muted-foreground mb-2">{post.author.credentials}</div>
+              <p className="text-foreground">{post.author.bio}</p>
             </div>
           </div>
         </div>
@@ -752,7 +752,7 @@ export default function BlogDetailPage() {
             onClick={() => setShowComments(!showComments)}
             className="flex items-center justify-between w-full mb-6 group"
           >
-            <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
               <MessageCircle className="h-6 w-6" />
               Comments ({comments.length})
             </h2>
@@ -762,7 +762,7 @@ export default function BlogDetailPage() {
           {showComments && (
             <div>
               <div className="flex items-center gap-2 mb-6">
-                <span className="text-sm text-gray-600">Sort by:</span>
+                <span className="text-sm text-muted-foreground">Sort by:</span>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as any)}
@@ -794,7 +794,7 @@ export default function BlogDetailPage() {
           {/* Comments List */}
           <div className="space-y-6">
             {sortedComments.map((comment) => (
-              <div key={comment.id} className="bg-white rounded-lg p-4 border border-gray-200">
+              <div key={comment.id} className="bg-card rounded-lg p-4 border border-border">
                 <div className="flex items-start gap-3">
                   <Avatar 
                     src={comment.author.avatar} 
@@ -805,23 +805,23 @@ export default function BlogDetailPage() {
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-2">
                       <div>
-                        <div className="font-semibold text-gray-900">{comment.author.name}</div>
-                        <div className="text-xs text-gray-500">{formatTimeAgo(comment.timestamp)}</div>
+                        <div className="font-semibold text-foreground">{comment.author.name}</div>
+                        <div className="text-xs text-muted-foreground">{formatTimeAgo(comment.timestamp)}</div>
                       </div>
                       <Button variant="ghost" size="sm">
                         <MoreVertical className="h-4 w-4" />
                       </Button>
                     </div>
-                    <p className="text-gray-700 mb-3">{comment.content}</p>
+                    <p className="text-foreground mb-3">{comment.content}</p>
                     <div className="flex items-center gap-4">
-                      <Button variant="ghost" size="sm" className="text-gray-600 hover:text-red-500">
+                      <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-red-500">
                         <ThumbsUp className="h-4 w-4 mr-1" />
                         {comment.likes}
                       </Button>
                       <Button 
                         variant="ghost" 
                         size="sm" 
-                        className="text-gray-600"
+                        className="text-muted-foreground"
                         onClick={() => setReplyingTo(comment.id)}
                       >
                         Reply
@@ -832,7 +832,7 @@ export default function BlogDetailPage() {
                     {comment.replies && comment.replies.length > 0 && (
                       <div className="mt-4 ml-6 space-y-4">
                         {comment.replies.map((reply) => (
-                          <div key={reply.id} className="bg-gray-50 rounded-lg p-3">
+                          <div key={reply.id} className="bg-muted rounded-lg p-3">
                             <div className="flex items-start gap-3">
                               <Avatar 
                                 src={reply.author.avatar} 
@@ -843,12 +843,12 @@ export default function BlogDetailPage() {
                               <div className="flex-1">
                                 <div className="flex items-center justify-between mb-1">
                                   <div>
-                                    <div className="font-semibold text-sm text-gray-900">{reply.author.name}</div>
-                                    <div className="text-xs text-gray-500">{formatTimeAgo(reply.timestamp)}</div>
+                                    <div className="font-semibold text-sm text-foreground">{reply.author.name}</div>
+                                    <div className="text-xs text-muted-foreground">{formatTimeAgo(reply.timestamp)}</div>
                                   </div>
                                 </div>
-                                <p className="text-sm text-gray-700 mb-2">{reply.content}</p>
-                                <Button variant="ghost" size="sm" className="text-xs text-gray-600 hover:text-red-500">
+                                <p className="text-sm text-foreground mb-2">{reply.content}</p>
+                                <Button variant="ghost" size="sm" className="text-xs text-muted-foreground hover:text-red-500">
                                   <ThumbsUp className="h-3 w-3 mr-1" />
                                   {reply.likes}
                                 </Button>
@@ -874,7 +874,7 @@ export default function BlogDetailPage() {
             onClick={() => setShowQuiz(!showQuiz)}
             className="flex items-center justify-between w-full mb-6 group"
           >
-            <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
               <Brain className="h-6 w-6" />
               Test Your Knowledge
             </h2>
@@ -884,8 +884,8 @@ export default function BlogDetailPage() {
           {showQuiz && (
             <div className="space-y-6">
               {quizQuestions.map((question, qIndex) => (
-                <div key={qIndex} className="bg-white rounded-lg p-6 border border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <div key={qIndex} className="bg-card rounded-lg p-6 border border-border">
+                  <h3 className="text-lg font-semibold text-foreground mb-4">
                     {qIndex + 1}. {question.question}
                   </h3>
                   <div className="space-y-3">
@@ -901,12 +901,12 @@ export default function BlogDetailPage() {
                           disabled={quizSubmitted}
                           className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
                             showResult && isCorrect
-                              ? 'border-green-500 bg-green-50'
+                              ? 'border-green-500 bg-green-50 dark:bg-green-950/20'
                               : showResult && isSelected && !isCorrect
-                              ? 'border-red-500 bg-red-50'
+                              ? 'border-red-500 bg-red-50 dark:bg-red-950/20'
                               : isSelected
-                              ? 'border-yellow-400 bg-yellow-50'
-                              : 'border-gray-200 hover:border-gray-300'
+                              ? 'border-yellow-400 bg-yellow-50 dark:bg-yellow-950/20'
+                              : 'border-border hover:border-border'
                           }`}
                         >
                           <div className="flex items-center justify-between">
@@ -922,7 +922,7 @@ export default function BlogDetailPage() {
               ))}
 
               <div className="flex justify-between items-center">
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-muted-foreground">
                   {quizSubmitted ? (
                     <span className="font-semibold">
                       Score: {Object.values(quizAnswers).filter((ans, idx) => ans === quizQuestions[idx].correctAnswer).length} / {quizQuestions.length}
@@ -958,7 +958,7 @@ export default function BlogDetailPage() {
 
         {relatedPosts.length > 0 && (
           <div className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
               <TrendingUp className="h-6 w-6" />
               Related Articles
             </h2>
@@ -975,10 +975,10 @@ export default function BlogDetailPage() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+                      <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
                         {relatedPost.excerpt}
                       </p>
-                      <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <Clock className="h-3 w-3" />
                         {relatedPost.readTime} min
                       </div>
