@@ -472,16 +472,6 @@ export default function PracticeFilters({ filters, onFiltersChange, onApplyFilte
               </p>
             </div>
           </div>
-
-          {/* Filter Actions */}
-          <div className="flex gap-2 pt-4 border-t">
-            <Button variant="outline" size="sm" onClick={clearAllFilters} className="flex-1">
-              Clear All
-            </Button>
-            <Button size="sm" className="flex-1 bg-yellow-400 text-gray-900 hover:bg-yellow-500" onClick={handleApplyFilters}>
-              Apply Filters
-            </Button>
-          </div>
         </div>
       </div>
     </div>

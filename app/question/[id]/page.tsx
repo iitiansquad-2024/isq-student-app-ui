@@ -430,7 +430,7 @@ export default function QuestionPage({ params }: PageProps) {
             <ListFilter className="h-6 w-6" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="right" className="w-full sm:max-w-md p-0">
+        <SheetContent style={{ zIndex: 85 }} side="right" className="w-full sm:max-w-md p-0">
           <div className="border-b p-4">
             <h2 className="text-lg font-semibold mb-4">Question Navigation</h2>
             <div className="flex gap-2 overflow-x-auto pb-2">

@@ -122,7 +122,7 @@ export function TopNav({
                   />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuContent align="end" className="w-56" style={{ zIndex: 80 }}>
                 <DropdownMenuLabel>
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium">{user.name}</p>
@@ -153,7 +153,7 @@ export function TopNav({
                   />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent align="end" className="w-48" style={{ zIndex: 80 }}>
                 <DropdownMenuItem onClick={() => router.push('/login')} className="cursor-pointer">
                   <LogIn className="mr-2 h-4 w-4" />
                   Sign In
@@ -174,7 +174,7 @@ export function TopNav({
             <SelectTrigger className="text-xs h-fit cursor-pointer transition-colors duration-100 hover:bg-accent">
               <SelectValue placeholder="Select exam" className="text-xs" />
             </SelectTrigger>
-            <SelectContent className="text-xs">
+            <SelectContent className="text-xs" style={{ zIndex: 85 }}>
               {exams.map((exam) => (
                 <SelectItem
                   key={exam.id}

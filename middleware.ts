@@ -28,8 +28,10 @@ export async function middleware(request: NextRequest) {
   }
 
   // If trying to access auth routes while already authenticated
+  // Allow access to auth routes even when authenticated for better UX
+  // Users might want to login with different accounts
   if (isAuthRoute && isAuthenticated) {
-    return NextResponse.redirect(new URL('/', request.url));
+    return NextResponse.next();
   }
 
   return NextResponse.next();

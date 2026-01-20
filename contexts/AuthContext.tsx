@@ -47,11 +47,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
+      setLoading(true);
       await apiLogout();
       setUser(null);
     } catch (error) {
       console.error('Logout error:', error);
       setUser(null);
+    } finally {
+      setLoading(false);
     }
   };
 

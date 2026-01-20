@@ -128,7 +128,13 @@ export interface OAuth2AuthorizeResponse {
 }
 
 export async function initiateGoogleOAuth(): Promise<OAuth2AuthorizeResponse> {
+  // Store the current page for redirect after OAuth
+  sessionStorage.setItem('oauth_origin', window.location.pathname);
+  
+  // Use the correct API endpoint
   const authUrl = `/api/backend/v0/oauth2/authorize`;
+  console.log('Initiating OAuth with URL:', authUrl);
+  
   return { authorization_url: authUrl };
 }
 

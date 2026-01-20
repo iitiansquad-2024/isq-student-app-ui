@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -22,6 +22,15 @@ export default function LoginPage() {
     email: '',
     password: ''
   });
+
+  useEffect(() => {
+    const oauthOrigin = sessionStorage.getItem('oauth_origin');
+    if (oauthOrigin && window.location.search.includes('registered=true')) {
+      // User was redirected after successful registration
+      sessionStorage.removeItem('oauth_origin');
+      // You can show a success message here if needed
+    }
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({

@@ -34,7 +34,6 @@ import { useState, useMemo, Suspense, useEffect } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
-import { logout } from "@/lib/authApi";
 
 function ProfileCard({ viewed }: { viewed?: any }) {
   const { user } = useAuth();
@@ -49,9 +48,9 @@ function ProfileCard({ viewed }: { viewed?: any }) {
         className="border-border bg-background"
       >
         <div className="flex flex-col items-center justify-center py-8 text-center">
-          <LogIn className="h-16 w-16 text-gray-400 mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Sign In Required</h3>
-          <p className="text-gray-600 mb-6 max-w-sm">
+          <LogIn className="h-16 w-16 text-muted-foreground mb-4" />
+          <h3 className="text-lg font-semibold text-foreground mb-2">Sign In Required</h3>
+          <p className="text-muted-foreground mb-6 max-w-sm">
             Please sign in to view your profile and access personalized features.
           </p>
           <div className="flex gap-3">
@@ -292,8 +291,8 @@ function ProfilePageContent() {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-foreground mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
@@ -305,9 +304,9 @@ function ProfilePageContent() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center max-w-md mx-auto p-8">
           <div className="mb-6">
-            <LogIn className="h-16 w-16 mx-auto text-gray-400 mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Sign In Required</h2>
-            <p className="text-gray-600 mb-6">
+            <LogIn className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+            <h2 className="text-2xl font-bold text-foreground mb-2">Sign In Required</h2>
+            <p className="text-muted-foreground mb-6">
               Please sign in to view your profile and access personalized features.
             </p>
           </div>
@@ -360,16 +359,23 @@ function ProfilePageContent() {
                     size="sm" 
                     variant="ghost" 
                     aria-label="Logout"
+                    disabled={isLoggingOut}
                     onClick={async () => {
                       try {
-                        await logout();
+                        setIsLoggingOut(true);
+                        await authLogout();
                         router.push('/login');
                       } catch (error) {
                         console.error('Logout failed:', error);
+                        setIsLoggingOut(false);
                       }
                     }}
                   >
-                    <LogOut className="h-4 w-4" />
+                    {isLoggingOut ? (
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                    ) : (
+                      <LogOut className="h-4 w-4" />
+                    )}
                   </Button>
                 </>
               )}
