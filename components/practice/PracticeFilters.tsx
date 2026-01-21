@@ -481,9 +481,13 @@ export default function PracticeFilters({ filters, onFiltersChange, onApplyFilte
     return (
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger asChild>
-          <Button variant="outline" size="sm" className="gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="Open filters"
+            className="h-10 w-10"
+          >
             <Filter className="h-4 w-4" />
-            Filters
           </Button>
         </SheetTrigger>
         <SheetContent side="bottom" className="h-[85vh] overflow-y-auto">

@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import {
   Select,
   SelectContent,
@@ -9,6 +10,7 @@ import {
 } from "@/components/ui/select"
 import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
 export type SortField = "id" | "year" | "difficulty" | "attempted" | "avgAccuracy"
 export type SortOrder = "asc" | "desc"
@@ -32,6 +34,8 @@ export default function SortByComponent({
   sortOrder,
   onSortChange,
 }: SortByComponentProps) {
+  const [open, setOpen] = useState(false)
+
   const handleFieldChange = (value: string) => {
     onSortChange(value as SortField, sortOrder)
   }
@@ -42,38 +46,68 @@ export default function SortByComponent({
     }
   }
 
+  const triggerIcon = !sortField ? (
+    <ArrowUpDown className="h-4 w-4" />
+  ) : sortOrder === "asc" ? (
+    <ArrowUp className="h-4 w-4" />
+  ) : (
+    <ArrowDown className="h-4 w-4" />
+  )
+
   return (
-    <div className="flex items-center gap-2">
-      <Select
-        value={sortField || ""}
-        onValueChange={handleFieldChange}
-      >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Sort by..." />
-        </SelectTrigger>
-        <SelectContent>
-          {sortOptions.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      
-      {sortField && (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
         <Button
-          variant="outline"
+          variant={sortField ? "default" : "outline"}
           size="icon"
+          aria-label="Sort questions"
+          className="h-10 w-10 shrink-0 data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
+        >
+          {triggerIcon}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-64 space-y-3" align="end">
+        <div className="space-y-2">
+          <p className="text-sm font-medium">Sort field</p>
+          <Select
+            value={sortField || ""}
+            onValueChange={(val) => {
+              handleFieldChange(val)
+              setOpen(false)
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Choose field" />
+            </SelectTrigger>
+            <SelectContent>
+              {sortOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <Button
+          variant="secondary"
+          className="w-full"
           onClick={toggleSortOrder}
-          className="h-10 w-10"
+          disabled={!sortField}
         >
           {sortOrder === "asc" ? (
-            <ArrowUp className="h-4 w-4" />
+            <>
+              <ArrowUp className="mr-2 h-4 w-4" />
+              Ascending
+            </>
           ) : (
-            <ArrowDown className="h-4 w-4" />
+            <>
+              <ArrowDown className="mr-2 h-4 w-4" />
+              Descending
+            </>
           )}
         </Button>
-      )}
-    </div>
+      </PopoverContent>
+    </Popover>
   )
 }
