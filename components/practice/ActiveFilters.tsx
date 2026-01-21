@@ -1,23 +1,23 @@
-"use client"
+"use client";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { X } from "lucide-react"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 
 interface FilterState {
-  subjects: string[]
-  chapters: string[]
-  topics: string[]
-  years: string[]
-  difficulty: string[]
-  questionType: string[]
-  previousYearOnly: boolean
+  subjects: string[];
+  chapters: string[];
+  topics: string[];
+  years: string[];
+  difficulty: string[];
+  questionType: string[];
+  previousYearOnly: boolean;
 }
 
 interface ActiveFiltersProps {
-  filters: FilterState
-  onRemoveFilter: (type: keyof FilterState, value: string) => void
-  onClearAll: () => void
+  filters: FilterState;
+  onRemoveFilter: (type: keyof FilterState, value: string) => void;
+  onClearAll: () => void;
 }
 
 export default function ActiveFilters({
@@ -33,18 +33,18 @@ export default function ActiveFilters({
       filters.years.length +
       filters.difficulty.length +
       filters.questionType.length
-    )
-  }
+    );
+  };
 
-  const activeCount = getActiveFilterCount()
+  const activeCount = getActiveFilterCount();
 
-  if (activeCount === 0) return null
+  if (activeCount === 0) return null;
 
   return (
     <div className="mb-4 p-3 bg-muted/50 rounded-lg border">
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium">
-          Active Filters ({activeCount})
+          Applied Filters ({activeCount})
         </span>
         <Button
           variant="ghost"
@@ -60,99 +60,87 @@ export default function ActiveFilters({
           <Badge
             key={subject}
             variant="secondary"
-            className="gap-1 pr-1 cursor-pointer hover:bg-destructive/10"
+            className="gap-1 pr-1 cursor-pointer hover:bg-secondary/90"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemoveFilter("subjects", subject);
+            }}
           >
             Subject: {subject}
-            <X
-              className="h-3 w-3 hover:text-destructive"
-              onClick={(e) => {
-                e.stopPropagation()
-                onRemoveFilter("subjects", subject)
-              }}
-            />
+            <X className="h-3 w-3 hover:text-destructive" />
           </Badge>
         ))}
         {filters.chapters.map((chapter) => (
           <Badge
             key={chapter}
             variant="secondary"
-            className="gap-1 pr-1 cursor-pointer hover:bg-destructive/10"
+            className="gap-1 pr-1 cursor-pointer hover:bg-secondary/90"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemoveFilter("chapters", chapter);
+            }}
           >
             Chapter: {chapter}
-            <X
-              className="h-3 w-3 hover:text-destructive"
-              onClick={(e) => {
-                e.stopPropagation()
-                onRemoveFilter("chapters", chapter)
-              }}
-            />
+            <X className="h-3 w-3 hover:text-destructive" />
           </Badge>
         ))}
         {filters.topics.map((topic) => (
           <Badge
             key={topic}
             variant="secondary"
-            className="gap-1 pr-1 cursor-pointer hover:bg-destructive/10"
+            className="gap-1 pr-1 cursor-pointer hover:bg-secondary/90"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemoveFilter("topics", topic);
+            }}
           >
             Topic: {topic}
-            <X
-              className="h-3 w-3 hover:text-destructive"
-              onClick={(e) => {
-                e.stopPropagation()
-                onRemoveFilter("topics", topic)
-              }}
-            />
+            <X className="h-3 w-3 hover:text-destructive" />
           </Badge>
         ))}
         {filters.years.map((year) => (
           <Badge
             key={year}
             variant="secondary"
-            className="gap-1 pr-1 cursor-pointer hover:bg-destructive/10"
+            className="gap-1 pr-1 cursor-pointer hover:bg-secondary/90"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemoveFilter("years", year);
+            }}
           >
             Year: {year}
-            <X
-              className="h-3 w-3 hover:text-destructive"
-              onClick={(e) => {
-                e.stopPropagation()
-                onRemoveFilter("years", year)
-              }}
-            />
+            <X className="h-3 w-3 hover:text-destructive" />
           </Badge>
         ))}
         {filters.difficulty.map((diff) => (
           <Badge
             key={diff}
             variant="secondary"
-            className="gap-1 pr-1 cursor-pointer hover:bg-destructive/10"
+            className="gap-1 pr-1 cursor-pointer hover:bg-secondary/90"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemoveFilter("difficulty", diff);
+            }}
           >
             {diff}
-            <X
-              className="h-3 w-3 hover:text-destructive"
-              onClick={(e) => {
-                e.stopPropagation()
-                onRemoveFilter("difficulty", diff)
-              }}
-            />
+            <X className="h-3 w-3 hover:text-destructive" />
           </Badge>
         ))}
         {filters.questionType.map((type) => (
           <Badge
             key={type}
             variant="secondary"
-            className="gap-1 pr-1 cursor-pointer hover:bg-destructive/10"
+            className="gap-1 pr-1 cursor-pointer hover:bg-secondary/90"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemoveFilter("questionType", type);
+            }}
           >
             Type: {type}
-            <X
-              className="h-3 w-3 hover:text-destructive"
-              onClick={(e) => {
-                e.stopPropagation()
-                onRemoveFilter("questionType", type)
-              }}
-            />
+            <X className="h-3 w-3 hover:text-destructive" />
           </Badge>
         ))}
       </div>
     </div>
-  )
+  );
 }
