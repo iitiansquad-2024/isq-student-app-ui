@@ -59,7 +59,7 @@ export default function ActiveFilters({
         {filters.subjects.map((subject) => (
           <Badge
             key={subject}
-            variant="secondary"
+            variant="outline"
             className="gap-1 pr-1 cursor-pointer hover:bg-secondary/90"
             onClick={(e) => {
               e.stopPropagation();
@@ -73,7 +73,7 @@ export default function ActiveFilters({
         {filters.chapters.map((chapter) => (
           <Badge
             key={chapter}
-            variant="secondary"
+            variant="outline"
             className="gap-1 pr-1 cursor-pointer hover:bg-secondary/90"
             onClick={(e) => {
               e.stopPropagation();
@@ -87,7 +87,7 @@ export default function ActiveFilters({
         {filters.topics.map((topic) => (
           <Badge
             key={topic}
-            variant="secondary"
+            variant="outline"
             className="gap-1 pr-1 cursor-pointer hover:bg-secondary/90"
             onClick={(e) => {
               e.stopPropagation();
@@ -101,7 +101,7 @@ export default function ActiveFilters({
         {filters.years.map((year) => (
           <Badge
             key={year}
-            variant="secondary"
+            variant="outline"
             className="gap-1 pr-1 cursor-pointer hover:bg-secondary/90"
             onClick={(e) => {
               e.stopPropagation();
@@ -115,7 +115,7 @@ export default function ActiveFilters({
         {filters.difficulty.map((diff) => (
           <Badge
             key={diff}
-            variant="secondary"
+            variant="outline"
             className="gap-1 pr-1 cursor-pointer hover:bg-secondary/90"
             onClick={(e) => {
               e.stopPropagation();
@@ -129,7 +129,7 @@ export default function ActiveFilters({
         {filters.questionType.map((type) => (
           <Badge
             key={type}
-            variant="secondary"
+            variant="outline"
             className="gap-1 pr-1 cursor-pointer hover:bg-secondary/90"
             onClick={(e) => {
               e.stopPropagation();
