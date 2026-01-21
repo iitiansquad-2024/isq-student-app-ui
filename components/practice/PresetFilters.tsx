@@ -15,7 +15,7 @@ export default function PresetFilters({
   onTogglePreset,
 }: PresetFiltersProps) {
   return (
-    <div className="flex flex-wrap gap-2 mb-4">
+    <div className="flex flex-wrap gap-2 mb-4 bg-stone-50 p-3 rounded-md">
       {presetFilters.map((filter) => {
         const isSelected = selectedPresets.includes(filter)
         return (
