@@ -331,11 +331,13 @@ export default function QuestionPage({ params }: PageProps) {
           </div>
         </div>
 
+        <div className="h-px bg-muted"/>
+
         {/* Content */}
         <div>
           {activeTab === "question" && (
             <div className="space-y-6">
-              <div className="rounded-lg border bg-card p-4">
+              <div className="">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-medium">Question</h2>
                   <div className="flex items-center gap-2">
