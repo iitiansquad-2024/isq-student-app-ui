@@ -485,7 +485,7 @@ export default function PracticeFilters({ filters, onFiltersChange, onApplyFilte
             variant="outline"
             size="icon"
             aria-label="Open filters"
-            className="h-10 w-10"
+            className="h-9 w-9"
           >
             <Filter className="h-4 w-4" />
           </Button>

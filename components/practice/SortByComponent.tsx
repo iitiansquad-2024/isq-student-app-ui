@@ -61,7 +61,7 @@ export default function SortByComponent({
           variant={sortField ? "default" : "outline"}
           size="icon"
           aria-label="Sort questions"
-          className="h-10 w-10 shrink-0 data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
+          className="h-9 w-9 shrink-0 data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
         >
           {triggerIcon}
         </Button>

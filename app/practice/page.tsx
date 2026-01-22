@@ -184,8 +184,8 @@ export default function PracticePage() {
       />
 
       {/* Search, Sort and Filter Button */}
-      <div className="mb-4 flex items-center gap-3">
-        <div className="">
+      <div className="mb-4 flex flex-wrap items-center gap-3">
+        <div className="flex-1 flex relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input 
             placeholder="Search questions or tags" 
