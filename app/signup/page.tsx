@@ -8,9 +8,21 @@ import { useAuth } from '@/contexts/AuthContext';
 import Footer from '@/components/ui/footer';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Eye, EyeOff, ArrowLeft, Loader2 } from 'lucide-react';
 import { requestOtp, signUp, initiateGoogleOAuth } from '@/lib/authApi';
+
+const examNames = [
+  "JEE Main",
+  "JEE Advanced",
+  "BITSAT",
+  "VITEEE",
+  "NEET UG",
+  "WBJEE",
+  "MHT CET",
+  "COMEDK",
+  "SRMJEEE",
+  "KIITEE",
+];
 
 type SignUpStep = 'initial' | 'email-entry' | 'user-details';
 
@@ -109,105 +121,101 @@ export default function SignUpPage() {
   };
 
   const renderInitialStep = () => (
-    <>
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-center">Join IITian Squad</CardTitle>
-        <CardDescription className="text-center">
+    <div className="space-y-4">
+      <div className="space-y-1 text-center sm:text-left">
+        <h2 className="text-2xl font-bold">Join IITian Squad</h2>
+        <p className="text-muted-foreground">
           Create your account to start your exam preparation journey
-        </CardDescription>
-      </CardHeader>
+        </p>
+      </div>
 
-      <CardContent className="space-y-4">
-        <Button 
-          onClick={handleGoogleSignUp}
-          variant="outline" 
-          className="w-full"
-        >
-          <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-          </svg>
-          Continue with Google
-        </Button>
-        
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">Or continue with email</span>
-          </div>
+      <Button 
+        onClick={handleGoogleSignUp}
+        variant="outline" 
+        className="w-full"
+      >
+        <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        Continue with Google
+      </Button>
+      
+      <div className="relative flex justify-center">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t" />
         </div>
+        <div className="relative flex justify-center text-xs uppercase bg-background w-fit">
+          <span className="bg-transparent sm:bg-background px-2 text-muted-foreground">Or continue with email</span>
+        </div>
+      </div>
 
-        <Button 
-          onClick={handleEmailSignUp}
-          className="w-full bg-yellow-400 text-gray-900 hover:bg-yellow-500"
-        >
-          Sign up with Email
-        </Button>
-        
-        <div className="text-center text-sm">
-          Already have an account?{' '}
-          <Link href="/login" className="text-yellow-600 hover:underline font-medium">
-            Sign in
-          </Link>
-        </div>
-      </CardContent>
-    </>
+      <Button 
+        onClick={handleEmailSignUp}
+        className="w-full bg-yellow-400 text-gray-900 hover:bg-yellow-500"
+      >
+        Sign up with Email
+      </Button>
+      
+      <div className="text-center text-sm">
+        Already have an account?{' '}
+        <Link href="/login" className="text-yellow-600 hover:underline font-medium">
+          Sign in
+        </Link>
+      </div>
+    </div>
   );
 
   const renderEmailEntry = () => (
-    <>
-      <CardHeader className="space-y-1">
+    <div className="space-y-6">
+      <div className="space-y-1">
         <Button 
           variant="ghost" 
           size="sm" 
           onClick={() => setCurrentStep('initial')}
-          className="self-start p-0 h-auto"
+          className="w-fit p-0 h-auto"
         >
           <ArrowLeft className="h-4 w-4 mr-1" />
           Back
         </Button>
-        <CardTitle className="text-2xl font-bold text-center">Enter Your Email</CardTitle>
-        <CardDescription className="text-center">
-          We'll send you a verification code
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleEmailSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email Address</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="Enter your email"
-              value={formData.email}
-              onChange={handleInputChange}
-              required
-            />
-            {otpError && (
-              <p className="text-sm text-red-600 mt-1">{otpError}</p>
-            )}
-          </div>
-          
-          <Button
-            type="submit"
-            className="w-full bg-yellow-400 text-gray-900 hover:bg-yellow-500"
-            disabled={isRequestingOtp}
-          >
-            {isRequestingOtp ? 'Sending...' : 'Send Verification Code'}
-          </Button>
-        </form>
-      </CardContent>
-    </>
+        <div className="text-center sm:text-left">
+          <h2 className="text-2xl font-bold">Enter Your Email</h2>
+          <p className="text-muted-foreground">We'll send you a verification code</p>
+        </div>
+      </div>
+      <form onSubmit={handleEmailSubmit} className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="email">Email Address</Label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="Enter your email"
+            value={formData.email}
+            onChange={handleInputChange}
+            required
+          />
+          {otpError && (
+            <p className="text-sm text-red-600 mt-1">{otpError}</p>
+          )}
+        </div>
+        
+        <Button
+          type="submit"
+          className="w-full bg-yellow-400 text-gray-900 hover:bg-yellow-500"
+          disabled={isRequestingOtp}
+        >
+          {isRequestingOtp ? 'Sending...' : 'Send Verification Code'}
+        </Button>
+      </form>
+    </div>
   );
 
   const renderUserDetails = () => (
-    <>
-      <CardHeader className="space-y-1">
+    <div className="space-y-6">
+      <div className="space-y-1">
         <Button 
           variant="ghost" 
           size="sm" 
@@ -215,23 +223,24 @@ export default function SignUpPage() {
             setCurrentStep('email-entry');
             setOtpSent(false);
           }}
-          className="self-start p-0 h-auto"
+          className="w-fit p-0 h-auto"
         >
           <ArrowLeft className="h-4 w-4 mr-1" />
           Back
         </Button>
-        <CardTitle className="text-2xl font-bold text-center">Complete Your Profile</CardTitle>
-        <CardDescription className="text-center">
-          {otpSent && (
-            <span className="text-green-600 block mb-1">
-              ✓ Verification code sent to {formData.email}
-            </span>
-          )}
-          Enter the code and set up your account
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleFinalSubmit} className="space-y-4">
+        <div className="text-center sm:text-left">
+          <h2 className="text-2xl font-bold">Complete Your Profile</h2>
+          <div className="text-muted-foreground">
+            {otpSent && (
+              <span className="text-green-600 block mb-1">
+                ✓ Verification code sent to {formData.email}
+              </span>
+            )}
+            Enter the code and set up your account
+          </div>
+        </div>
+      </div>
+      <form onSubmit={handleFinalSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="otp">Verification Code</Label>
             <Input
@@ -357,35 +366,52 @@ export default function SignUpPage() {
             <p className="text-sm text-red-600 text-center">{signupError}</p>
           )}
           
-          <Button 
-            type="submit" 
-            className="w-full bg-yellow-400 text-gray-900 hover:bg-yellow-500"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'Creating Account...' : 'Create Account'}
-          </Button>
-        </form>
-      </CardContent>
-    </>
+        <Button 
+          type="submit" 
+          className="w-full bg-yellow-400 text-gray-900 hover:bg-yellow-500"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Creating Account...' : 'Create Account'}
+        </Button>
+      </form>
+    </div>
   );
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-yellow-50 to-orange-100 dark:from-background dark:to-muted">
-      <div className="flex-1 flex items-center justify-center py-12 px-4">
-        <div className="max-w-md w-full">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-foreground mb-2">IITian Squad</h1>
-            <p className="text-muted-foreground">Your exam preparation companion</p>
-          </div>
-
-          <Card className="w-full shadow-xl">
+    <div className="flex flex-col">
+      <div className="flex-1 flex items-center justify-center py-[10dvh] px-0 sm:px-6">
+        <div className="w-full max-w-md space-y-6">
+          <div className="space-y-6 sm:rounded-3xl sm:border sm:border-white/30 sm:bg-white/90 sm:p-10 sm:shadow-2xl sm:backdrop-blur-xl dark:sm:border-slate-800/60 dark:sm:bg-slate-900/80">
             {currentStep === 'initial' && renderInitialStep()}
             {currentStep === 'email-entry' && renderEmailEntry()}
             {currentStep === 'user-details' && renderUserDetails()}
-          </Card>
+          </div>
         </div>
       </div>
-      <Footer />
+      <div className="border-y border-border bg-muted/40 py-6 overflow-hidden">
+        <div className="relative">
+          <div className="flex gap-4 whitespace-nowrap" style={{ animation: "exam-scroll 22s linear infinite" }}>
+            {[...examNames, ...examNames].map((exam, index) => (
+              <div
+                key={`${exam}-${index}`}
+                className="rounded-full border border-border/70 bg-background/80 px-6 py-2 text-sm font-medium text-muted-foreground shadow-sm"
+              >
+                {exam} Practice
+              </div>
+            ))}
+          </div>
+          <style jsx>{`
+            @keyframes exam-scroll {
+              0% {
+                transform: translateX(0);
+              }
+              100% {
+                transform: translateX(-50%);
+              }
+            }
+          `}</style>
+        </div>
+      </div>
     </div>
   );
 }
