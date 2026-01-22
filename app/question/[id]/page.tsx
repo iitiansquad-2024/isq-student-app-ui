@@ -5,20 +5,22 @@ import { useRouter } from "next/navigation";
 import { use } from "react";
 import {
   MessageSquare,
-  Users,
-  History,
   ChevronLeft,
   ChevronRight,
-  Flag,
-  Lightbulb,
+  ChevronUp,
+  ChevronDown,
   Eye,
+  Lightbulb,
+  ListFilter,
+  Target,
+  Users,
+  History,
+  Flag,
   Filter,
   CheckCircle2,
   Clock,
   X,
-  ListFilter,
   BookOpen,
-  Target,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -134,6 +136,7 @@ export default function QuestionPage({ params }: PageProps) {
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [navCollapsed, setNavCollapsed] = useState(false);
 
   const filteredQuestions = useMemo(() => {
     return SAMPLE_QUESTIONS.filter((q: Question) => {
@@ -200,15 +203,17 @@ export default function QuestionPage({ params }: PageProps) {
                 <span className="text-sm font-medium">
                   {question.metadata.exam.toUpperCase()}
                 </span>
-                <div className="text-xs text-muted-foreground flex flex-wrap gap-x-3 gap-y-1">
-                  <span>Paper {question.metadata.paper}</span>
-                  <span>Year {question.metadata.year}</span>
-                  <span>
-                    Type{" "}
-                    {question.type.charAt(0).toUpperCase() +
-                      question.type.slice(1)}
-                  </span>
-                </div>
+                {!navCollapsed && (
+                  <div className="text-xs text-muted-foreground flex flex-wrap gap-x-3 gap-y-1">
+                    <span>Paper {question.metadata.paper}</span>
+                    <span>Year {question.metadata.year}</span>
+                    <span>
+                      Type{" "}
+                      {question.type.charAt(0).toUpperCase() +
+                        question.type.slice(1)}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
             <div className="flex flex-wrap items-center justify-end gap-2 text-sm text-right">
@@ -235,59 +240,70 @@ export default function QuestionPage({ params }: PageProps) {
                   {question.marks.negative}
                 </span>
               </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => setNavCollapsed((prev) => !prev)}
+                aria-label={navCollapsed ? "Expand navigation" : "Collapse navigation"}
+              >
+                {navCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+              </Button>
             </div>
           </div>
         </div>
 
         {/* Navigation Tabs */}
-        <div>
-          <div className="grid grid-cols-4 gap-1 p-1 rounded-lg bg-muted">
-            <button
-              className={cn(
-                "py-2 text-sm rounded-md transition-colors",
-                activeTab === "question"
-                  ? "bg-background shadow text-primary font-medium"
-                  : "text-muted-foreground",
-              )}
-              onClick={() => setActiveTab("question")}
-            >
-              Question
-            </button>
-            <button
-              className={cn(
-                "py-2 text-sm rounded-md transition-colors",
-                activeTab === "comments"
-                  ? "bg-background shadow text-primary font-medium"
-                  : "text-muted-foreground",
-              )}
-              onClick={() => setActiveTab("comments")}
-            >
-              Comments
-            </button>
-            <button
-              className={cn(
-                "py-2 text-sm rounded-md transition-colors",
-                activeTab === "solutions"
-                  ? "bg-background shadow text-primary font-medium"
-                  : "text-muted-foreground",
-              )}
-              onClick={() => setActiveTab("solutions")}
-            >
-              Solutions
-            </button>
-            <button
-              className={cn(
-                "py-2 text-sm rounded-md transition-colors",
-                activeTab === "history"
-                  ? "bg-background shadow text-primary font-medium"
-                  : "text-muted-foreground",
-              )}
-              onClick={() => setActiveTab("history")}
-            >
-              History
-            </button>
+        {!navCollapsed && (
+          <div>
+            <div className="grid grid-cols-4 gap-1 p-1 rounded-lg bg-muted">
+              <button
+                className={cn(
+                  "py-2 text-sm rounded-md transition-colors",
+                  activeTab === "question"
+                    ? "bg-background shadow text-primary font-medium"
+                    : "text-muted-foreground",
+                )}
+                onClick={() => setActiveTab("question")}
+              >
+                Question
+              </button>
+              <button
+                className={cn(
+                  "py-2 text-sm rounded-md transition-colors",
+                  activeTab === "comments"
+                    ? "bg-background shadow text-primary font-medium"
+                    : "text-muted-foreground",
+                )}
+                onClick={() => setActiveTab("comments")}
+              >
+                Comments
+              </button>
+              <button
+                className={cn(
+                  "py-2 text-sm rounded-md transition-colors",
+                  activeTab === "solutions"
+                    ? "bg-background shadow text-primary font-medium"
+                    : "text-muted-foreground",
+                )}
+                onClick={() => setActiveTab("solutions")}
+              >
+                Solutions
+              </button>
+              <button
+                className={cn(
+                  "py-2 text-sm rounded-md transition-colors",
+                  activeTab === "history"
+                    ? "bg-background shadow text-primary font-medium"
+                    : "text-muted-foreground",
+                )}
+                onClick={() => setActiveTab("history")}
+              >
+                History
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </nav>
 
       {/* Main Content */}
