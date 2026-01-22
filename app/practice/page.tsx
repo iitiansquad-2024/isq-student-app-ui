@@ -184,7 +184,7 @@ export default function PracticePage() {
       />
 
       {/* Search, Sort and Filter Button */}
-      <div className="sticky top-16 z-20 mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-border/60 bg-background/95 p-3 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/80">
+      <div className="sticky top-28 z-20 mb-4 flex flex-wrap items-center gap-3 rounded-md border border-border/60 bg-muted/50 p-2 backdrop-blur-lg supports-[backdrop-filter]:bg-white/60 dark:border-stone-700/60 dark:bg-stone-900/70 dark:supports-[backdrop-filter]:bg-stone-900/50">
         <div className="flex-1 flex relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input 
@@ -273,8 +273,6 @@ export default function PracticePage() {
           </Button>
         </div>
       )}
-
-      <Footer />
     </section>
   )
 }

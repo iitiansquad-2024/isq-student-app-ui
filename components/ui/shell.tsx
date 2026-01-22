@@ -4,6 +4,7 @@ import { useState } from "react"
 import TopNav from "./top-nav"
 import Sidebar from "./sidebar"
 import BottomNav from "./bottom-nav"
+import Footer from "./footer"
 
 export default function Shell({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -22,6 +23,9 @@ export default function Shell({ children }: { children: React.ReactNode }) {
       />
 
       <div className="mx-auto max-w-3xl px-4 pt-24 pb-28">{children}</div>
+
+
+      <Footer />
 
       <BottomNav />
     </div>

@@ -23,7 +23,7 @@ export default function PresetFilters({
     <div className="mb-4">
       <div
         className={cn(
-          "relative rounded-md border border-border/60 bg-muted/60 p-3 transition-colors",
+          "relative rounded-md border border-border/60 bg-muted/10 p-3 transition-colors",
           showAll ? "max-h-none" : "max-h-12 overflow-hidden"
         )}
       >
