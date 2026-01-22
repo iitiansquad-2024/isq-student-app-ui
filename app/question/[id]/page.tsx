@@ -181,24 +181,35 @@ export default function QuestionPage({ params }: PageProps) {
   };
 
   return (
-    <main className="pt-4">
+    <main className="pt-7">
       {/* Top Navigation */}
-      <nav className="sticky top-0 left-0 right-0 z-50 bg-background/95 border-b backdrop-blur supports-[backdrop-filter]:bg-background/80">
+      <nav className="space-y-1.5">
         {/* Top Bar */}
-        <div className="h-14 flex items-center">
-          <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-3">
+        <div className="flex items-start">
+          <div className="flex items-start justify-between w-full p-2">
+            <div className="flex items-start gap-3">
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8"
+                className="h-8 w-8 bg-background"
                 onClick={() => router.push("/practice")}
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
-              <span className="text-sm font-medium">
-                {question.metadata.exam.toUpperCase()}
-              </span>
+              <div className="flex flex-col gap-y-1.5">
+                <span className="text-sm font-medium">
+                  {question.metadata.exam.toUpperCase()}
+                </span>
+                <div className="text-xs text-muted-foreground flex flex-wrap gap-x-3 gap-y-1">
+                  <span>Paper {question.metadata.paper}</span>
+                  <span>Year {question.metadata.year}</span>
+                  <span>
+                    Type{" "}
+                    {question.type.charAt(0).toUpperCase() +
+                      question.type.slice(1)}
+                  </span>
+                </div>
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <Badge
@@ -287,21 +298,6 @@ export default function QuestionPage({ params }: PageProps) {
               <Badge variant="outline" className="text-primary shrink-0">
                 {question.metadata.chapter}
               </Badge>
-              <div className="flex items-center gap-1">
-                <span className="text-muted-foreground">Paper</span>
-                <span className="font-medium">{question.metadata.paper}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="text-muted-foreground">Year</span>
-                <span className="font-medium">{question.metadata.year}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="text-muted-foreground">Type</span>
-                <span className="font-medium">
-                  {question.type.charAt(0).toUpperCase() +
-                    question.type.slice(1)}
-                </span>
-              </div>
             </div>
             <div className="flex items-center gap-3 text-sm">
               <div className="flex items-center gap-1">
