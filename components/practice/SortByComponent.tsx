@@ -18,7 +18,7 @@ export type SortOrder = "asc" | "desc"
 interface SortByComponentProps {
   sortField: SortField | null
   sortOrder: SortOrder
-  onSortChange: (field: SortField, order: SortOrder) => void
+  onSortChange: (field: SortField | null, order: SortOrder) => void
 }
 
 const sortOptions = [
@@ -44,6 +44,11 @@ export default function SortByComponent({
     if (sortField) {
       onSortChange(sortField, sortOrder === "asc" ? "desc" : "asc")
     }
+  }
+
+  const clearSorting = () => {
+    onSortChange(null, sortOrder)
+    setOpen(false)
   }
 
   const triggerIcon = !sortField ? (
@@ -89,24 +94,35 @@ export default function SortByComponent({
           </Select>
         </div>
 
-        <Button
-          variant="secondary"
-          className="w-full"
-          onClick={toggleSortOrder}
-          disabled={!sortField}
-        >
-          {sortOrder === "asc" ? (
-            <>
-              <ArrowUp className="mr-2 h-4 w-4" />
-              Ascending
-            </>
-          ) : (
-            <>
-              <ArrowDown className="mr-2 h-4 w-4" />
-              Descending
-            </>
-          )}
-        </Button>
+        <div className="space-y-2">
+          <Button
+            variant="secondary"
+            className="w-full"
+            onClick={toggleSortOrder}
+            disabled={!sortField}
+          >
+            {sortOrder === "asc" ? (
+              <>
+                <ArrowUp className="mr-2 h-4 w-4" />
+                Ascending
+              </>
+            ) : (
+              <>
+                <ArrowDown className="mr-2 h-4 w-4" />
+                Descending
+              </>
+            )}
+          </Button>
+
+          <Button
+            variant="ghost"
+            className="w-full text-sm"
+            onClick={clearSorting}
+            disabled={!sortField}
+          >
+            Remove sorting
+          </Button>
+        </div>
       </PopoverContent>
     </Popover>
   )

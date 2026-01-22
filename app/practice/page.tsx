@@ -144,7 +144,7 @@ export default function PracticePage() {
         </div>
 
         <div className="flex items-center gap-4">
-          <Streak goal={18} size={48} currentDays={5} meterDescription="practice meter" meterUnit=" Question" />
+          <Streak goal={18} size={48} currentDays={5} meterDescription="practice meter" meterUnit=" Ques" />
         </div>
       </header>
 
