@@ -184,7 +184,7 @@ export default function PracticePage() {
       />
 
       {/* Search, Sort and Filter Button */}
-      <div className="mb-4 flex flex-wrap items-center gap-3">
+      <div className="sticky top-16 z-20 mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-border/60 bg-background/95 p-3 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/80">
         <div className="flex-1 flex relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input 
@@ -218,8 +218,8 @@ export default function PracticePage() {
         <p>
           Presenting {filtered.length} question{filtered.length === 1 ? "" : "s"} found
         </p>
-        <Button variant="link" className="px-0 text-xs font-semibold text-muted-foreground">
-          begin random
+        <Button variant="link" className="px-0 text-sm text-muted-foreground">
+          begin random :)
         </Button>
       </div>
       <div className="space-y-3">
