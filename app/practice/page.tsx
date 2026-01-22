@@ -214,6 +214,14 @@ export default function PracticePage() {
       </div>
 
       {/* 3. Question list row */}
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-sm text-muted-foreground">
+        <p>
+          Presenting {filtered.length} question{filtered.length === 1 ? "" : "s"} found
+        </p>
+        <Button variant="link" className="px-0 text-xs font-semibold text-muted-foreground">
+          begin random
+        </Button>
+      </div>
       <div className="space-y-3">
         {filtered.length === 0 ? (
           <div className="rounded-md border border-border p-4 text-muted-foreground">No questions match your search.</div>
