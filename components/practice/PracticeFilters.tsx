@@ -477,18 +477,34 @@ export default function PracticeFilters({ filters, onFiltersChange, onApplyFilte
     </div>
   )
 
+  const activeFilterCount =
+    filters.subjects.length +
+    filters.chapters.length +
+    filters.topics.length +
+    filters.years.length +
+    filters.difficulty.length +
+    filters.questionType.length +
+    (filters.previousYearOnly ? 0 : 1)
+
   if (isMobile) {
     return (
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger asChild>
-          <Button
-            variant="outline"
-            size="icon"
-            aria-label="Open filters"
-            className="h-9 w-9"
-          >
-            <Filter className="h-4 w-4" />
-          </Button>
+          <div className="relative">
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label="Open filters"
+              className="h-9 w-9"
+            >
+              <Filter className="h-4 w-4" />
+            </Button>
+            {activeFilterCount > 0 && (
+              <span className="absolute -right-1 -top-1 inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-yellow-400 px-1 text-[10px] font-bold text-gray-900">
+                {activeFilterCount}
+              </span>
+            )}
+          </div>
         </SheetTrigger>
         <SheetContent side="bottom" className="h-[85vh] overflow-y-auto">
           <SheetHeader>
