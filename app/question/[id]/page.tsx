@@ -181,13 +181,13 @@ export default function QuestionPage({ params }: PageProps) {
   };
 
   return (
-    <main className="pt-7">
+    <main className="pt-7 space-y-4">
       {/* Top Navigation */}
       <nav className="space-y-1.5">
         {/* Top Bar */}
-        <div className="flex items-start">
-          <div className="flex items-start justify-between w-full p-2">
-            <div className="flex items-start gap-3">
+        <div className="flex items-center">
+          <div className="flex items-center justify-between w-full p-2">
+            <div className="flex items-center gap-3">
               <Button
                 variant="ghost"
                 size="icon"
@@ -211,7 +211,8 @@ export default function QuestionPage({ params }: PageProps) {
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center justify-end gap-2 text-sm text-right">
+              <p className="text-sm font-medium w-full sm:w-auto">Q{question.id}</p>
               <Badge
                 variant="outline"
                 className={cn(
@@ -225,13 +226,21 @@ export default function QuestionPage({ params }: PageProps) {
               >
                 {question.difficulty}
               </Badge>
-              <span className="text-sm font-medium">Q{question.id}</span>
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                <span>Marks</span>
+                <span className="font-medium text-primary">
+                  +{question.marks.positive}
+                </span>
+                <span className="font-medium text-destructive">
+                  {question.marks.negative}
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Navigation Tabs */}
-        <div className="pb-2">
+        <div>
           <div className="grid grid-cols-4 gap-1 p-1 rounded-lg bg-muted">
             <button
               className={cn(
@@ -282,38 +291,24 @@ export default function QuestionPage({ params }: PageProps) {
       </nav>
 
       {/* Main Content */}
-      <div className="pt-2">
+      <div className="space-y-4">
         {/* Question Info */}
-        <div className="mb-6">
-          {/* Subject & Paper */}
-          <div className="flex flex-wrap gap-2 mb-3"></div>
-
+        <div className="space-y-3">
           {/* Question Details */}
           <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
             <div className="flex flex-wrap items-center gap-3">
               <Badge variant="outline" className="text-primary shrink-0">
-                {question.metadata.subject.charAt(0).toUpperCase() +
+                Subject: {question.metadata.subject.charAt(0).toUpperCase() +
                   question.metadata.subject.slice(1)}
               </Badge>
               <Badge variant="outline" className="text-primary shrink-0">
-                {question.metadata.chapter}
+                Chapter: {question.metadata.chapter}
               </Badge>
-            </div>
-            <div className="flex items-center gap-3 text-sm">
-              <div className="flex items-center gap-1">
-                <span className="text-muted-foreground">Marks</span>
-                <span className="font-medium text-primary">
-                  +{question.marks.positive}
-                </span>
-                <span className="font-medium text-destructive">
-                  {question.marks.negative}
-                </span>
-              </div>
             </div>
           </div>
 
           {/* Stats */}
-          <div className="flex items-center gap-6 text-sm mt-3">
+          <div className="flex items-center gap-6 text-sm">
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4 text-muted-foreground" />
               <span className="font-medium">
@@ -337,10 +332,10 @@ export default function QuestionPage({ params }: PageProps) {
         </div>
 
         {/* Content */}
-        <div className="mt-4">
+        <div>
           {activeTab === "question" && (
             <div className="space-y-6">
-              <div className="rounded-lg border bg-card p-6">
+              <div className="rounded-lg border bg-card p-4">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-medium">Question</h2>
                   <div className="flex items-center gap-2">
