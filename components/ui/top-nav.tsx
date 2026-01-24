@@ -167,7 +167,7 @@ export function TopNav({
         </div>
       </div>
 
-      <div className="w-full border-b border-border px-4 py-2 text-sm flex justify-between">
+      {showSecondRow && <div className="w-full border-b border-border px-4 py-2 text-sm flex justify-between">
         {mounted ? (
           <Select value={selectedExam} onValueChange={setSelectedExam}>
             <SelectTrigger className="text-xs h-fit cursor-pointer transition-colors duration-100 hover:bg-accent">
@@ -195,7 +195,7 @@ export function TopNav({
         >
           <EllipsisVertical className="h-5 w-5" />
         </Button>
-      </div>
+      </div>}
     </header>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Search,
   Calendar,
@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MOCK_BLOG_POSTS, BLOG_CATEGORIES } from "@/lib/blog-data";
+import { useMenu } from "@/contexts/MenuContext";
 
 const POSTS_PER_PAGE = 10;
 
@@ -163,69 +164,75 @@ export default function BlogPage() {
     return views.toString();
   };
 
+  const { setShowSecondRow } = useMenu();
+  useEffect(() => {
+    setShowSecondRow(false);
+
+    return () => setShowSecondRow(true);
+  }, []);
+
   return (
-    <div className="min-h-screen space-y-4 relative">
+    <div className="space-y-4 relative">
       {/* Hero Section */}
-      <section className=" border-border/60 pt-10 ">
-        <div className="max-w-5xl mx-auto sm:px-6 lg:px-8">
-          <div className="space-y-4">
-            <h1 className="text-2xl md:text-4xl font-semibold text-foreground">
-              News & Study Tips
-            </h1>
-            <div className="max-w-xl mx-auto relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
-              <Input
-                type="text"
-                placeholder="Search articles, topics, or authors..."
-                value={searchQuery}
-                onChange={(e) => handleSearch(e.target.value)}
-                className="pl-12 pr-4 py-3 text-base bg-card border border-border rounded-full shadow-sm focus:ring-2 focus:ring-primary/70"
-              />
+      <section className=" border-border/60 pt-10 space-y-2">
+        <h1 className="text-2xl md:text-4xl font-semibold text-foreground">
+          News & Study Tips
+        </h1>
+
+        <div className="max-w-xl mx-auto relative">
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <Input
+            type="text"
+            placeholder="Search articles, topics, or authors..."
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+            className="pl-10 pr-4 py-3 text-base bg-card border border-border rounded-lg h-6 text-sm focus:ring-2 focus:ring-primary/70"
+          />
+        </div>
+
+        {/* Category Filter */}
+        <div className="sticky top-0 z-40 backdrop-blur">
+          <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
+            <div className="h-9 rounded-lg border border-white/60 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 supports-[backdrop-filter]:bg-white/40 supports-[backdrop-filter]:dark:bg-slate-900/30 backdrop-blur-xl flex items-center justify-between gap-4">
+              <div className="flex items-center space-x-1 overflow-x-auto scrollbar-hide">
+                {BLOG_CATEGORIES.map((category) => (
+                  <Button
+                    key={category}
+                    variant={
+                      selectedCategory === category ? "default" : "ghost"
+                    }
+                    size="sm"
+                    onClick={() => handleCategoryFilter(category)}
+                    className={`whitespace-nowrap rounded-lg px-2 text-xs ${
+                      selectedCategory === category
+                        ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                        : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                    }`}
+                  >
+                    {category}
+                  </Button>
+                ))}
+              </div>
+              <div className="hidden md:flex items-center text-sm text-muted-foreground whitespace-nowrap">
+                <Filter className="h-4 w-4 mr-2" />
+                {filteredPosts.length} articles
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Category Filter */}
-      <section className="sticky top-0 z-40 backdrop-blur">
-        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
-          <div className="rounded-3xl border border-white/60 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 supports-[backdrop-filter]:bg-white/40 supports-[backdrop-filter]:dark:bg-slate-900/30 backdrop-blur-xl shadow-lg shadow-black/5 px-4 py-3 flex items-center justify-between gap-4">
-            <div className="flex items-center space-x-1 overflow-x-auto scrollbar-hide">
-              {BLOG_CATEGORIES.map((category) => (
-                <Button
-                  key={category}
-                  variant={selectedCategory === category ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => handleCategoryFilter(category)}
-                  className={`whitespace-nowrap rounded-full px-4 ${
-                    selectedCategory === category
-                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                  }`}
-                >
-                  {category}
-                </Button>
-              ))}
-            </div>
-            <div className="hidden md:flex items-center text-sm text-muted-foreground whitespace-nowrap">
-              <Filter className="h-4 w-4 mr-2" />
-              {filteredPosts.length} articles
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-autosm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Main Content */}
           <div className="flex-1">
             {/* Featured Posts */}
             {featuredPosts.length > 0 && (
               <section className="mb-12">
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center">
-                    <Star className="h-6 w-6 text-yellow-500 mr-2" />
-                    <h2 className="text-2xl font-bold text-foreground">
+                    <Star className="h-4 w-4 text-yellow-500 mr-2" />
+                    <h2 className="font-semibold text-foreground">
                       Featured Articles
                     </h2>
                   </div>

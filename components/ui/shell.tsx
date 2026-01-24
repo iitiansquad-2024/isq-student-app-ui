@@ -6,15 +6,18 @@ import BottomNav from "./bottom-nav"
 import Footer from "./footer"
 import { BlogSheet } from "./blog-sheet"
 import { useMenu } from "@/contexts/MenuContext"
+import { cn } from "@/lib/utils"
 
 export default function Shell({ children }: { children: React.ReactNode }) {
 
+  const {showSecondRow } = useMenu()
+
   return (
     <div className="min-h-screen bg-background font-sans text-foreground dark:bg-black">
-      <TopNav showSecondRow={true} />
+      <TopNav showSecondRow={showSecondRow} />
       <Sidebar />
 
-      <div className="mx-auto max-w-3xl px-4 pt-24 pb-28">{children}</div>
+      <div className={cn("mx-auto max-w-3xl px-4 pt-7 pb-14", showSecondRow ? "pt-28" : "")}>{children}</div>
 
       <Footer />
 
