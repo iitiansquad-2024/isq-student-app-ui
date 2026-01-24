@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useExam } from "@/contexts/ExamContext";
+import { useMenu } from "@/contexts/MenuContext";
 import {
   Select,
   SelectContent,
@@ -31,14 +32,10 @@ import Avatar from "./avatar";
 
 type TopNavProps = {
   showSecondRow?: boolean;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
 };
 
 export function TopNav({
   showSecondRow = false,
-  open,
-  onOpenChange,
 }: TopNavProps) {
   const router = useRouter();
   const { user, loading, logout: authLogout } = useAuth();
@@ -46,6 +43,7 @@ export function TopNav({
   const { selectedExam, setSelectedExam, exams } = useExam();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const { menuOpen, toggleMenu } = useMenu();
 
   useEffect(() => {
     setMounted(true);
@@ -68,9 +66,10 @@ export function TopNav({
       <div className="flex w-full items-center justify-between gap-4 px-4 py-2 backdrop-blur-sm">
         <div className="flex items-center gap-4">
           <button 
-            onClick={() => onOpenChange(!open)}
+            onClick={toggleMenu}
             className="cursor-pointer hover:bg-accent rounded-md p-1 transition-colors"
             aria-label="Toggle menu"
+            aria-pressed={menuOpen}
           >
             <Menu className="h-5 w-5" />
           </button>

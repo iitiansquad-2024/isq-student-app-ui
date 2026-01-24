@@ -5,6 +5,7 @@ import Shell from "@/components/ui/shell";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { ExamProvider } from "@/contexts/ExamContext";
+import { MenuProvider } from "@/contexts/MenuContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -55,7 +56,9 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <ExamProvider>
-              <Shell>{children}</Shell>
+              <MenuProvider>
+                <Shell>{children}</Shell>
+              </MenuProvider>
             </ExamProvider>
           </AuthProvider>
         </ThemeProvider>
