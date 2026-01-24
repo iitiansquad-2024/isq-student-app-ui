@@ -1,32 +1,71 @@
 "use client";
 
-import Link from 'next/link';
-import { useState } from 'react';
-import { Search, Calendar, Clock, ArrowRight, BookOpen, TrendingUp, Star, Filter, ChevronLeft, ChevronRight, Mail } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { MOCK_BLOG_POSTS, BLOG_CATEGORIES } from '@/lib/blog-data';
+import Link from "next/link";
+import { useState } from "react";
+import {
+  Search,
+  Calendar,
+  Clock,
+  ArrowRight,
+  BookOpen,
+  TrendingUp,
+  Star,
+  Filter,
+  ChevronLeft,
+  ChevronRight,
+  Mail,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { MOCK_BLOG_POSTS, BLOG_CATEGORIES } from "@/lib/blog-data";
 
 const POSTS_PER_PAGE = 10;
 
 const topBlogs = [
-  { id: '1', title: 'How to Crack JEE Advanced: Complete Guide', views: 15420, category: 'JEE Strategy' },
-  { id: '2', title: 'NEET Biology Preparation Tips', views: 12350, category: 'NEET Strategy' },
-  { id: '3', title: 'Advanced Mathematics Techniques', views: 8920, category: 'Mathematics' },
-  { id: '4', title: 'Physics Concepts Made Simple', views: 7650, category: 'Physics' },
-  { id: '5', title: 'Chemistry Organic Reactions', views: 6900, category: 'Chemistry' }
+  {
+    id: "1",
+    title: "How to Crack JEE Advanced: Complete Guide",
+    views: 15420,
+    category: "JEE Strategy",
+  },
+  {
+    id: "2",
+    title: "NEET Biology Preparation Tips",
+    views: 12350,
+    category: "NEET Strategy",
+  },
+  {
+    id: "3",
+    title: "Advanced Mathematics Techniques",
+    views: 8920,
+    category: "Mathematics",
+  },
+  {
+    id: "4",
+    title: "Physics Concepts Made Simple",
+    views: 7650,
+    category: "Physics",
+  },
+  {
+    id: "5",
+    title: "Chemistry Organic Reactions",
+    views: 6900,
+    category: "Chemistry",
+  },
 ];
 
 export default function BlogPage() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [filteredPosts, setFilteredPosts] = useState(MOCK_BLOG_POSTS);
   const [currentPage, setCurrentPage] = useState(1);
   const [featuredIndex, setFeaturedIndex] = useState(0);
-  const [email, setEmail] = useState('');
-  const [sortBy, setSortBy] = useState<'latest' | 'mostLiked' | 'mostViewed'>('latest');
+  const [email, setEmail] = useState("");
+  const [sortBy, setSortBy] = useState<"latest" | "mostLiked" | "mostViewed">(
+    "latest",
+  );
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -41,15 +80,18 @@ export default function BlogPage() {
   const filterPosts = (query: string, category: string) => {
     let filtered = MOCK_BLOG_POSTS;
 
-    if (category !== 'All') {
-      filtered = filtered.filter(post => post.category === category);
+    if (category !== "All") {
+      filtered = filtered.filter((post) => post.category === category);
     }
 
     if (query) {
-      filtered = filtered.filter(post =>
-        post.title.toLowerCase().includes(query.toLowerCase()) ||
-        post.excerpt.toLowerCase().includes(query.toLowerCase()) ||
-        post.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()))
+      filtered = filtered.filter(
+        (post) =>
+          post.title.toLowerCase().includes(query.toLowerCase()) ||
+          post.excerpt.toLowerCase().includes(query.toLowerCase()) ||
+          post.tags.some((tag) =>
+            tag.toLowerCase().includes(query.toLowerCase()),
+          ),
       );
     }
 
@@ -58,47 +100,59 @@ export default function BlogPage() {
   };
 
   const handleNextFeatured = () => {
-    const featuredPosts = filteredPosts.filter(post => post.featured);
-    setFeaturedIndex(prev => (prev + 2 >= featuredPosts.length ? 0 : prev + 2));
+    const featuredPosts = filteredPosts.filter((post) => post.featured);
+    setFeaturedIndex((prev) =>
+      prev + 2 >= featuredPosts.length ? 0 : prev + 2,
+    );
   };
 
   const handlePrevFeatured = () => {
-    const featuredPosts = filteredPosts.filter(post => post.featured);
-    setFeaturedIndex(prev => (prev - 2 < 0 ? Math.max(0, featuredPosts.length - 2) : prev - 2));
+    const featuredPosts = filteredPosts.filter((post) => post.featured);
+    setFeaturedIndex((prev) =>
+      prev - 2 < 0 ? Math.max(0, featuredPosts.length - 2) : prev - 2,
+    );
   };
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Subscribing email:', email);
-    setEmail('');
+    console.log("Subscribing email:", email);
+    setEmail("");
   };
 
-  const featuredPosts = filteredPosts.filter(post => post.featured);
-  let regularPosts = filteredPosts.filter(post => !post.featured);
-  
+  const featuredPosts = filteredPosts.filter((post) => post.featured);
+  let regularPosts = filteredPosts.filter((post) => !post.featured);
+
   regularPosts = [...regularPosts].sort((a, b) => {
     switch (sortBy) {
-      case 'mostLiked':
+      case "mostLiked":
         return b.likes - a.likes;
-      case 'mostViewed':
+      case "mostViewed":
         return b.views - a.views;
-      case 'latest':
+      case "latest":
       default:
-        return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+        return (
+          new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+        );
     }
   });
-  
+
   const totalPages = Math.ceil(regularPosts.length / POSTS_PER_PAGE);
   const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
-  const paginatedPosts = regularPosts.slice(startIndex, startIndex + POSTS_PER_PAGE);
-  
-  const displayedFeaturedPosts = featuredPosts.slice(featuredIndex, featuredIndex + 2);
+  const paginatedPosts = regularPosts.slice(
+    startIndex,
+    startIndex + POSTS_PER_PAGE,
+  );
+
+  const displayedFeaturedPosts = featuredPosts.slice(
+    featuredIndex,
+    featuredIndex + 2,
+  );
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -110,18 +164,14 @@ export default function BlogPage() {
   };
 
   return (
-    <div className="min-h-screen space-y-4">
+    <div className="min-h-screen space-y-4 relative">
       {/* Hero Section */}
-      <section className="border-b border-border/60 pt-10 ">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4">
-            <h1 className="text-3xl md:text-4xl font-semibold text-foreground">
-              Expert Insights & Study Tips
+      <section className=" border-border/60 pt-10 ">
+        <div className="max-w-5xl mx-auto sm:px-6 lg:px-8">
+          <div className="space-y-4">
+            <h1 className="text-2xl md:text-4xl font-semibold text-foreground">
+              News & Study Tips
             </h1>
-            <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-              Learn from IIT toppers and medical college experts. Get the latest strategies, tips, and insights to excel in your competitive exams.
-            </p>
-            
             <div className="max-w-xl mx-auto relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
               <Input
@@ -139,7 +189,7 @@ export default function BlogPage() {
       {/* Category Filter */}
       <section className="sticky top-0 z-40 backdrop-blur">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
-          <div className="rounded-2xl border border-border/70 bg-card shadow-sm px-4 py-3 flex items-center justify-between gap-4">
+          <div className="rounded-3xl border border-white/60 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 supports-[backdrop-filter]:bg-white/40 supports-[backdrop-filter]:dark:bg-slate-900/30 backdrop-blur-xl shadow-lg shadow-black/5 px-4 py-3 flex items-center justify-between gap-4">
             <div className="flex items-center space-x-1 overflow-x-auto scrollbar-hide">
               {BLOG_CATEGORIES.map((category) => (
                 <Button
@@ -149,8 +199,8 @@ export default function BlogPage() {
                   onClick={() => handleCategoryFilter(category)}
                   className={`whitespace-nowrap rounded-full px-4 ${
                     selectedCategory === category
-                      ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
                   }`}
                 >
                   {category}
@@ -175,20 +225,22 @@ export default function BlogPage() {
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center">
                     <Star className="h-6 w-6 text-yellow-500 mr-2" />
-                    <h2 className="text-2xl font-bold text-foreground">Featured Articles</h2>
+                    <h2 className="text-2xl font-bold text-foreground">
+                      Featured Articles
+                    </h2>
                   </div>
                   {featuredPosts.length > 2 && (
                     <div className="flex items-center gap-2">
-                      <Button 
+                      <Button
                         onClick={handlePrevFeatured}
-                        variant="outline" 
+                        variant="outline"
                         size="sm"
                       >
                         <ChevronLeft className="h-4 w-4" />
                       </Button>
-                      <Button 
+                      <Button
                         onClick={handleNextFeatured}
-                        variant="outline" 
+                        variant="outline"
                         size="sm"
                       >
                         <ChevronRight className="h-4 w-4" />
@@ -196,10 +248,14 @@ export default function BlogPage() {
                     </div>
                   )}
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {displayedFeaturedPosts.map((post) => (
-                    <Link key={post.id} href={`/blog/${post.id}`} className="group">
+                    <Link
+                      key={post.id}
+                      href={`/blog/${post.id}`}
+                      className="group"
+                    >
                       <article className="bg-card rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-border">
                         <div className="aspect-[16/9] bg-gradient-to-br from-yellow-100 to-orange-100 relative overflow-hidden">
                           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
@@ -212,12 +268,12 @@ export default function BlogPage() {
                             </h3>
                           </div>
                         </div>
-                        
+
                         <div className="p-4">
                           <p className="text-muted-foreground mb-3 line-clamp-2 text-sm">
                             {post.excerpt}
                           </p>
-                          
+
                           <div className="flex items-center justify-between text-xs text-muted-foreground">
                             <div className="flex items-center space-x-3">
                               <span>{post.author.name}</span>
@@ -243,61 +299,86 @@ export default function BlogPage() {
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center">
                       <BookOpen className="h-6 w-6 text-foreground mr-2" />
-                      <h2 className="text-2xl font-bold text-foreground">Latest Articles</h2>
+                      <h2 className="text-2xl font-bold text-foreground">
+                        Latest Articles
+                      </h2>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground hidden sm:block">Sort by:</span>
+                      <span className="text-sm text-muted-foreground hidden sm:block">
+                        Sort by:
+                      </span>
                       <div className="flex gap-1">
                         <Button
-                          variant={sortBy === 'latest' ? 'default' : 'ghost'}
+                          variant={sortBy === "latest" ? "default" : "ghost"}
                           size="sm"
-                          onClick={() => setSortBy('latest')}
-                          className={sortBy === 'latest' ? 'bg-yellow-400 text-gray-900 hover:bg-yellow-500' : 'text-muted-foreground'}
+                          onClick={() => setSortBy("latest")}
+                          className={
+                            sortBy === "latest"
+                              ? "bg-yellow-400 text-gray-900 hover:bg-yellow-500"
+                              : "text-muted-foreground"
+                          }
                         >
                           Latest
                         </Button>
                         <Button
-                          variant={sortBy === 'mostViewed' ? 'default' : 'ghost'}
+                          variant={
+                            sortBy === "mostViewed" ? "default" : "ghost"
+                          }
                           size="sm"
-                          onClick={() => setSortBy('mostViewed')}
-                          className={sortBy === 'mostViewed' ? 'bg-yellow-400 text-gray-900 hover:bg-yellow-500' : 'text-muted-foreground'}
+                          onClick={() => setSortBy("mostViewed")}
+                          className={
+                            sortBy === "mostViewed"
+                              ? "bg-yellow-400 text-gray-900 hover:bg-yellow-500"
+                              : "text-muted-foreground"
+                          }
                         >
                           Most Viewed
                         </Button>
                         <Button
-                          variant={sortBy === 'mostLiked' ? 'default' : 'ghost'}
+                          variant={sortBy === "mostLiked" ? "default" : "ghost"}
                           size="sm"
-                          onClick={() => setSortBy('mostLiked')}
-                          className={sortBy === 'mostLiked' ? 'bg-yellow-400 text-gray-900 hover:bg-yellow-500' : 'text-muted-foreground'}
+                          onClick={() => setSortBy("mostLiked")}
+                          className={
+                            sortBy === "mostLiked"
+                              ? "bg-yellow-400 text-gray-900 hover:bg-yellow-500"
+                              : "text-muted-foreground"
+                          }
                         >
                           Most Liked
                         </Button>
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {paginatedPosts.map((post) => (
-                      <Link key={post.id} href={`/blog/${post.id}`} className="group">
+                      <Link
+                        key={post.id}
+                        href={`/blog/${post.id}`}
+                        className="group"
+                      >
                         <article className="bg-card rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-border">
                           <div className="flex">
                             <div className="w-32 h-24 bg-gradient-to-br from-yellow-100 to-orange-100 flex-shrink-0 relative">
                               <div className="absolute top-2 left-2">
-                                <Badge variant="secondary" className="bg-background/90 text-foreground text-xs">
+                                <Badge
+                                  variant="secondary"
+                                  className="bg-background/90 text-foreground text-xs"
+                                >
                                   {post.category}
                                 </Badge>
                               </div>
                             </div>
-                            
+
                             <div className="p-4 flex-1">
                               <h3 className="text-base font-bold text-foreground mb-2 line-clamp-2 group-hover:text-yellow-600 transition-colors">
                                 {post.title}
                               </h3>
-                              
+
                               <p className="text-muted-foreground mb-3 line-clamp-2 text-sm">
                                 {post.excerpt}
                               </p>
-                              
+
                               <div className="flex items-center justify-between text-xs text-muted-foreground">
                                 <div className="flex items-center space-x-2">
                                   <span>{post.author.name}</span>
@@ -313,38 +394,53 @@ export default function BlogPage() {
                       </Link>
                     ))}
                   </div>
-                  
+
                   {/* Pagination */}
                   {totalPages > 1 && (
                     <div className="flex items-center justify-center space-x-2 mt-8">
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                        onClick={() =>
+                          setCurrentPage((prev) => Math.max(prev - 1, 1))
+                        }
                         disabled={currentPage === 1}
                       >
                         <ChevronLeft className="h-4 w-4 mr-1" />
                         Previous
                       </Button>
-                      
+
                       <div className="flex items-center space-x-1">
-                        {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map((page) => (
+                        {Array.from(
+                          { length: Math.min(totalPages, 5) },
+                          (_, i) => i + 1,
+                        ).map((page) => (
                           <Button
                             key={page}
-                            variant={currentPage === page ? "default" : "outline"}
+                            variant={
+                              currentPage === page ? "default" : "outline"
+                            }
                             size="sm"
                             onClick={() => setCurrentPage(page)}
-                            className={currentPage === page ? "bg-yellow-400 text-gray-900 hover:bg-yellow-500" : ""}
+                            className={
+                              currentPage === page
+                                ? "bg-yellow-400 text-gray-900 hover:bg-yellow-500"
+                                : ""
+                            }
                           >
                             {page}
                           </Button>
                         ))}
                       </div>
-                      
+
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                        onClick={() =>
+                          setCurrentPage((prev) =>
+                            Math.min(prev + 1, totalPages),
+                          )
+                        }
                         disabled={currentPage === totalPages}
                       >
                         Next
@@ -354,17 +450,21 @@ export default function BlogPage() {
                   )}
                 </>
               )}
-              
+
               {filteredPosts.length === 0 && (
                 <div className="text-center py-12">
                   <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-foreground mb-2">No articles found</h3>
-                  <p className="text-muted-foreground">Try adjusting your search or filter criteria</p>
+                  <h3 className="text-xl font-semibold text-foreground mb-2">
+                    No articles found
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Try adjusting your search or filter criteria
+                  </p>
                 </div>
               )}
             </section>
           </div>
-          
+
           {/* Sidebar */}
           <div className="lg:w-80 space-y-6">
             {/* Top Blogs */}
@@ -377,7 +477,11 @@ export default function BlogPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {topBlogs.map((blog, index) => (
-                  <Link key={blog.id} href={`/blog/${blog.id}`} className="group block">
+                  <Link
+                    key={blog.id}
+                    href={`/blog/${blog.id}`}
+                    className="group block"
+                  >
                     <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-accent transition-colors">
                       <div className="flex-shrink-0 w-8 h-8 bg-yellow-400 text-gray-900 rounded-full flex items-center justify-center text-sm font-bold">
                         {index + 1}
@@ -387,7 +491,9 @@ export default function BlogPage() {
                           {blog.title}
                         </h4>
                         <div className="flex items-center space-x-2 mt-1 text-xs text-muted-foreground">
-                          <Badge variant="outline" className="text-xs">{blog.category}</Badge>
+                          <Badge variant="outline" className="text-xs">
+                            {blog.category}
+                          </Badge>
                           <span>•</span>
                           <span>{formatViews(blog.views)} views</span>
                         </div>
@@ -397,7 +503,7 @@ export default function BlogPage() {
                 ))}
               </CardContent>
             </Card>
-            
+
             {/* Newsletter Subscription */}
             <Card className="bg-card text-foreground">
               <CardHeader>
@@ -408,7 +514,8 @@ export default function BlogPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground mb-4 text-sm">
-                  Get the latest study tips and strategies delivered to your inbox weekly.
+                  Get the latest study tips and strategies delivered to your
+                  inbox weekly.
                 </p>
                 <form onSubmit={handleSubscribe} className="space-y-3">
                   <Input
@@ -419,8 +526,8 @@ export default function BlogPage() {
                     className="bg-background text-foreground border-0"
                     required
                   />
-                  <Button 
-                    type="submit" 
+                  <Button
+                    type="submit"
                     className="w-full bg-yellow-400 text-gray-900 hover:bg-yellow-500 font-semibold"
                   >
                     Subscribe
@@ -431,7 +538,7 @@ export default function BlogPage() {
                 </p>
               </CardContent>
             </Card>
-            
+
             {/* Quick Links */}
             <Card>
               <CardHeader>
