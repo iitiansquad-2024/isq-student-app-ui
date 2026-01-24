@@ -110,26 +110,26 @@ export default function BlogPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen space-y-4">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-yellow-400 to-orange-500 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+      <section className="border-b border-border/60 pt-10 ">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center space-y-4">
+            <h1 className="text-3xl md:text-4xl font-semibold text-foreground">
               Expert Insights & Study Tips
             </h1>
-            <p className="text-xl text-foreground mb-8 max-w-3xl mx-auto">
+            <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
               Learn from IIT toppers and medical college experts. Get the latest strategies, tips, and insights to excel in your competitive exams.
             </p>
             
-            <div className="max-w-2xl mx-auto relative">
+            <div className="max-w-xl mx-auto relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
               <Input
                 type="text"
                 placeholder="Search articles, topics, or authors..."
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
-                className="pl-12 pr-4 py-4 text-lg bg-background border-0 rounded-full shadow-lg focus:ring-2 focus:ring-yellow-600"
+                className="pl-12 pr-4 py-3 text-base bg-card border border-border rounded-full shadow-sm focus:ring-2 focus:ring-primary/70"
               />
             </div>
           </div>
@@ -137,19 +137,19 @@ export default function BlogPage() {
       </section>
 
       {/* Category Filter */}
-      <section className="bg-background border-b border-border sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-4">
-            <div className="flex items-center space-x-1 overflow-x-auto">
+      <section className="sticky top-0 z-40 backdrop-blur">
+        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
+          <div className="rounded-2xl border border-border/70 bg-card shadow-sm px-4 py-3 flex items-center justify-between gap-4">
+            <div className="flex items-center space-x-1 overflow-x-auto scrollbar-hide">
               {BLOG_CATEGORIES.map((category) => (
                 <Button
                   key={category}
                   variant={selectedCategory === category ? "default" : "ghost"}
                   size="sm"
                   onClick={() => handleCategoryFilter(category)}
-                  className={`whitespace-nowrap ${
+                  className={`whitespace-nowrap rounded-full px-4 ${
                     selectedCategory === category
-                      ? 'bg-yellow-400 text-gray-900 hover:bg-yellow-500'
+                      ? 'bg-primary text-primary-foreground hover:bg-primary/90'
                       : 'text-muted-foreground hover:text-foreground hover:bg-accent'
                   }`}
                 >
@@ -157,7 +157,7 @@ export default function BlogPage() {
                 </Button>
               ))}
             </div>
-            <div className="hidden md:flex items-center text-sm text-muted-foreground">
+            <div className="hidden md:flex items-center text-sm text-muted-foreground whitespace-nowrap">
               <Filter className="h-4 w-4 mr-2" />
               {filteredPosts.length} articles
             </div>
