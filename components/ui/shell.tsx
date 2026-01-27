@@ -13,7 +13,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   const {showSecondRow } = useMenu()
 
   return (
-    <div className="min-h-screen bg-background font-sans text-foreground dark:bg-black">
+    <div className="min-h-screen bg-background font-sans text-foreground dark:bg-black w-100vw overflow-x-hidden">
       <TopNav showSecondRow={showSecondRow} />
       <Sidebar />
 
