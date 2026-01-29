@@ -19,6 +19,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { MOCK_BLOG_POSTS, BLOG_CATEGORIES } from "@/lib/blog-data";
 import { useMenu } from "@/contexts/MenuContext";
 
@@ -223,253 +229,267 @@ export default function BlogPage() {
       </section>
 
       <div className="max-w-7xl mx-autosm:px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-4">
           {/* Main Content */}
           <div className="flex-1">
-            {/* Featured Posts */}
-            {featuredPosts.length > 0 && (
-              <section className="mb-12">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center">
-                    <Star className="h-4 w-4 text-yellow-500 mr-2" />
-                    <h2 className="font-semibold text-foreground">
+            <Accordion type="multiple" defaultValue={["featured", "latest"]} className="space-y-2">
+              {featuredPosts.length > 0 && (
+                <AccordionItem value="featured" className="rounded-2xl border-none p-0">
+                  <AccordionTrigger className="font-semibold text-foreground">
+                    <div className="flex items-center gap-2">
+                      <Star className="h-4 w-4 text-yellow-500" />
                       Featured Articles
-                    </h2>
-                  </div>
-                  {featuredPosts.length > 2 && (
-                    <div className="flex items-center gap-2">
-                      <Button
-                        onClick={handlePrevFeatured}
-                        variant="outline"
-                        size="sm"
-                      >
-                        <ChevronLeft className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        onClick={handleNextFeatured}
-                        variant="outline"
-                        size="sm"
-                      >
-                        <ChevronRight className="h-4 w-4" />
-                      </Button>
                     </div>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {displayedFeaturedPosts.map((post) => (
-                    <Link
-                      key={post.id}
-                      href={`/blog/${post.id}`}
-                      className="group"
-                    >
-                      <article className="bg-card rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-border">
-                        <div className="aspect-[16/9] bg-gradient-to-br from-yellow-100 to-orange-100 relative overflow-hidden">
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                          <div className="absolute bottom-3 left-3 right-3">
-                            <Badge className="bg-yellow-400 text-gray-900 mb-2 text-xs">
-                              {post.category}
-                            </Badge>
-                            <h3 className="text-lg font-bold text-foreground line-clamp-2 group-hover:text-yellow-400 transition-colors">
-                              {post.title}
-                            </h3>
-                          </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="text-sm text-muted-foreground">
+                        Curated picks from mentors & toppers
+                      </p>
+                      {featuredPosts.length > 2 && (
+                        <div className="flex items-center gap-2">
+                          <Button
+                            onClick={handlePrevFeatured}
+                            variant="outline"
+                            size="sm"
+                            aria-label="Previous featured"
+                          >
+                            <ChevronLeft className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            onClick={handleNextFeatured}
+                            variant="outline"
+                            size="sm"
+                            aria-label="Next featured"
+                          >
+                            <ChevronRight className="h-4 w-4" />
+                          </Button>
                         </div>
-
-                        <div className="p-4">
-                          <p className="text-muted-foreground mb-3 line-clamp-2 text-sm">
-                            {post.excerpt}
-                          </p>
-
-                          <div className="flex items-center justify-between text-xs text-muted-foreground">
-                            <div className="flex items-center space-x-3">
-                              <span>{post.author.name}</span>
-                              <span>•</span>
-                              <span>{post.readTime} min</span>
-                              <span>•</span>
-                              <span>{formatViews(post.views)} views</span>
-                            </div>
-                            <ArrowRight className="h-4 w-4 text-yellow-600 group-hover:translate-x-1 transition-transform" />
-                          </div>
-                        </div>
-                      </article>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Recent Posts */}
-            <section>
-              {paginatedPosts.length > 0 && (
-                <>
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center">
-                      <BookOpen className="h-6 w-6 text-foreground mr-2" />
-                      <h2 className="text-2xl font-bold text-foreground">
-                        Latest Articles
-                      </h2>
+                      )}
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground hidden sm:block">
-                        Sort by:
-                      </span>
-                      <div className="flex gap-1">
-                        <Button
-                          variant={sortBy === "latest" ? "default" : "ghost"}
-                          size="sm"
-                          onClick={() => setSortBy("latest")}
-                          className={
-                            sortBy === "latest"
-                              ? "bg-yellow-400 text-gray-900 hover:bg-yellow-500"
-                              : "text-muted-foreground"
-                          }
-                        >
-                          Latest
-                        </Button>
-                        <Button
-                          variant={
-                            sortBy === "mostViewed" ? "default" : "ghost"
-                          }
-                          size="sm"
-                          onClick={() => setSortBy("mostViewed")}
-                          className={
-                            sortBy === "mostViewed"
-                              ? "bg-yellow-400 text-gray-900 hover:bg-yellow-500"
-                              : "text-muted-foreground"
-                          }
-                        >
-                          Most Viewed
-                        </Button>
-                        <Button
-                          variant={sortBy === "mostLiked" ? "default" : "ghost"}
-                          size="sm"
-                          onClick={() => setSortBy("mostLiked")}
-                          className={
-                            sortBy === "mostLiked"
-                              ? "bg-yellow-400 text-gray-900 hover:bg-yellow-500"
-                              : "text-muted-foreground"
-                          }
-                        >
-                          Most Liked
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {paginatedPosts.map((post) => (
-                      <Link
-                        key={post.id}
-                        href={`/blog/${post.id}`}
-                        className="group"
-                      >
-                        <article className="bg-card rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-border">
-                          <div className="flex">
-                            <div className="w-32 h-24 bg-gradient-to-br from-yellow-100 to-orange-100 flex-shrink-0 relative">
-                              <div className="absolute top-2 left-2">
-                                <Badge
-                                  variant="secondary"
-                                  className="bg-background/90 text-foreground text-xs"
-                                >
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {displayedFeaturedPosts.map((post) => (
+                        <Link
+                          key={post.id}
+                          href={`/blog/${post.id}`}
+                          className="group"
+                        >
+                          <article className="bg-card rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-border">
+                            <div className="aspect-[16/9] bg-gradient-to-br from-yellow-100 to-orange-100 relative overflow-hidden">
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                              <div className="absolute bottom-3 left-3 right-3">
+                                <Badge className="bg-yellow-400 text-gray-900 mb-2 text-xs">
                                   {post.category}
                                 </Badge>
+                                <h3 className="text-lg font-bold text-foreground line-clamp-2 group-hover:text-yellow-400 transition-colors">
+                                  {post.title}
+                                </h3>
                               </div>
                             </div>
 
-                            <div className="p-4 flex-1">
-                              <h3 className="text-base font-bold text-foreground mb-2 line-clamp-2 group-hover:text-yellow-600 transition-colors">
-                                {post.title}
-                              </h3>
-
+                            <div className="p-4">
                               <p className="text-muted-foreground mb-3 line-clamp-2 text-sm">
                                 {post.excerpt}
                               </p>
 
                               <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                <div className="flex items-center space-x-2">
+                                <div className="flex items-center space-x-3">
                                   <span>{post.author.name}</span>
                                   <span>•</span>
                                   <span>{post.readTime} min</span>
                                   <span>•</span>
                                   <span>{formatViews(post.views)} views</span>
                                 </div>
+                                <ArrowRight className="h-4 w-4 text-yellow-600 group-hover:translate-x-1 transition-transform" />
                               </div>
                             </div>
-                          </div>
-                        </article>
-                      </Link>
-                    ))}
+                          </article>
+                        </Link>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              )}
+
+              <AccordionItem value="latest" className="rounded-2xl border-none">
+                <AccordionTrigger className="font-semibold text-foreground">
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="h-4 w-4 text-yellow-500" />
+                    Latest Articles
                   </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  {paginatedPosts.length > 0 && (
+                    <>
+                      <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center">
+                          <span className="text-sm text-muted-foreground">
+                            {regularPosts.length} posts
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-muted-foreground hidden sm:block">
+                            Sort by:
+                          </span>
+                          <div className="flex gap-1">
+                            <Button
+                              variant={sortBy === "latest" ? "default" : "ghost"}
+                              size="sm"
+                              onClick={() => setSortBy("latest")}
+                              className={
+                                sortBy === "latest"
+                                  ? "bg-yellow-400 text-gray-900 hover:bg-yellow-500"
+                                  : "text-muted-foreground"
+                              }
+                            >
+                              Latest
+                            </Button>
+                            <Button
+                              variant={
+                                sortBy === "mostViewed" ? "default" : "ghost"
+                              }
+                              size="sm"
+                              onClick={() => setSortBy("mostViewed")}
+                              className={
+                                sortBy === "mostViewed"
+                                  ? "bg-yellow-400 text-gray-900 hover:bg-yellow-500"
+                                  : "text-muted-foreground"
+                              }
+                            >
+                              Most Viewed
+                            </Button>
+                            <Button
+                              variant={sortBy === "mostLiked" ? "default" : "ghost"}
+                              size="sm"
+                              onClick={() => setSortBy("mostLiked")}
+                              className={
+                                sortBy === "mostLiked"
+                                  ? "bg-yellow-400 text-gray-900 hover:bg-yellow-500"
+                                  : "text-muted-foreground"
+                              }
+                            >
+                              Most Liked
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
 
-                  {/* Pagination */}
-                  {totalPages > 1 && (
-                    <div className="flex items-center justify-center space-x-2 mt-8">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                          setCurrentPage((prev) => Math.max(prev - 1, 1))
-                        }
-                        disabled={currentPage === 1}
-                      >
-                        <ChevronLeft className="h-4 w-4 mr-1" />
-                        Previous
-                      </Button>
-
-                      <div className="flex items-center space-x-1">
-                        {Array.from(
-                          { length: Math.min(totalPages, 5) },
-                          (_, i) => i + 1,
-                        ).map((page) => (
-                          <Button
-                            key={page}
-                            variant={
-                              currentPage === page ? "default" : "outline"
-                            }
-                            size="sm"
-                            onClick={() => setCurrentPage(page)}
-                            className={
-                              currentPage === page
-                                ? "bg-yellow-400 text-gray-900 hover:bg-yellow-500"
-                                : ""
-                            }
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {paginatedPosts.map((post) => (
+                          <Link
+                            key={post.id}
+                            href={`/blog/${post.id}`}
+                            className="group"
                           >
-                            {page}
-                          </Button>
+                            <article className="bg-card rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-border">
+                              <div className="flex">
+                                <div className="w-32 h-24 bg-gradient-to-br from-yellow-100 to-orange-100 flex-shrink-0 relative">
+                                  <div className="absolute top-2 left-2">
+                                    <Badge
+                                      variant="secondary"
+                                      className="bg-background/90 text-foreground text-xs"
+                                    >
+                                      {post.category}
+                                    </Badge>
+                                  </div>
+                                </div>
+
+                                <div className="p-4 flex-1">
+                                  <h3 className="text-base font-bold text-foreground mb-2 line-clamp-2 group-hover:text-yellow-600 transition-colors">
+                                    {post.title}
+                                  </h3>
+
+                                  <p className="text-muted-foreground mb-3 line-clamp-2 text-sm">
+                                    {post.excerpt}
+                                  </p>
+
+                                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                    <div className="flex items-center space-x-2">
+                                      <span>{post.author.name}</span>
+                                      <span>•</span>
+                                      <span>{post.readTime} min</span>
+                                      <span>•</span>
+                                      <span>{formatViews(post.views)} views</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </article>
+                          </Link>
                         ))}
                       </div>
 
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                          setCurrentPage((prev) =>
-                            Math.min(prev + 1, totalPages),
-                          )
-                        }
-                        disabled={currentPage === totalPages}
-                      >
-                        Next
-                        <ChevronRight className="h-4 w-4 ml-1" />
-                      </Button>
+                      {/* Pagination */}
+                      {totalPages > 1 && (
+                        <div className="flex items-center justify-center space-x-2 mt-8">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              setCurrentPage((prev) => Math.max(prev - 1, 1))
+                            }
+                            disabled={currentPage === 1}
+                          >
+                            <ChevronLeft className="h-4 w-4 mr-1" />
+                            Previous
+                          </Button>
+
+                          <div className="flex items-center space-x-1">
+                            {Array.from(
+                              { length: Math.min(totalPages, 5) },
+                              (_, i) => i + 1,
+                            ).map((page) => (
+                              <Button
+                                key={page}
+                                variant={
+                                  currentPage === page ? "default" : "outline"
+                                }
+                                size="sm"
+                                onClick={() => setCurrentPage(page)}
+                                className={
+                                  currentPage === page
+                                    ? "bg-yellow-400 text-gray-900 hover:bg-yellow-500"
+                                    : ""
+                                }
+                              >
+                                {page}
+                              </Button>
+                            ))}
+                          </div>
+
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              setCurrentPage((prev) =>
+                                Math.min(prev + 1, totalPages),
+                              )
+                            }
+                            disabled={currentPage === totalPages}
+                          >
+                            Next
+                            <ChevronRight className="h-4 w-4 ml-1" />
+                          </Button>
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {filteredPosts.length === 0 && (
+                    <div className="text-center py-12">
+                      <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-xl font-semibold text-foreground mb-2">
+                        No articles found
+                      </h3>
+                      <p className="text-muted-foreground">
+                        Try adjusting your search or filter criteria
+                      </p>
                     </div>
                   )}
-                </>
-              )}
-
-              {filteredPosts.length === 0 && (
-                <div className="text-center py-12">
-                  <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-foreground mb-2">
-                    No articles found
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Try adjusting your search or filter criteria
-                  </p>
-                </div>
-              )}
-            </section>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
 
           {/* Sidebar */}
