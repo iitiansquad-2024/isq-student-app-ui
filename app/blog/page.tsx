@@ -25,43 +25,16 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { MOCK_BLOG_POSTS, BLOG_CATEGORIES } from "@/lib/blog-data";
+import { MOCK_BLOG_POSTS, BLOG_CATEGORIES, type BlogPost } from "@/lib/blog-data";
+import { cn } from "@/lib/utils";
 import { useMenu } from "@/contexts/MenuContext";
 
 const POSTS_PER_PAGE = 10;
 
-const topBlogs = [
-  {
-    id: "1",
-    title: "How to Crack JEE Advanced: Complete Guide",
-    views: 15420,
-    category: "JEE Strategy",
-  },
-  {
-    id: "2",
-    title: "NEET Biology Preparation Tips",
-    views: 12350,
-    category: "NEET Strategy",
-  },
-  {
-    id: "3",
-    title: "Advanced Mathematics Techniques",
-    views: 8920,
-    category: "Mathematics",
-  },
-  {
-    id: "4",
-    title: "Physics Concepts Made Simple",
-    views: 7650,
-    category: "Physics",
-  },
-  {
-    id: "5",
-    title: "Chemistry Organic Reactions",
-    views: 6900,
-    category: "Chemistry",
-  },
-];
+type BlogCardProps = {
+  post: BlogPost;
+  className?: string;
+};
 
 export default function BlogPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -155,6 +128,13 @@ export default function BlogPage() {
     featuredIndex + 2,
   );
 
+  const categoryPanelPosts =
+    selectedCategory === "All"
+      ? filteredPosts
+      : filteredPosts.filter((post) => post.category === selectedCategory);
+
+  const sidebarCategoryPosts = categoryPanelPosts.slice(0, 5);
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -169,6 +149,44 @@ export default function BlogPage() {
     }
     return views.toString();
   };
+
+  const BlogCard = ({ post, className }: BlogCardProps) => (
+    <Link
+      href={`/blog/${post.id}`}
+      className={cn("group", className)}
+    >
+      <article className="bg-card rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-border">
+        <div className="aspect-[16/9] bg-gradient-to-br from-yellow-100 to-orange-100 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+          <div className="absolute bottom-3 left-3 right-3">
+            <Badge className="bg-yellow-400 text-gray-900 mb-2 text-xs">
+              {post.category}
+            </Badge>
+            <h3 className="text-lg font-bold text-foreground line-clamp-2 group-hover:text-yellow-400 transition-colors">
+              {post.title}
+            </h3>
+          </div>
+        </div>
+
+        <div className="p-4">
+          <p className="text-muted-foreground mb-3 line-clamp-2 text-sm">
+            {post.excerpt}
+          </p>
+
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <div className="flex items-center space-x-3">
+              <span>{post.author.name}</span>
+              <span>•</span>
+              <span>{post.readTime} min</span>
+              <span>•</span>
+              <span>{formatViews(post.views)} views</span>
+            </div>
+            <ArrowRight className="h-4 w-4 text-yellow-600 group-hover:translate-x-1 transition-transform" />
+          </div>
+        </div>
+      </article>
+    </Link>
+  );
 
   const { setShowSecondRow } = useMenu();
   useEffect(() => {
@@ -270,42 +288,7 @@ export default function BlogPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {displayedFeaturedPosts.map((post) => (
-                        <Link
-                          key={post.id}
-                          href={`/blog/${post.id}`}
-                          className="group"
-                        >
-                          <article className="bg-card rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-border">
-                            <div className="aspect-[16/9] bg-gradient-to-br from-yellow-100 to-orange-100 relative overflow-hidden">
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                              <div className="absolute bottom-3 left-3 right-3">
-                                <Badge className="bg-yellow-400 text-gray-900 mb-2 text-xs">
-                                  {post.category}
-                                </Badge>
-                                <h3 className="text-lg font-bold text-foreground line-clamp-2 group-hover:text-yellow-400 transition-colors">
-                                  {post.title}
-                                </h3>
-                              </div>
-                            </div>
-
-                            <div className="p-4">
-                              <p className="text-muted-foreground mb-3 line-clamp-2 text-sm">
-                                {post.excerpt}
-                              </p>
-
-                              <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                <div className="flex items-center space-x-3">
-                                  <span>{post.author.name}</span>
-                                  <span>•</span>
-                                  <span>{post.readTime} min</span>
-                                  <span>•</span>
-                                  <span>{formatViews(post.views)} views</span>
-                                </div>
-                                <ArrowRight className="h-4 w-4 text-yellow-600 group-hover:translate-x-1 transition-transform" />
-                              </div>
-                            </div>
-                          </article>
-                        </Link>
+                        <BlogCard key={post.id} post={post} />
                       ))}
                     </div>
                   </AccordionContent>
@@ -494,42 +477,26 @@ export default function BlogPage() {
 
           {/* Sidebar */}
           <div className="lg:w-80 space-y-6">
-            {/* Top Blogs */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center text-foreground">
-                  <TrendingUp className="h-5 w-5 mr-2" />
-                  Top Blogs
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {topBlogs.map((blog, index) => (
-                  <Link
-                    key={blog.id}
-                    href={`/blog/${blog.id}`}
-                    className="group block"
-                  >
-                    <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-accent transition-colors">
-                      <div className="flex-shrink-0 w-8 h-8 bg-yellow-400 text-gray-900 rounded-full flex items-center justify-center text-sm font-bold">
-                        {index + 1}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-semibold text-foreground group-hover:text-yellow-600 transition-colors line-clamp-2">
-                          {blog.title}
-                        </h4>
-                        <div className="flex items-center space-x-2 mt-1 text-xs text-muted-foreground">
-                          <Badge variant="outline" className="text-xs">
-                            {blog.category}
-                          </Badge>
-                          <span>•</span>
-                          <span>{formatViews(blog.views)} views</span>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </CardContent>
-            </Card>
+            {/* Category-Specific Picks */}
+            <div className="space-y-3">
+              <div className="flex items-center text-foreground font-semibold">
+                <TrendingUp className="h-5 w-5 mr-2" />
+                {selectedCategory === "All"
+                  ? "Trending Picks"
+                  : `${selectedCategory} Picks`}
+              </div>
+              <div className="space-y-4">
+                {sidebarCategoryPosts.length > 0 ? (
+                  sidebarCategoryPosts.map((post) => (
+                    <BlogCard key={post.id} post={post} />
+                  ))
+                ) : (
+                  <div className="text-sm text-muted-foreground py-4 text-center">
+                    No posts found for this category yet.
+                  </div>
+                )}
+              </div>
+            </div>
 
             {/* Newsletter Subscription */}
             <Card className="bg-card text-foreground">
